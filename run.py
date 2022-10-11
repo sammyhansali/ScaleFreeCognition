@@ -33,59 +33,20 @@ cpu_number = multiprocessing.cpu_count()
 print(cpu_number)
 
 
-def eval_individual(genome, exp):
-    
-    """
-    Evaluate fitness of the individual CPPN genome by creating
-    the substrate with topology based on the CPPN output.
-    Arguments:
-        genome:         The CPPN genome
-        experiment:     The experiment parameters
-        substrate:      The substrate to build control ANN
-        params:         The ES-HyperNEAT hyper-parameters
-    Returns:
-        fitness_indiidual The fitness of the individual
-    """
-    
-    net = NEAT.NeuralNetwork()
-    genome.BuildESHyperNEATPhenotype(net, exp.substrate, exp.params)
-    depth = exp.params.MaxDepth
-    net.Flush()
 
-
-    model = Multicellularity_model(net=net, depth=depth, height= exp.height, width= exp.width, 
-    initial_cells=exp.initial_cells,
-    energy = exp.energy,
-    step_count = exp.step_count,
-    nb_gap_junctions = exp.nb_gap_junctions,
-    fitness= exp.fitness_function,
-    goal = exp.goal)
-   
-
-    model.verbose = False
-    fitness_individual=0
-    fitness_test = model.run_model(fitness_evaluation=True)
-    if fitness_test>95:
-        for i in range(10):
-            fitness_individual += fitness_test
-            fitness_test = model.run_model(fitness_evaluation=True)
-            #net.Flush()
-        fitness_individual = fitness_individual/10
-
-        net.Save("./Results/" + file + "/winner_net_"+ str(fitness_individual)+".txt")
-    else: 
-        fitness_individual = fitness_test
-        
-    return fitness_individual
  
 
 
+file="" # Make file a global variable so eval_individual can use it.
+g_exp=None # global experiment
 
-# If run as script.
 def run_experiment(exp):
     """
         exp: the experiment parameters
     """
+    # Updating global experiment
+    global g_exp
+    g_exp = exp
 
     # Result file
     myDatetime = datetime.datetime.now()
@@ -250,7 +211,49 @@ step_count: %s" % (exp.nb_gens, exp.depth, exp.height, exp.width,
 
 
 
+def eval_individual(genome):
+    
+    """
+    Evaluate fitness of the individual CPPN genome by creating
+    the substrate with topology based on the CPPN output.
+    Arguments:
+        genome:         The CPPN genome
+        substrate:      The substrate to build control ANN
+        params:         The ES-HyperNEAT hyper-parameters
+    Returns:
+        fitness_indiidual The fitness of the individual
+    """
+    
+    net = NEAT.NeuralNetwork()
+    genome.BuildESHyperNEATPhenotype(net, g_exp.substrate, g_exp.params)
+    depth = g_exp.params.MaxDepth
+    net.Flush()
 
+
+    model = Multicellularity_model(net=net, depth=depth, height= g_exp.height, width= g_exp.width, 
+    initial_cells=g_exp.initial_cells,
+    energy = g_exp.energy,
+    step_count = g_exp.step_count,
+    nb_gap_junctions = g_exp.nb_gap_junctions,
+    fitness= g_exp.fitness_function,
+    goal = g_exp.goal)
+   
+
+    model.verbose = False
+    fitness_individual=0
+    fitness_test = model.run_model(fitness_evaluation=True)
+    if fitness_test>95:
+        for i in range(10):
+            fitness_individual += fitness_test
+            fitness_test = model.run_model(fitness_evaluation=True)
+            #net.Flush()
+        fitness_individual = fitness_individual/10
+
+        net.Save("./Results/" + file + "/winner_net_"+ str(fitness_individual)+".txt")
+    else: 
+        fitness_individual = fitness_test
+        
+    return fitness_individual
 
 
 

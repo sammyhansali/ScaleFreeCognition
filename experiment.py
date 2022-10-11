@@ -92,6 +92,7 @@ class experiment:
     
 
     def __init__(self, goal):
+        self.goal = goal
         self.height=len(goal)
         self.width=len(goal)
         self.initial_cells=self.height*self.width
