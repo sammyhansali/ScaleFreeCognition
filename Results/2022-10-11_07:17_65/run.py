@@ -262,6 +262,12 @@ step_count: %s" % (nb_gens, depth, height, width,
     os.replace("general_params.txt", Result_file)
     shutil.copyfile("analysis.py",  "./Results/" + file + "/" + "analysis.py")
     shutil.copyfile("run.py",  "./Results/" + file + "/" + "run.py")
+    # shutil.copyfile("experiment_change_target_morphology.py",  "./Results/" + file + "/" + "experiment_change_target_morphology.py")
+    # shutil.copyfile("experiment_change_target_morphology_and_regeneration.py",  "./Results/" + file + "/" + "experiment_change_target_morphology_and_regeneration.py")
+    # shutil.copyfile("experiment_regeneration.py",  "./Results/" + file + "/" + "experiment_regeneration.py")
+    # shutil.copyfile("experiment_anxiolytics.py",  "./Results/" + file + "/" + "experiment_anxiolytics.py")
+    # shutil.copyfile("experiment_withStateChange.py",  "./Results/" + file + "/" + "experiment_withStateChange.py")
+    # shutil.copyfile("experiment_change_target_morphology_and_regeneration_anxyo.py",  "./Results/" + file + "/" + "experiment_change_target_morphology_and_regeneration_anxyo.py")
     shutil.copytree('./multicellularity', "./Results/" + file + "/" + "multicellularity")
     
 
