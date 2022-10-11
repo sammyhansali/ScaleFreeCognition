@@ -1,0 +1,1126 @@
+24
+
+*******************************************
+Generation: 0
+Best fitness: 331.250000, genome ID: 76
+Species count: 1
+Generation elapsed time: 43.464 sec
+Best fitness ever: 331.250000, genome ID: 76
+*******************************************
+
+
+*******************************************
+Generation: 1
+Best fitness: 671.167324, genome ID: 698
+Species count: 1
+Generation elapsed time: 44.087 sec
+Best fitness ever: 671.167324, genome ID: 698
+*******************************************
+
+
+*******************************************
+Generation: 2
+Best fitness: 686.104087, genome ID: 700
+Species count: 1
+Generation elapsed time: 44.726 sec
+Best fitness ever: 686.104087, genome ID: 700
+*******************************************
+
+
+*******************************************
+Generation: 3
+Best fitness: 715.590009, genome ID: 1050
+Species count: 1
+Generation elapsed time: 45.474 sec
+Best fitness ever: 715.590009, genome ID: 1050
+*******************************************
+
+
+*******************************************
+Generation: 4
+Best fitness: 679.225575, genome ID: 1422
+Species count: 1
+Generation elapsed time: 45.554 sec
+Best fitness ever: 715.590009, genome ID: 1050
+*******************************************
+
+
+*******************************************
+Generation: 5
+Best fitness: 690.573899, genome ID: 1750
+Species count: 1
+Generation elapsed time: 45.314 sec
+Best fitness ever: 715.590009, genome ID: 1050
+*******************************************
+
+
+*******************************************
+Generation: 6
+Best fitness: 734.121595, genome ID: 2101
+Species count: 1
+Generation elapsed time: 44.597 sec
+Best fitness ever: 734.121595, genome ID: 2101
+*******************************************
+
+
+*******************************************
+Generation: 7
+Best fitness: 729.965069, genome ID: 2452
+Species count: 4
+Generation elapsed time: 44.964 sec
+Best fitness ever: 734.121595, genome ID: 2101
+*******************************************
+
+
+*******************************************
+Generation: 8
+Best fitness: 695.031297, genome ID: 2800
+Species count: 12
+Generation elapsed time: 44.944 sec
+Best fitness ever: 734.121595, genome ID: 2101
+*******************************************
+
+
+*******************************************
+Generation: 9
+Best fitness: 737.251550, genome ID: 3151
+Species count: 9
+Generation elapsed time: 43.624 sec
+Best fitness ever: 737.251550, genome ID: 3151
+*******************************************
+
+
+*******************************************
+Generation: 10
+Best fitness: 676.129011, genome ID: 3500
+Species count: 12
+Generation elapsed time: 43.366 sec
+Best fitness ever: 737.251550, genome ID: 3151
+*******************************************
+
+
+*******************************************
+Generation: 11
+Best fitness: 691.646844, genome ID: 3849
+Species count: 5
+Generation elapsed time: 43.078 sec
+Best fitness ever: 737.251550, genome ID: 3151
+*******************************************
+
+
+*******************************************
+Generation: 12
+Best fitness: 726.631182, genome ID: 4198
+Species count: 8
+Generation elapsed time: 44.019 sec
+Best fitness ever: 737.251550, genome ID: 3151
+*******************************************
+
+
+*******************************************
+Generation: 13
+Best fitness: 751.561242, genome ID: 4548
+Species count: 8
+Generation elapsed time: 44.910 sec
+Best fitness ever: 751.561242, genome ID: 4548
+*******************************************
+
+
+*******************************************
+Generation: 14
+Best fitness: 736.101662, genome ID: 4898
+Species count: 8
+Generation elapsed time: 45.054 sec
+Best fitness ever: 751.561242, genome ID: 4548
+*******************************************
+
+
+*******************************************
+Generation: 15
+Best fitness: 735.944906, genome ID: 5409
+Species count: 6
+Generation elapsed time: 45.050 sec
+Best fitness ever: 751.561242, genome ID: 4548
+*******************************************
+
+
+*******************************************
+Generation: 16
+Best fitness: 761.476365, genome ID: 5784
+Species count: 8
+Generation elapsed time: 45.832 sec
+Best fitness ever: 761.476365, genome ID: 5784
+*******************************************
+
+
+*******************************************
+Generation: 17
+Best fitness: 758.911935, genome ID: 6068
+Species count: 7
+Generation elapsed time: 46.033 sec
+Best fitness ever: 761.476365, genome ID: 5784
+*******************************************
+
+
+*******************************************
+Generation: 18
+Best fitness: 744.670935, genome ID: 6423
+Species count: 8
+Generation elapsed time: 45.774 sec
+Best fitness ever: 761.476365, genome ID: 5784
+*******************************************
+
+
+*******************************************
+Generation: 19
+Best fitness: 731.419228, genome ID: 6701
+Species count: 8
+Generation elapsed time: 44.967 sec
+Best fitness ever: 761.476365, genome ID: 5784
+*******************************************
+
+
+*******************************************
+Generation: 20
+Best fitness: 765.547338, genome ID: 7116
+Species count: 7
+Generation elapsed time: 45.734 sec
+Best fitness ever: 765.547338, genome ID: 7116
+*******************************************
+
+
+*******************************************
+Generation: 21
+Best fitness: 739.325896, genome ID: 7373
+Species count: 7
+Generation elapsed time: 45.298 sec
+Best fitness ever: 765.547338, genome ID: 7116
+*******************************************
+
+
+*******************************************
+Generation: 22
+Best fitness: 754.131069, genome ID: 7725
+Species count: 9
+Generation elapsed time: 45.767 sec
+Best fitness ever: 765.547338, genome ID: 7116
+*******************************************
+
+
+*******************************************
+Generation: 23
+Best fitness: 727.885441, genome ID: 8088
+Species count: 6
+Generation elapsed time: 45.686 sec
+Best fitness ever: 765.547338, genome ID: 7116
+*******************************************
+
+
+*******************************************
+Generation: 24
+Best fitness: 742.432306, genome ID: 8406
+Species count: 6
+Generation elapsed time: 45.383 sec
+Best fitness ever: 765.547338, genome ID: 7116
+*******************************************
+
+
+*******************************************
+Generation: 25
+Best fitness: 732.439003, genome ID: 8764
+Species count: 7
+Generation elapsed time: 45.439 sec
+Best fitness ever: 765.547338, genome ID: 7116
+*******************************************
+
+
+*******************************************
+Generation: 26
+Best fitness: 728.784300, genome ID: 9139
+Species count: 8
+Generation elapsed time: 45.481 sec
+Best fitness ever: 765.547338, genome ID: 7116
+*******************************************
+
+
+*******************************************
+Generation: 27
+Best fitness: 745.150145, genome ID: 9462
+Species count: 9
+Generation elapsed time: 45.471 sec
+Best fitness ever: 765.547338, genome ID: 7116
+*******************************************
+
+
+*******************************************
+Generation: 28
+Best fitness: 733.805253, genome ID: 9830
+Species count: 9
+Generation elapsed time: 45.914 sec
+Best fitness ever: 765.547338, genome ID: 7116
+*******************************************
+
+
+*******************************************
+Generation: 29
+Best fitness: 774.224312, genome ID: 10182
+Species count: 8
+Generation elapsed time: 45.395 sec
+Best fitness ever: 774.224312, genome ID: 10182
+*******************************************
+
+
+*******************************************
+Generation: 30
+Best fitness: 739.503845, genome ID: 10512
+Species count: 11
+Generation elapsed time: 45.508 sec
+Best fitness ever: 774.224312, genome ID: 10182
+*******************************************
+
+
+*******************************************
+Generation: 31
+Best fitness: 743.636616, genome ID: 10858
+Species count: 8
+Generation elapsed time: 45.438 sec
+Best fitness ever: 774.224312, genome ID: 10182
+*******************************************
+
+
+*******************************************
+Generation: 32
+Best fitness: 748.515717, genome ID: 11253
+Species count: 8
+Generation elapsed time: 45.915 sec
+Best fitness ever: 774.224312, genome ID: 10182
+*******************************************
+
+
+*******************************************
+Generation: 33
+Best fitness: 739.900533, genome ID: 11574
+Species count: 8
+Generation elapsed time: 45.561 sec
+Best fitness ever: 774.224312, genome ID: 10182
+*******************************************
+
+
+*******************************************
+Generation: 34
+Best fitness: 766.738979, genome ID: 11950
+Species count: 10
+Generation elapsed time: 46.094 sec
+Best fitness ever: 774.224312, genome ID: 10182
+*******************************************
+
+
+*******************************************
+Generation: 35
+Best fitness: 874.653350, genome ID: 12289
+Species count: 8
+Generation elapsed time: 45.791 sec
+Best fitness ever: 874.653350, genome ID: 12289
+*******************************************
+
+
+*******************************************
+Generation: 36
+Best fitness: 847.019993, genome ID: 12637
+Species count: 8
+Generation elapsed time: 45.826 sec
+Best fitness ever: 874.653350, genome ID: 12289
+*******************************************
+
+
+*******************************************
+Generation: 37
+Best fitness: 873.651155, genome ID: 12951
+Species count: 9
+Generation elapsed time: 45.794 sec
+Best fitness ever: 874.653350, genome ID: 12289
+*******************************************
+
+
+*******************************************
+Generation: 38
+Best fitness: 875.776324, genome ID: 13302
+Species count: 8
+Generation elapsed time: 45.438 sec
+Best fitness ever: 875.776324, genome ID: 13302
+*******************************************
+
+
+*******************************************
+Generation: 39
+Best fitness: 874.640435, genome ID: 13653
+Species count: 8
+Generation elapsed time: 45.632 sec
+Best fitness ever: 875.776324, genome ID: 13302
+*******************************************
+
+
+*******************************************
+Generation: 40
+Best fitness: 858.474580, genome ID: 14003
+Species count: 8
+Generation elapsed time: 45.327 sec
+Best fitness ever: 875.776324, genome ID: 13302
+*******************************************
+
+
+*******************************************
+Generation: 41
+Best fitness: 881.904616, genome ID: 14353
+Species count: 9
+Generation elapsed time: 45.415 sec
+Best fitness ever: 881.904616, genome ID: 14353
+*******************************************
+
+
+*******************************************
+Generation: 42
+Best fitness: 836.123468, genome ID: 14703
+Species count: 8
+Generation elapsed time: 45.581 sec
+Best fitness ever: 881.904616, genome ID: 14353
+*******************************************
+
+
+*******************************************
+Generation: 43
+Best fitness: 881.906051, genome ID: 15053
+Species count: 8
+Generation elapsed time: 45.511 sec
+Best fitness ever: 881.906051, genome ID: 15053
+*******************************************
+
+
+*******************************************
+Generation: 44
+Best fitness: 859.762312, genome ID: 15402
+Species count: 8
+Generation elapsed time: 45.727 sec
+Best fitness ever: 881.906051, genome ID: 15053
+*******************************************
+
+
+*******************************************
+Generation: 45
+Best fitness: 859.139928, genome ID: 15751
+Species count: 9
+Generation elapsed time: 45.965 sec
+Best fitness ever: 881.906051, genome ID: 15053
+*******************************************
+
+
+*******************************************
+Generation: 46
+Best fitness: 874.656051, genome ID: 16101
+Species count: 8
+Generation elapsed time: 45.611 sec
+Best fitness ever: 881.906051, genome ID: 15053
+*******************************************
+
+
+*******************************************
+Generation: 47
+Best fitness: 843.231333, genome ID: 16451
+Species count: 10
+Generation elapsed time: 45.600 sec
+Best fitness ever: 881.906051, genome ID: 15053
+*******************************************
+
+
+*******************************************
+Generation: 48
+Best fitness: 874.656051, genome ID: 16801
+Species count: 9
+Generation elapsed time: 45.574 sec
+Best fitness ever: 881.906051, genome ID: 15053
+*******************************************
+
+
+*******************************************
+Generation: 49
+Best fitness: 873.634357, genome ID: 17152
+Species count: 9
+Generation elapsed time: 45.928 sec
+Best fitness ever: 881.906051, genome ID: 15053
+*******************************************
+
+
+*******************************************
+Generation: 50
+Best fitness: 859.118404, genome ID: 17501
+Species count: 9
+Generation elapsed time: 45.488 sec
+Best fitness ever: 881.906051, genome ID: 15053
+*******************************************
+
+
+*******************************************
+Generation: 51
+Best fitness: 857.364858, genome ID: 17852
+Species count: 10
+Generation elapsed time: 45.789 sec
+Best fitness ever: 881.906051, genome ID: 15053
+*******************************************
+
+
+*******************************************
+Generation: 52
+Best fitness: 881.906051, genome ID: 18203
+Species count: 11
+Generation elapsed time: 45.898 sec
+Best fitness ever: 881.906051, genome ID: 15053
+*******************************************
+
+
+*******************************************
+Generation: 53
+Best fitness: 881.906051, genome ID: 18562
+Species count: 13
+Generation elapsed time: 45.756 sec
+Best fitness ever: 881.906051, genome ID: 18562
+*******************************************
+
+
+*******************************************
+Generation: 54
+Best fitness: 881.904616, genome ID: 18907
+Species count: 10
+Generation elapsed time: 45.834 sec
+Best fitness ever: 881.906051, genome ID: 18562
+*******************************************
+
+
+*******************************************
+Generation: 55
+Best fitness: 881.906051, genome ID: 19268
+Species count: 10
+Generation elapsed time: 45.767 sec
+Best fitness ever: 881.906051, genome ID: 19268
+*******************************************
+
+
+*******************************************
+Generation: 56
+Best fitness: 881.906051, genome ID: 19605
+Species count: 9
+Generation elapsed time: 45.973 sec
+Best fitness ever: 881.906051, genome ID: 19268
+*******************************************
+
+
+*******************************************
+Generation: 57
+Best fitness: 881.906051, genome ID: 19975
+Species count: 10
+Generation elapsed time: 46.095 sec
+Best fitness ever: 881.906051, genome ID: 19975
+*******************************************
+
+
+*******************************************
+Generation: 58
+Best fitness: 881.778772, genome ID: 20330
+Species count: 10
+Generation elapsed time: 45.076 sec
+Best fitness ever: 881.906051, genome ID: 19975
+*******************************************
+
+
+*******************************************
+Generation: 59
+Best fitness: 881.906051, genome ID: 20690
+Species count: 10
+Generation elapsed time: 45.632 sec
+Best fitness ever: 881.906051, genome ID: 20690
+*******************************************
+
+
+*******************************************
+Generation: 60
+Best fitness: 881.906051, genome ID: 21015
+Species count: 12
+Generation elapsed time: 45.686 sec
+Best fitness ever: 881.906051, genome ID: 20690
+*******************************************
+
+
+*******************************************
+Generation: 61
+Best fitness: 881.898792, genome ID: 21376
+Species count: 9
+Generation elapsed time: 45.494 sec
+Best fitness ever: 881.906051, genome ID: 20690
+*******************************************
+
+
+*******************************************
+Generation: 62
+Best fitness: 881.906051, genome ID: 21720
+Species count: 11
+Generation elapsed time: 46.068 sec
+Best fitness ever: 881.906051, genome ID: 20690
+*******************************************
+
+
+*******************************************
+Generation: 63
+Best fitness: 881.906051, genome ID: 22080
+Species count: 11
+Generation elapsed time: 45.861 sec
+Best fitness ever: 881.906051, genome ID: 20690
+*******************************************
+
+
+*******************************************
+Generation: 64
+Best fitness: 881.906051, genome ID: 22428
+Species count: 13
+Generation elapsed time: 46.000 sec
+Best fitness ever: 881.906051, genome ID: 20690
+*******************************************
+
+
+*******************************************
+Generation: 65
+Best fitness: 881.906051, genome ID: 22771
+Species count: 11
+Generation elapsed time: 45.503 sec
+Best fitness ever: 881.906051, genome ID: 20690
+*******************************************
+
+
+*******************************************
+Generation: 66
+Best fitness: 881.905122, genome ID: 23123
+Species count: 13
+Generation elapsed time: 45.945 sec
+Best fitness ever: 881.906051, genome ID: 20690
+*******************************************
+
+
+*******************************************
+Generation: 67
+Best fitness: 881.766195, genome ID: 23481
+Species count: 10
+Generation elapsed time: 45.530 sec
+Best fitness ever: 881.906051, genome ID: 20690
+*******************************************
+
+
+*******************************************
+Generation: 68
+Best fitness: 881.906051, genome ID: 23821
+Species count: 12
+Generation elapsed time: 45.570 sec
+Best fitness ever: 881.906051, genome ID: 20690
+*******************************************
+
+
+*******************************************
+Generation: 69
+Best fitness: 881.128364, genome ID: 24152
+Species count: 10
+Generation elapsed time: 45.836 sec
+Best fitness ever: 881.906051, genome ID: 20690
+*******************************************
+
+
+*******************************************
+Generation: 70
+Best fitness: 881.906051, genome ID: 24519
+Species count: 9
+Generation elapsed time: 46.207 sec
+Best fitness ever: 881.906051, genome ID: 20690
+*******************************************
+
+
+*******************************************
+Generation: 71
+Best fitness: 881.906051, genome ID: 24859
+Species count: 9
+Generation elapsed time: 45.967 sec
+Best fitness ever: 881.906051, genome ID: 20690
+*******************************************
+
+
+*******************************************
+Generation: 72
+Best fitness: 881.906051, genome ID: 25232
+Species count: 8
+Generation elapsed time: 45.376 sec
+Best fitness ever: 881.906051, genome ID: 20690
+*******************************************
+
+
+*******************************************
+Generation: 73
+Best fitness: 881.906051, genome ID: 25558
+Species count: 10
+Generation elapsed time: 45.696 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 74
+Best fitness: 881.906051, genome ID: 25967
+Species count: 10
+Generation elapsed time: 45.788 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 75
+Best fitness: 881.906051, genome ID: 26263
+Species count: 10
+Generation elapsed time: 45.310 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 76
+Best fitness: 881.906051, genome ID: 26615
+Species count: 10
+Generation elapsed time: 45.593 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 77
+Best fitness: 881.906051, genome ID: 26990
+Species count: 11
+Generation elapsed time: 45.298 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 78
+Best fitness: 881.906051, genome ID: 27353
+Species count: 9
+Generation elapsed time: 45.486 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 79
+Best fitness: 881.906051, genome ID: 27677
+Species count: 9
+Generation elapsed time: 45.516 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 80
+Best fitness: 881.904616, genome ID: 28025
+Species count: 12
+Generation elapsed time: 45.868 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 81
+Best fitness: 881.906051, genome ID: 28384
+Species count: 11
+Generation elapsed time: 45.694 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 82
+Best fitness: 881.906051, genome ID: 28726
+Species count: 11
+Generation elapsed time: 45.176 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 83
+Best fitness: 881.906051, genome ID: 29067
+Species count: 9
+Generation elapsed time: 45.657 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 84
+Best fitness: 881.906051, genome ID: 29431
+Species count: 9
+Generation elapsed time: 45.724 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 85
+Best fitness: 881.906051, genome ID: 29770
+Species count: 9
+Generation elapsed time: 45.829 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 86
+Best fitness: 881.906051, genome ID: 30121
+Species count: 9
+Generation elapsed time: 45.770 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 87
+Best fitness: 881.906051, genome ID: 30461
+Species count: 10
+Generation elapsed time: 45.908 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 88
+Best fitness: 881.906051, genome ID: 30841
+Species count: 9
+Generation elapsed time: 45.751 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 89
+Best fitness: 881.906051, genome ID: 31163
+Species count: 9
+Generation elapsed time: 45.871 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 90
+Best fitness: 881.906051, genome ID: 31505
+Species count: 9
+Generation elapsed time: 45.589 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 91
+Best fitness: 881.774214, genome ID: 31879
+Species count: 9
+Generation elapsed time: 45.674 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 92
+Best fitness: 881.906051, genome ID: 32215
+Species count: 10
+Generation elapsed time: 45.643 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 93
+Best fitness: 881.906051, genome ID: 32581
+Species count: 9
+Generation elapsed time: 45.705 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 94
+Best fitness: 881.906051, genome ID: 32921
+Species count: 9
+Generation elapsed time: 45.784 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 95
+Best fitness: 881.906051, genome ID: 33272
+Species count: 9
+Generation elapsed time: 45.890 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 96
+Best fitness: 881.906051, genome ID: 33615
+Species count: 12
+Generation elapsed time: 45.718 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 97
+Best fitness: 881.906051, genome ID: 33958
+Species count: 10
+Generation elapsed time: 45.547 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 98
+Best fitness: 881.906051, genome ID: 34333
+Species count: 9
+Generation elapsed time: 45.582 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 99
+Best fitness: 881.906051, genome ID: 34667
+Species count: 9
+Generation elapsed time: 45.834 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 100
+Best fitness: 881.906051, genome ID: 34999
+Species count: 9
+Generation elapsed time: 45.770 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 101
+Best fitness: 881.906051, genome ID: 35370
+Species count: 9
+Generation elapsed time: 45.817 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 102
+Best fitness: 881.903181, genome ID: 35712
+Species count: 9
+Generation elapsed time: 45.939 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 103
+Best fitness: 881.906051, genome ID: 36067
+Species count: 9
+Generation elapsed time: 46.005 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 104
+Best fitness: 881.906051, genome ID: 36419
+Species count: 9
+Generation elapsed time: 45.718 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 105
+Best fitness: 881.906051, genome ID: 36749
+Species count: 9
+Generation elapsed time: 45.875 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 106
+Best fitness: 881.906051, genome ID: 37108
+Species count: 10
+Generation elapsed time: 45.655 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 107
+Best fitness: 881.906051, genome ID: 37466
+Species count: 11
+Generation elapsed time: 45.976 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 108
+Best fitness: 881.906051, genome ID: 37807
+Species count: 9
+Generation elapsed time: 45.498 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 109
+Best fitness: 881.906051, genome ID: 38177
+Species count: 9
+Generation elapsed time: 45.746 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 110
+Best fitness: 881.906051, genome ID: 38532
+Species count: 9
+Generation elapsed time: 45.811 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 111
+Best fitness: 881.906051, genome ID: 38876
+Species count: 11
+Generation elapsed time: 46.015 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 112
+Best fitness: 881.906051, genome ID: 39203
+Species count: 10
+Generation elapsed time: 45.799 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 113
+Best fitness: 881.906051, genome ID: 39566
+Species count: 10
+Generation elapsed time: 45.353 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 114
+Best fitness: 881.906051, genome ID: 39901
+Species count: 10
+Generation elapsed time: 45.431 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 115
+Best fitness: 881.906051, genome ID: 40265
+Species count: 10
+Generation elapsed time: 45.554 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 116
+Best fitness: 881.906051, genome ID: 40604
+Species count: 10
+Generation elapsed time: 45.768 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 117
+Best fitness: 881.906051, genome ID: 40973
+Species count: 11
+Generation elapsed time: 45.515 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 118
+Best fitness: 881.906051, genome ID: 41328
+Species count: 10
+Generation elapsed time: 45.589 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 119
+Best fitness: 881.906051, genome ID: 41642
+Species count: 11
+Generation elapsed time: 45.193 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 120
+Best fitness: 881.906051, genome ID: 41999
+Species count: 10
+Generation elapsed time: 45.543 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 121
+Best fitness: 881.906051, genome ID: 42379
+Species count: 10
+Generation elapsed time: 45.575 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 122
+Best fitness: 881.906051, genome ID: 42723
+Species count: 8
+Generation elapsed time: 45.691 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 123
+Best fitness: 881.906051, genome ID: 43074
+Species count: 9
+Generation elapsed time: 45.559 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
+
+*******************************************
+Generation: 124
+Best fitness: 881.906051, genome ID: 43416
+Species count: 10
+Generation elapsed time: 45.592 sec
+Best fitness ever: 881.906051, genome ID: 25558
+*******************************************
+
