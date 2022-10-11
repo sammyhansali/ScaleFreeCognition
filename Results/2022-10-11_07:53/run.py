@@ -32,15 +32,171 @@ import multiprocessing
 cpu_number = multiprocessing.cpu_count()
 print(cpu_number)
 
+# Target!
+# French flag
+# goal = [[ 1, 1, 1, 3, 3, 3, 2, 2, 2],
+#         [ 1, 1, 1, 3, 3, 3, 2, 2, 2],
+#         [ 1, 1, 1, 3, 3, 3, 2, 2, 2],
+#         [ 1, 1, 1, 3, 3, 3, 2, 2, 2],
+#         [ 1, 1, 1, 3, 3, 3, 2, 2, 2],
+#         [ 1, 1, 1, 3, 3, 3, 2, 2, 2],
+#         [ 1, 1, 1, 3, 3, 3, 2, 2, 2],
+#         [ 1, 1, 1, 3, 3, 3, 2, 2, 2],
+#         [ 1, 1, 1, 3, 3, 3, 2, 2, 2]]
+# Simple Cross
+goal = [[ 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [ 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [ 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [ 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [ 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [ 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [ 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [ 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [ 0, 0, 0, 0, 1, 0, 0, 0, 0]]
 
-def eval_individual(genome, exp):
+
+
+
+# Params for MESA model and the evolving neural network
+nb_gens=2
+depth=4
+height=len(goal) # for the vizualization grid
+width=len(goal)
+max_fitness= 97
+initial_cells=height*width
+energy = 70 #default was 70
+step_count = 100
+fitness_function = "" # see model class for the definitions of the variable
+nb_gap_junctions = 4
+nb_stress_GJ = 1
+nb_output_molecules = 1 # default is 1, 2 works good too but need undifferentiated state
+nb_output_stress = 1
+
+  
+# Interface
+interface =  False
+
+# Parameters for es-hyperneat
+params = NEAT.Parameters()
+params.PopulationSize = 350
+
+params.DynamicCompatibility = True
+params.CompatTreshold = 3.0
+params.YoungAgeTreshold = 15
+params.SpeciesMaxStagnation = 10
+params.OldAgeTreshold = 35
+params.StagnationDelta = 5
+params.MinSpecies = 5
+params.MaxSpecies = 15
+params.RouletteWheelSelection = False
+
+params.MutateRemLinkProb = 0.02
+params.RecurrentProb = 0.2
+params.OverallMutationRate = 0.15
+params.MutateAddLinkProb = 0.03
+params.MutateAddNeuronProb = 0.03
+params.MutateWeightsProb = 0.90
+params.MaxWeight = 8.0
+params.MinWeight = -8.0
+params.WeightMutationMaxPower = 0.2
+params.WeightReplacementMaxPower = 1.0
+
+params.MutateActivationAProb = 0.0
+params.ActivationAMutationMaxPower = 0.5
+params.MinActivationA = 0.05
+params.MaxActivationA = 6.9 
+
+params.MinNeuronBias = -params.MaxWeight
+params.MaxNeuronBias = params.MaxWeight
+    
+params.MutateNeuronActivationTypeProb = 0.3
+params.ActivationFunction_SignedGauss_Prob = 1.0
+params.ActivationFunction_SignedStep_Prob = 1.0
+params.ActivationFunction_Linear_Prob = 1.0
+params.ActivationFunction_SignedSine_Prob = 1.0
+params.ActivationFunction_SignedSigmoid_Prob = 1.0
+
+params.ActivationFunction_SignedSigmoid_Prob = 0.0
+params.ActivationFunction_UnsignedSigmoid_Prob = 0.0
+params.ActivationFunction_TanhCubic_Prob = 0.0
+params.ActivationFunction_UnsignedStep_Prob = 0.0
+params.ActivationFunction_UnsignedGauss_Prob = 0.0
+params.ActivationFunction_Abs_Prob = 0.0
+params.ActivationFunction_UnsignedSine_Prob = 0.0
+
+params.AllowLoops = True
+params.AllowClones = True
+
+params.MutateNeuronTraitsProb = 0
+params.MutateLinkTraitsProb = 0
+
+
+params.DivisionThreshold = 0.03 
+params.VarianceThreshold = 0.03
+params.BandThreshold = 0.3
+# depth of the quadtree
+params.InitialDepth = 3
+params.MaxDepth = 3
+# corresponds to the number of hidden layers = iterationlevel+1
+params.IterationLevel = depth -1
+params.Leo = False
+params.GeometrySeed = True
+params.LeoSeed = True
+params.LeoThreshold = 0.2
+params.CPPN_Bias = -1.0
+params.Qtree_X = 0.0
+params.Qtree_Y = 0.0
+params.Width = 1.
+params.Height = 1.
+params.Elitism = 0.1
+
+rng = NEAT.RNG()
+rng.TimeSeed()
+
+
+
+# Network inputs and expected outputs.
+nb_inputs = 10 # nb molecules + energy + stress + state + bias + state_neigbours
+nb_outputs =  nb_gap_junctions + nb_output_molecules + nb_output_stress + nb_stress_GJ+1#   molecules to send + stress to send + opened gap junction including stress GJ   + decision state change
+input_coordinates = [(-1. +(2.*i/(nb_inputs - 1)), -1.) for i in range(0, nb_inputs)]
+output_coordinates = [(-1. +(2.*i/(nb_outputs - 1)),1.) for i in range(0, nb_outputs)]
+
+#  Substrate for MultiNEAT
+substrate = NEAT.Substrate(input_coordinates, [],  output_coordinates)
+substrate.m_allow_input_hidden_links = True
+substrate.m_allow_hidden_output_links = True
+substrate.m_allow_hidden_hidden_links = False
+substrate.m_allow_looped_hidden_links = True
+
+substrate.m_allow_input_output_links = False
+
+substrate.m_allow_output_hidden_links = True
+substrate.m_allow_output_output_links = False
+substrate.m_allow_looped_output_links = False
+
+
+substrate.m_hidden_nodes_activation = NEAT.ActivationFunction.SIGNED_SIGMOID
+substrate.m_output_nodes_activation = NEAT.ActivationFunction.UNSIGNED_SIGMOID
+
+substrate.m_with_distance = True
+
+substrate.m_max_weight_and_bias = 8.0
+
+try:
+    x = pickle.dumps(substrate)
+except:
+    print('You have mistyped a substrate member name upon setup. Please fix it.')
+    sys.exit(1)
+
+
+
+def eval_individual(genome):
     
     """
     Evaluate fitness of the individual CPPN genome by creating
     the substrate with topology based on the CPPN output.
     Arguments:
         genome:         The CPPN genome
-        experiment:     The experiment parameters
         substrate:      The substrate to build control ANN
         params:         The ES-HyperNEAT hyper-parameters
     Returns:
@@ -48,18 +204,18 @@ def eval_individual(genome, exp):
     """
     
     net = NEAT.NeuralNetwork()
-    genome.BuildESHyperNEATPhenotype(net, exp.substrate, exp.params)
-    depth = exp.params.MaxDepth
+    genome.BuildESHyperNEATPhenotype(net, substrate, params)
+    depth = params.MaxDepth
     net.Flush()
 
 
-    model = Multicellularity_model(net=net, depth=depth, height= exp.height, width= exp.width, 
-    initial_cells=exp.initial_cells,
-    energy = exp.energy,
-    step_count = exp.step_count,
-    nb_gap_junctions = exp.nb_gap_junctions,
-    fitness= exp.fitness_function,
-    goal = exp.goal)
+    model = Multicellularity_model(net=net, depth=depth, height= height, width= width, 
+    initial_cells=initial_cells,
+    energy = energy,
+    step_count = step_count,
+    nb_gap_junctions = nb_gap_junctions,
+    fitness=fitness_function,
+    goal = goal)
    
 
     model.verbose = False
@@ -82,12 +238,9 @@ def eval_individual(genome, exp):
 
 
 # If run as script.
-def run_experiment(exp):
-    """
-        exp: the experiment parameters
-    """
+if __name__ == '__main__':
 
-    # Result file
+# Result file
     myDatetime = datetime.datetime.now()
     myString = myDatetime.strftime('%Y-%m-%d %H:%M')
     file = myString.replace(' ','_')
@@ -105,8 +258,8 @@ width: %s  \n\
 max_fitness: %s  \n\
 energy: %s \n\
 nb_gap_junctions: %s  \n\
-step_count: %s" % (exp.nb_gens, exp.depth, exp.height, exp.width, 
-        exp.max_fitness, exp.energy, exp.nb_gap_junctions, exp.step_count), 
+step_count: %s" % (nb_gens, depth, height, width, 
+        max_fitness, energy, nb_gap_junctions, step_count), 
         file=general_params_file)
         
     general_params_file.close() 
@@ -119,20 +272,20 @@ step_count: %s" % (exp.nb_gens, exp.depth, exp.height, exp.width,
     # random seed
     seed = int(time.time()) #1660341957#
     np.save("./Results/" + file + "/seed", seed)
-    exp.params.Save("./Results/" + file + "/multiNEAT_params.txt")
+    params.Save("./Results/" + file + "/multiNEAT_params.txt")
     
     genome = NEAT.Genome(0,
-                    exp.substrate.GetMinCPPNInputs(),
+                    substrate.GetMinCPPNInputs(),
                     2, # hidden units
-                    exp.substrate.GetMinCPPNOutputs(),
+                    substrate.GetMinCPPNOutputs(),
                     False,
                     NEAT.ActivationFunction.TANH,
                     NEAT.ActivationFunction.SIGNED_GAUSS,
                     1, # hidden layers seed
-                    exp.params, 
+                    params, 
                     1)  # one hidden layer
     
-    pop = NEAT.Population(genome, exp.params, True, 1.0, seed)
+    pop = NEAT.Population(genome, params, True, 1.0, seed)
     pop.RNG.Seed(seed)
 
     # Run for up to N generations.
@@ -143,7 +296,7 @@ step_count: %s" % (exp.nb_gens, exp.depth, exp.height, exp.width,
     solution_found = False
     plot_best_fitness=[]
     
-    for generation in range(exp.nb_gens):
+    for generation in range(nb_gens):
         
         gen_time = time.time()
 
@@ -155,7 +308,7 @@ step_count: %s" % (exp.nb_gens, exp.depth, exp.height, exp.width,
 
         
         # Store the best genome
-        solution_found = max(fitnesses) >= exp.max_fitness
+        solution_found = max(fitnesses) >= max_fitness
         gen_best_genome = pop.Species[0].GetLeader()   
         gen_best_ID = gen_best_genome.GetID()
         if solution_found or best_ever_goal_fitness < max(fitnesses):
@@ -196,21 +349,34 @@ step_count: %s" % (exp.nb_gens, exp.depth, exp.height, exp.width,
     os.replace(best_genome_file, "./Results/" + file + "/" + "best_genome.pickle")
         
 
+
+
     # Print experiment statistics
     print("\nBest ever fitness: %f, genome ID: %d" % (best_ever_goal_fitness, best_id))
     print("\nTrial elapsed time: %.3f sec" % (elapsed_time))
     print("Random seed:", seed)
     
+
+
         
     # Visualize best network's Genome
     winner_net_CPPN = NEAT.NeuralNetwork()
-    gen_best_genome.BuildPhenotype(winner_net_CPPN)
-    print("\nCPPN nodes: %d, connections: %d" % (len(winner_net_CPPN.neurons), len(winner_net_CPPN.connections)))
+    print(winner_net_CPPN.Output())
+    print(winner_net_CPPN.Input())
+    # gen_best_genome.BuildPhenotype(winner_net_CPPN)
+    # #pop.Species[0].GetLeader().BuildPhenotype(winner_net_CPPN)
+    # # img = np.zeros((500, 500, 3), dtype=np.uint8)
+    # # img += 10
+    # # NEAT.DrawPhenotype(img, (0, 0, 500, 500), winner_net_CPPN)
+    # # cv2.imshow("CPPN", img)
+    # # cv2.waitKey(0)
+    # #visualize.draw_net(winner_net_CPPN, view=False, node_names=None, filename="winner_net_CPPN", directory="./Results/" + file + "/", fmt='pdf')
+    # print("\nCPPN nodes: %d, connections: %d" % (len(winner_net_CPPN.neurons), len(winner_net_CPPN.connections)))
 
-    # Visualize best network's phenotype
-    winner_net = NEAT.NeuralNetwork()
-    gen_best_genome.BuildESHyperNEATPhenotype(winner_net, exp.substrate, exp.params)
-    winner_net.Save("./Results/" + file + "/winner_net.txt")
+    # # Visualize best network's phenotype
+    # winner_net = NEAT.NeuralNetwork()
+    # gen_best_genome.BuildESHyperNEATPhenotype(winner_net, substrate, params)
+    # winner_net.Save("./Results/" + file + "/winner_net.txt")
     
 
 
@@ -227,7 +393,7 @@ step_count: %s" % (exp.nb_gens, exp.depth, exp.height, exp.width,
     #save_params
     params_file = os.path.join(".", "params.pickle")
     with open(params_file, 'wb') as param_file1:
-        pickle.dump(exp.params, param_file1)
+        pickle.dump(params, param_file1)
     param_file1.close() 
     os.replace(params_file, "./Results/" + file + "/" +  "params.pickle")
 
@@ -235,7 +401,7 @@ step_count: %s" % (exp.nb_gens, exp.depth, exp.height, exp.width,
     #save_substrate 
     substrate_file = os.path.join(".", "substrate.pickle")
     with open(substrate_file, 'wb') as substrate_file1:
-        pickle.dump(exp.substrate, substrate_file1)
+        pickle.dump(substrate, substrate_file1)
     substrate_file1.close() 
     os.replace(substrate_file, "./Results/" + file + "/" + "substrate.pickle")
 
