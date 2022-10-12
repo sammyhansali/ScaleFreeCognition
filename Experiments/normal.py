@@ -1,6 +1,5 @@
 import sys
 sys.path.insert(0, '/home/shansali/Desktop/ScalingCognitionSim')
-
 from experiment import experiment
 from run import run_experiment
 
