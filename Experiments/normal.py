@@ -15,4 +15,5 @@ goal = [[ 1, 1, 1, 3, 3, 3, 2, 2, 2],
         [ 1, 1, 1, 3, 3, 3, 2, 2, 2]]
 
 exp = experiment(goal)
+# exp.nb_inputs=11 # to match the 11 inputs there appears to be
 run_experiment(exp)
