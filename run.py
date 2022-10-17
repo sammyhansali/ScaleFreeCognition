@@ -53,10 +53,10 @@ def run_experiment(exp):
     myString = myDatetime.strftime('%Y-%m-%d %H:%M')
     file = myString.replace(' ','_')
     
-    os.makedirs("./Results/" + file, exist_ok=True)
+    os.makedirs("../SCS_Results/" + file, exist_ok=True)
     
     # Save general params
-    Result_file = "./Results/" + file + "/"+ "general_params.txt"
+    Result_file = "../SCS_Results/" + file + "/"+ "general_params.txt"
     
     with open("general_params.txt","w+") as general_params_file:
         print("nb_gens: %s \n\
@@ -72,15 +72,15 @@ step_count: %s" % (exp.nb_gens, exp.depth, exp.height, exp.width,
         
     general_params_file.close() 
     os.replace("general_params.txt", Result_file)
-    shutil.copyfile("analysis.py",  "./Results/" + file + "/" + "analysis.py")
-    shutil.copyfile("run.py",  "./Results/" + file + "/" + "run.py")
-    shutil.copytree('./multicellularity', "./Results/" + file + "/" + "multicellularity")
+    shutil.copyfile("analysis.py",  "../SCS_Results/" + file + "/" + "analysis.py")
+    shutil.copyfile("run.py",  "../SCS_Results/" + file + "/" + "run.py")
+    shutil.copytree('./multicellularity', "../SCS_Results/" + file + "/" + "multicellularity")
     
 
     # random seed
     seed = int(time.time()) #1660341957#
-    np.save("./Results/" + file + "/seed", seed)
-    exp.params.Save("./Results/" + file + "/multiNEAT_params.txt")
+    np.save("../SCS_Results/" + file + "/seed", seed)
+    exp.params.Save("../SCS_Results/" + file + "/multiNEAT_params.txt")
     
     genome = NEAT.Genome(0,
                     exp.substrate.GetMinCPPNInputs(),
@@ -154,7 +154,7 @@ step_count: %s" % (exp.nb_gens, exp.depth, exp.height, exp.width,
     with open(best_genome_file, 'wb') as genome_file:
         pickle.dump(best_genome, genome_file, pickle.HIGHEST_PROTOCOL)
     genome_file.close()
-    os.replace(best_genome_file, "./Results/" + file + "/" + "best_genome.pickle")
+    os.replace(best_genome_file, "../SCS_Results/" + file + "/" + "best_genome.pickle")
         
 
     # Print experiment statistics
@@ -171,7 +171,7 @@ step_count: %s" % (exp.nb_gens, exp.depth, exp.height, exp.width,
     # Visualize best network's phenotype
     winner_net = NEAT.NeuralNetwork()
     gen_best_genome.BuildESHyperNEATPhenotype(winner_net, exp.substrate, exp.params)
-    winner_net.Save("./Results/" + file + "/winner_net.txt")
+    winner_net.Save("../SCS_Results/" + file + "/winner_net.txt")
     
 
 
@@ -180,9 +180,9 @@ step_count: %s" % (exp.nb_gens, exp.depth, exp.height, exp.width,
         score_file.write("\nTrial elapsed time: %.3f sec" % (elapsed_time))
         score_file.write("\nSubstrate nodes: %d, connections: %d" % (len(winner_net.neurons), len(winner_net.connections)))
     score_file.close() 
-    os.replace("score.txt", "./Results/" + file + "/" + "score.txt")
+    os.replace("score.txt", "../SCS_Results/" + file + "/" + "score.txt")
 
-    #visualize.draw_net(winner_net, view=False, node_names=None, filename="substrate_graph", directory="./Results/" + file + "/", fmt='pdf')
+    #visualize.draw_net(winner_net, view=False, node_names=None, filename="substrate_graph", directory="../SCS_Results/" + file + "/", fmt='pdf')
     print("\nSubstrate nodes: %d, connections: %d" % (len(winner_net.neurons), len(winner_net.connections)))
     
     #save_params
@@ -190,7 +190,7 @@ step_count: %s" % (exp.nb_gens, exp.depth, exp.height, exp.width,
     with open(params_file, 'wb') as param_file1:
         pickle.dump(exp.params, param_file1)
     param_file1.close() 
-    os.replace(params_file, "./Results/" + file + "/" +  "params.pickle")
+    os.replace(params_file, "../SCS_Results/" + file + "/" +  "params.pickle")
 
     
     #save_substrate 
@@ -198,7 +198,7 @@ step_count: %s" % (exp.nb_gens, exp.depth, exp.height, exp.width,
     with open(substrate_file, 'wb') as substrate_file1:
         pickle.dump(exp.substrate, substrate_file1)
     substrate_file1.close() 
-    os.replace(substrate_file, "./Results/" + file + "/" + "substrate.pickle")
+    os.replace(substrate_file, "../SCS_Results/" + file + "/" + "substrate.pickle")
 
     print('*******************************************')
     print("EVOLUTION DONE")
@@ -249,7 +249,7 @@ def eval_individual(genome):
             #net.Flush()
         fitness_individual = fitness_individual/10
 
-        net.Save("./Results/" + file + "/winner_net_"+ str(fitness_individual)+".txt")
+        net.Save("../SCS_Results/" + file + "/winner_net_"+ str(fitness_individual)+".txt")
     else: 
         fitness_individual = fitness_test
         
