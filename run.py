@@ -206,8 +206,8 @@ step_count: %s" % (exp.nb_gens, exp.depth, exp.height, exp.width,
     
     
     import subprocess
-    subprocess.Popen("python3 analysis.py", cwd="Results/" + file + "/", shell=True)
-    os.rename('Results/' + file,'Results/' + file +'_'+ str(int(best_ever_goal_fitness)))
+    subprocess.Popen("python3 analysis.py", cwd="../SCS_Results/" + file + "/", shell=True) # used to be "Results/"
+    os.rename('../SCS_Results/' + file,'../SCS_Results/' + file +'_'+ str(int(best_ever_goal_fitness))) # used to be "Results/" for both
 
 
 
