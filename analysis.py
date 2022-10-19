@@ -134,49 +134,49 @@ def agents_portraya_state_tissue(agent):
 
     return portrayal
 
-def agents_portrayal1(agent):
-    if agent is None:
-        return
+# def agents_portrayal1(agent):
+#     if agent is None:
+#         return
 
-    portrayal = {}
+#     portrayal = {}
 
-    if type(agent) is Cell and max(agent.GJ_opening_molecs)==agent.GJ_opening_molecs[0]:
-        portrayal["Color"] = ["#173806"]
-        portrayal["Shape"] = "arrowHead"
-        portrayal["scale"] = 0.6
-        portrayal["heading_x"] = 0
-        portrayal["heading_y"] = 1
-        portrayal["Layer"] = 0
+    # if type(agent) is Cell and max(agent.GJ_opening_molecs)==agent.GJ_opening_molecs[0]:
+    # portrayal["Color"] = ["#173806"]
+    # portrayal["Shape"] = "arrowHead"
+    # portrayal["scale"] = 0.6
+    # portrayal["heading_x"] = 0
+    # portrayal["heading_y"] = 1
+    # portrayal["Layer"] = 0
      
         
-    if type(agent) is Cell and max(agent.GJ_opening_molecs)==agent.GJ_opening_molecs[1]:
-        portrayal["Color"] = ["#173806"]
-        portrayal["Shape"] = "arrowHead"
-        portrayal["scale"] = 0.6
-        portrayal["heading_x"] = 1
-        portrayal["heading_y"] = 0      
-        portrayal["Layer"] = 0
+    # if type(agent) is Cell and max(agent.GJ_opening_molecs)==agent.GJ_opening_molecs[1]:
+    #     portrayal["Color"] = ["#173806"]
+    #     portrayal["Shape"] = "arrowHead"
+    #     portrayal["scale"] = 0.6
+    #     portrayal["heading_x"] = 1
+    #     portrayal["heading_y"] = 0      
+    #     portrayal["Layer"] = 0
       
 
-    if type(agent) is Cell and max(agent.GJ_opening_molecs)==agent.GJ_opening_molecs[2]:
-        portrayal["Color"] = ["#173806"]
-        portrayal["Shape"] = "arrowHead"
-        portrayal["scale"] = 0.6
-        portrayal["heading_x"] = 0
-        portrayal["heading_y"] = -1       
-        portrayal["Layer"] = 0
+    # if type(agent) is Cell and max(agent.GJ_opening_molecs)==agent.GJ_opening_molecs[2]:
+    #     portrayal["Color"] = ["#173806"]
+    #     portrayal["Shape"] = "arrowHead"
+    #     portrayal["scale"] = 0.6
+    #     portrayal["heading_x"] = 0
+    #     portrayal["heading_y"] = -1       
+    #     portrayal["Layer"] = 0
       
 
-    if type(agent) is Cell and max(agent.GJ_opening_molecs)==agent.GJ_opening_molecs[3]:
-        portrayal["Color"] = ["#173806"]
-        portrayal["Shape"] = "arrowHead"
-        portrayal["scale"] = 0.6
-        portrayal["heading_x"] = -1
-        portrayal["heading_y"] = 0
-        portrayal["Layer"] = 0
+    # if type(agent) is Cell and max(agent.GJ_opening_molecs)==agent.GJ_opening_molecs[3]:
+    #     portrayal["Color"] = ["#173806"]
+    #     portrayal["Shape"] = "arrowHead"
+    #     portrayal["scale"] = 0.6
+    #     portrayal["heading_x"] = -1
+    #     portrayal["heading_y"] = 0
+    #     portrayal["Layer"] = 0
         
       
-    return portrayal
+    # return portrayal
 
 def agents_portrayal2(agent):
     if agent is None:
@@ -269,35 +269,35 @@ def agents_portrayal3(agent):
     
         portrayal = {}
     
-        if type(agent) is Cell and agent.GJ_opening_molecs[0] ==0:
+        if type(agent) is Cell and agent.GJ_opening_molecs ==0:
             portrayal["Color"] = ["grey"]
             portrayal["Shape"] = "circle"
             portrayal["Filled"] = "true"
             portrayal["Layer"] = 0
             portrayal["r"] = 1
             
-        if type(agent) is Cell and agent.GJ_opening_molecs[0] <=0.25  and agent.GJ_opening_molecs[0] >0:
+        if type(agent) is Cell and agent.GJ_opening_molecs <=0.25  and agent.GJ_opening_molecs >0:
             portrayal["Color"] = ["#173806"]
             portrayal["Shape"] = "circle"
             portrayal["Filled"] = "true"
             portrayal["Layer"] = 0
             portrayal["r"] = 1    
     
-        if type(agent) is Cell and agent.GJ_opening_molecs[0] <=0.5  and agent.GJ_opening_molecs[0] >0.25:
+        if type(agent) is Cell and agent.GJ_opening_molecs <=0.5  and agent.GJ_opening_molecs >0.25:
             portrayal["Color"] = ["#2d6e0c"]
             portrayal["Shape"] = "circle"
             portrayal["Filled"] = "true"
             portrayal["Layer"] = 0
             portrayal["r"] = 1    
     
-        if type(agent) is Cell and agent.GJ_opening_molecs[0] <=0.75  and agent.GJ_opening_molecs[0] >0.5:
+        if type(agent) is Cell and agent.GJ_opening_molecs <=0.75  and agent.GJ_opening_molecs >0.5:
             portrayal["Color"] = ["#47b012"]
             portrayal["Shape"] = "circle"
             portrayal["Filled"] = "true"
             portrayal["Layer"] = 0
             portrayal["r"] = 1    
             
-        if type(agent) is Cell  and agent.GJ_opening_molecs[0] >0.75:
+        if type(agent) is Cell  and agent.GJ_opening_molecs >0.75:
             portrayal["Color"] = ["#62f716"]
             portrayal["Shape"] = "circle"
             portrayal["Filled"] = "true"
@@ -306,134 +306,134 @@ def agents_portrayal3(agent):
         
         return portrayal
     
-def agents_portrayal4(agent):
-        if agent is None:
-            return
+# def agents_portrayal4(agent):
+#         if agent is None:
+#             return
     
-        portrayal = {}
+#         portrayal = {}
     
-        if type(agent) is Cell and agent.GJ_opening_molecs[1] ==0:
-            portrayal["Color"] = ["grey"]
-            portrayal["Shape"] = "circle"
-            portrayal["Filled"] = "true"
-            portrayal["Layer"] = 0
-            portrayal["r"] = 1
+#         if type(agent) is Cell and agent.GJ_opening_molecs[1] ==0:
+#             portrayal["Color"] = ["grey"]
+#             portrayal["Shape"] = "circle"
+#             portrayal["Filled"] = "true"
+#             portrayal["Layer"] = 0
+#             portrayal["r"] = 1
             
-        if type(agent) is Cell and agent.GJ_opening_molecs[1] <=0.25  and agent.GJ_opening_molecs[1] >0:
-            portrayal["Color"] = ["#173806"]
-            portrayal["Shape"] = "circle"
-            portrayal["Filled"] = "true"
-            portrayal["Layer"] = 0
-            portrayal["r"] = 1    
+#         if type(agent) is Cell and agent.GJ_opening_molecs[1] <=0.25  and agent.GJ_opening_molecs[1] >0:
+#             portrayal["Color"] = ["#173806"]
+#             portrayal["Shape"] = "circle"
+#             portrayal["Filled"] = "true"
+#             portrayal["Layer"] = 0
+#             portrayal["r"] = 1    
     
-        if type(agent) is Cell and agent.GJ_opening_molecs[1] <=0.5  and agent.GJ_opening_molecs[1] >0.25:
-            portrayal["Color"] = ["#2d6e0c"]
-            portrayal["Shape"] = "circle"
-            portrayal["Filled"] = "true"
-            portrayal["Layer"] = 0
-            portrayal["r"] = 1    
+#         if type(agent) is Cell and agent.GJ_opening_molecs[1] <=0.5  and agent.GJ_opening_molecs[1] >0.25:
+#             portrayal["Color"] = ["#2d6e0c"]
+#             portrayal["Shape"] = "circle"
+#             portrayal["Filled"] = "true"
+#             portrayal["Layer"] = 0
+#             portrayal["r"] = 1    
     
-        if type(agent) is Cell and agent.GJ_opening_molecs[1] <=0.75  and agent.GJ_opening_molecs[1] >0.5:
-            portrayal["Color"] = ["#47b012"]
-            portrayal["Shape"] = "circle"
-            portrayal["Filled"] = "true"
-            portrayal["Layer"] = 0
-            portrayal["r"] = 1    
+#         if type(agent) is Cell and agent.GJ_opening_molecs[1] <=0.75  and agent.GJ_opening_molecs[1] >0.5:
+#             portrayal["Color"] = ["#47b012"]
+#             portrayal["Shape"] = "circle"
+#             portrayal["Filled"] = "true"
+#             portrayal["Layer"] = 0
+#             portrayal["r"] = 1    
             
-        if type(agent) is Cell  and agent.GJ_opening_molecs[1] >0.75:
-            portrayal["Color"] = ["#62f716"]
-            portrayal["Shape"] = "circle"
-            portrayal["Filled"] = "true"
-            portrayal["Layer"] = 0
-            portrayal["r"] = 1    
+#         if type(agent) is Cell  and agent.GJ_opening_molecs[1] >0.75:
+#             portrayal["Color"] = ["#62f716"]
+#             portrayal["Shape"] = "circle"
+#             portrayal["Filled"] = "true"
+#             portrayal["Layer"] = 0
+#             portrayal["r"] = 1    
         
-        return portrayal
+#         return portrayal
     
-def agents_portrayal5(agent):
-         if agent is None:
-             return
+# def agents_portrayal5(agent):
+#          if agent is None:
+#              return
      
-         portrayal = {}
+#          portrayal = {}
      
-         if type(agent) is Cell and agent.GJ_opening_molecs[2] ==0:
-             portrayal["Color"] = ["grey"]
-             portrayal["Shape"] = "circle"
-             portrayal["Filled"] = "true"
-             portrayal["Layer"] = 0
-             portrayal["r"] = 1
+#          if type(agent) is Cell and agent.GJ_opening_molecs[2] ==0:
+#              portrayal["Color"] = ["grey"]
+#              portrayal["Shape"] = "circle"
+#              portrayal["Filled"] = "true"
+#              portrayal["Layer"] = 0
+#              portrayal["r"] = 1
              
-         if type(agent) is Cell and agent.GJ_opening_molecs[2] <=0.25  and agent.GJ_opening_molecs[2] >0:
-             portrayal["Color"] = ["#173806"]
-             portrayal["Shape"] = "circle"
-             portrayal["Filled"] = "true"
-             portrayal["Layer"] = 0
-             portrayal["r"] = 1    
+#          if type(agent) is Cell and agent.GJ_opening_molecs[2] <=0.25  and agent.GJ_opening_molecs[2] >0:
+#              portrayal["Color"] = ["#173806"]
+#              portrayal["Shape"] = "circle"
+#              portrayal["Filled"] = "true"
+#              portrayal["Layer"] = 0
+#              portrayal["r"] = 1    
      
-         if type(agent) is Cell and agent.GJ_opening_molecs[2] <=0.5  and agent.GJ_opening_molecs[2] >0.25:
-             portrayal["Color"] = ["#2d6e0c"]
-             portrayal["Shape"] = "circle"
-             portrayal["Filled"] = "true"
-             portrayal["Layer"] = 0
-             portrayal["r"] = 1    
+#          if type(agent) is Cell and agent.GJ_opening_molecs[2] <=0.5  and agent.GJ_opening_molecs[2] >0.25:
+#              portrayal["Color"] = ["#2d6e0c"]
+#              portrayal["Shape"] = "circle"
+#              portrayal["Filled"] = "true"
+#              portrayal["Layer"] = 0
+#              portrayal["r"] = 1    
      
-         if type(agent) is Cell and agent.GJ_opening_molecs[2] <=0.75  and agent.GJ_opening_molecs[2] >0.5:
-             portrayal["Color"] = ["#47b012"]
-             portrayal["Shape"] = "circle"
-             portrayal["Filled"] = "true"
-             portrayal["Layer"] = 0
-             portrayal["r"] = 1    
+#          if type(agent) is Cell and agent.GJ_opening_molecs[2] <=0.75  and agent.GJ_opening_molecs[2] >0.5:
+#              portrayal["Color"] = ["#47b012"]
+#              portrayal["Shape"] = "circle"
+#              portrayal["Filled"] = "true"
+#              portrayal["Layer"] = 0
+#              portrayal["r"] = 1    
              
-         if type(agent) is Cell  and agent.GJ_opening_molecs[2] >0.75:
-             portrayal["Color"] = ["#62f716"]
-             portrayal["Shape"] = "circle"
-             portrayal["Filled"] = "true"
-             portrayal["Layer"] = 0
-             portrayal["r"] = 1    
+#          if type(agent) is Cell  and agent.GJ_opening_molecs[2] >0.75:
+#              portrayal["Color"] = ["#62f716"]
+#              portrayal["Shape"] = "circle"
+#              portrayal["Filled"] = "true"
+#              portrayal["Layer"] = 0
+#              portrayal["r"] = 1    
          
-         return portrayal  
+#          return portrayal  
      
-def agents_portrayal6(agent):
-        if agent is None:
-            return
+# def agents_portrayal6(agent):
+#         if agent is None:
+#             return
     
-        portrayal = {}
+#         portrayal = {}
     
-        if type(agent) is Cell and agent.GJ_opening_molecs[3] ==0:
-            portrayal["Color"] = ["grey"]
-            portrayal["Shape"] = "circle"
-            portrayal["Filled"] = "true"
-            portrayal["Layer"] = 0
-            portrayal["r"] = 1
+#         if type(agent) is Cell and agent.GJ_opening_molecs[3] ==0:
+#             portrayal["Color"] = ["grey"]
+#             portrayal["Shape"] = "circle"
+#             portrayal["Filled"] = "true"
+#             portrayal["Layer"] = 0
+#             portrayal["r"] = 1
             
-        if type(agent) is Cell and agent.GJ_opening_molecs[3] <=0.25  and agent.GJ_opening_molecs[3] >0:
-            portrayal["Color"] = ["#173806"]
-            portrayal["Shape"] = "circle"
-            portrayal["Filled"] = "true"
-            portrayal["Layer"] = 0
-            portrayal["r"] = 1    
+#         if type(agent) is Cell and agent.GJ_opening_molecs[3] <=0.25  and agent.GJ_opening_molecs[3] >0:
+#             portrayal["Color"] = ["#173806"]
+#             portrayal["Shape"] = "circle"
+#             portrayal["Filled"] = "true"
+#             portrayal["Layer"] = 0
+#             portrayal["r"] = 1    
     
-        if type(agent) is Cell and agent.GJ_opening_molecs[3] <=0.5  and agent.GJ_opening_molecs[3] >0.25:
-            portrayal["Color"] = ["#2d6e0c"]
-            portrayal["Shape"] = "circle"
-            portrayal["Filled"] = "true"
-            portrayal["Layer"] = 0
-            portrayal["r"] = 1    
+#         if type(agent) is Cell and agent.GJ_opening_molecs[3] <=0.5  and agent.GJ_opening_molecs[3] >0.25:
+#             portrayal["Color"] = ["#2d6e0c"]
+#             portrayal["Shape"] = "circle"
+#             portrayal["Filled"] = "true"
+#             portrayal["Layer"] = 0
+#             portrayal["r"] = 1    
     
-        if type(agent) is Cell and agent.GJ_opening_molecs[3] <=0.75  and agent.GJ_opening_molecs[3] >0.5:
-            portrayal["Color"] = ["#47b012"]
-            portrayal["Shape"] = "circle"
-            portrayal["Filled"] = "true"
-            portrayal["Layer"] = 0
-            portrayal["r"] = 1    
+#         if type(agent) is Cell and agent.GJ_opening_molecs[3] <=0.75  and agent.GJ_opening_molecs[3] >0.5:
+#             portrayal["Color"] = ["#47b012"]
+#             portrayal["Shape"] = "circle"
+#             portrayal["Filled"] = "true"
+#             portrayal["Layer"] = 0
+#             portrayal["r"] = 1    
             
-        if type(agent) is Cell  and agent.GJ_opening_molecs[3] >0.75:
-            portrayal["Color"] = ["#62f716"]
-            portrayal["Shape"] = "circle"
-            portrayal["Filled"] = "true"
-            portrayal["Layer"] = 0
-            portrayal["r"] = 1    
+#         if type(agent) is Cell  and agent.GJ_opening_molecs[3] >0.75:
+#             portrayal["Color"] = ["#62f716"]
+#             portrayal["Shape"] = "circle"
+#             portrayal["Filled"] = "true"
+#             portrayal["Layer"] = 0
+#             portrayal["r"] = 1    
         
-        return portrayal
+#         return portrayal
 
 def agents_portrayal7(agent):
         if agent is None:
@@ -456,12 +456,12 @@ def agents_portrayal7(agent):
 
     
 canvas_element = CanvasGrid(agents_portrayal, height, width, 200, 200)
-canvas_element1 = CanvasGrid(agents_portrayal1, height, width, 200, 200)
+# canvas_element1 = CanvasGrid(agents_portrayal1, height, width, 200, 200)
 canvas_element2 = CanvasGrid(agents_portrayal2, height, width, 200, 200)
 canvas_element3 = CanvasGrid(agents_portrayal3, height, width, 200, 200)
-canvas_element4 = CanvasGrid(agents_portrayal4, height, width, 200, 200)
-canvas_element5 = CanvasGrid(agents_portrayal5, height, width, 200, 200)
-canvas_element6 = CanvasGrid(agents_portrayal6, height, width, 200, 200)
+# canvas_element4 = CanvasGrid(agents_portrayal4, height, width, 200, 200)
+# canvas_element5 = CanvasGrid(agents_portrayal5, height, width, 200, 200)
+# canvas_element6 = CanvasGrid(agents_portrayal6, height, width, 200, 200)
 canvas_element7 = CanvasGrid(agents_portrayal7, height, width, 200, 200)
 canvas_element9 = CanvasGrid(agents_portraya_state_tissue, height, width, 200, 200)
 
@@ -544,7 +544,9 @@ if __name__ == '__main__':
         free_port = s.server_address[1]
     
     server = ModularServer(
-        Multicellularity_model, [canvas_element, canvas_element9, canvas_element2, canvas_element1, canvas_element3,canvas_element4,canvas_element5,canvas_element6, canvas_element7, chart_element, chart_element1, chart_element2, chart_element3, chart_element4, chart_element5], "Multi-cellularity", model_params)
+        # Multicellularity_model, [canvas_element, canvas_element9, canvas_element2, canvas_element1, canvas_element3,canvas_element4,canvas_element5,canvas_element6, canvas_element7, chart_element, chart_element1, chart_element2, chart_element3, chart_element4, chart_element5], "Multi-cellularity", model_params
+        Multicellularity_model, [canvas_element, canvas_element9, canvas_element2, canvas_element3, canvas_element7, chart_element, chart_element1, chart_element2, chart_element3, chart_element4, chart_element5], "Multi-cellularity", model_params
+        )
     server.port = free_port
 
     server.launch()
