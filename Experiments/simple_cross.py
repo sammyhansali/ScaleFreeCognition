@@ -14,5 +14,5 @@ goal = [[ 0, 0, 0, 0, 1, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 1, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 1, 0, 0, 0, 0]]
 
-exp = experiment(goal)
+exp = experiment(goal, "french_flag")
 run_experiment(exp)
