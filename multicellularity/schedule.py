@@ -148,92 +148,94 @@ class RandomActivationByBreed(RandomActivation):
 
     def adaptive_tissue(self):
         
-       openedGJ_matrix = np.zeros ((self.model.height, self.model.width))        
-       state_matrix = np.zeros ((self.model.height, self.model.width))
-       stress_matrix = np.zeros ((self.model.height, self.model.width))
-       tissue_matrix =  np.zeros ((self.model.height, self.model.width))
-       energy_matrix =  np.zeros ((self.model.height, self.model.width))
-       molecules_matrix =  np.zeros ((self.model.height, self.model.width))
+        openedGJ_matrix = np.zeros ((self.model.height, self.model.width))        
+        state_matrix = np.zeros ((self.model.height, self.model.width))
+        stress_matrix = np.zeros ((self.model.height, self.model.width))
+        tissue_matrix =  np.zeros ((self.model.height, self.model.width))
+        energy_matrix =  np.zeros ((self.model.height, self.model.width))
+        molecules_matrix =  np.zeros ((self.model.height, self.model.width))
 
-       for i in range(self.model.height):
-           for j in range(int(self.model.width)):
-              if len(self.model.grid.get_cell_list_contents([(j,i)]))>0:
-                  cell = self.model.grid.get_cell_list_contents([(j,i)])[0]
-                  if sum(cell.GJ_opening_molecs)>0:
-                      openedGJ_matrix[j,i]=1    
-                  state_matrix[j,i] = cell.state_tissue
-                  stress_matrix[j,i] = cell.stress
-                  energy_matrix[j,i] = cell.energy
-                  molecules_matrix[j,i] = cell.molecules[0]
+        for i in range(self.model.height):
+            for j in range(int(self.model.width)):
+                if len(self.model.grid.get_cell_list_contents([(j,i)]))>0:
+                    cell = self.model.grid.get_cell_list_contents([(j,i)])[0]
+                #   if sum(cell.GJ_opening_molecs)>0:
+                    if cell.GJ_opening_molecs > 0:
+                        openedGJ_matrix[j,i]=1    
+                    state_matrix[j,i] = cell.state_tissue
+                    stress_matrix[j,i] = cell.stress
+                    energy_matrix[j,i] = cell.energy
+                    molecules_matrix[j,i] = cell.molecules[0]
 
     
-       state_matrix1 = np.where((state_matrix!=1), 0, state_matrix)
-       state_matrix2 = np.where((state_matrix!=2), 0, state_matrix)
-       state_matrix3 = np.where((state_matrix!=3), 0, state_matrix)
+        state_matrix1 = np.where((state_matrix!=1), 0, state_matrix)
+        state_matrix2 = np.where((state_matrix!=2), 0, state_matrix)
+        state_matrix3 = np.where((state_matrix!=3), 0, state_matrix)
 
-       state_matrices = [state_matrix1, state_matrix2, state_matrix3]
+        state_matrices = [state_matrix1, state_matrix2, state_matrix3]
 
-       structure = np.ones((3, 3), dtype=np.int)  # this defines the connection filter
+        structure = np.ones((3, 3), dtype=np.int)  # this defines the connection filter
 
 
-       for j in range(len(state_matrices)):
-           labeled, ncomponents = label(np.array(state_matrices[j]), structure)
-           indices = np.indices(state_matrices[j].shape).T[:,:,[1, 0]]
-           if ncomponents > 0:
-               for i in range (ncomponents):
-                   positions = indices[labeled == i+1]
-                   for k in range(len(positions)):
-                       tissue_matrix[positions[k][0], positions[k][1] ] = len(positions)
+        for j in range(len(state_matrices)):
+            labeled, ncomponents = label(np.array(state_matrices[j]), structure)
+            indices = np.indices(state_matrices[j].shape).T[:,:,[1, 0]]
+            if ncomponents > 0:
+                for i in range (ncomponents):
+                    positions = indices[labeled == i+1]
+                    for k in range(len(positions)):
+                        tissue_matrix[positions[k][0], positions[k][1] ] = len(positions)
 
        
-       return tissue_matrix, state_matrix, stress_matrix, energy_matrix, molecules_matrix
+        return tissue_matrix, state_matrix, stress_matrix, energy_matrix, molecules_matrix
             
                        
     def adaptive_tissue1(self):
         
-       openedGJ_matrix = np.zeros ((self.model.height, self.model.width))        
-       state_matrix = np.zeros ((self.model.height, self.model.width))
-       tissue_matrix =  np.zeros ((self.model.height, self.model.width))
-       molecules_per_tissue0 = np.zeros ((self.model.height, self.model.width))
-       molecules_per_tissue1 = np.zeros ((self.model.height, self.model.width))
+        openedGJ_matrix = np.zeros ((self.model.height, self.model.width))        
+        state_matrix = np.zeros ((self.model.height, self.model.width))
+        tissue_matrix =  np.zeros ((self.model.height, self.model.width))
+        molecules_per_tissue0 = np.zeros ((self.model.height, self.model.width))
+        molecules_per_tissue1 = np.zeros ((self.model.height, self.model.width))
 
-       for i in range(self.model.height):
-           for j in range(int(self.model.width)):
-              if len(self.model.grid.get_cell_list_contents([(j,i)]))>0:
-                  cell = self.model.grid.get_cell_list_contents([(j,i)])[0]
-                  if sum(cell.GJ_opening_molecs)>0:
-                      openedGJ_matrix[j,i]=1    
-                      state_matrix[j,i] = cell.state
+        for i in range(self.model.height):
+            for j in range(int(self.model.width)):
+                if len(self.model.grid.get_cell_list_contents([(j,i)]))>0:
+                    cell = self.model.grid.get_cell_list_contents([(j,i)])[0]
+                    # if sum(cell.GJ_opening_molecs)>0:
+                    if cell.GJ_opening_molecs>0:
+                        openedGJ_matrix[j,i]=1    
+                        state_matrix[j,i] = cell.state
 
     
-       state_matrix1 = np.where((state_matrix!=1), 0, state_matrix)
-       state_matrix2 = np.where((state_matrix!=2), 0, state_matrix)
-       state_matrix3 = np.where((state_matrix!=3), 0, state_matrix)
+        state_matrix1 = np.where((state_matrix!=1), 0, state_matrix)
+        state_matrix2 = np.where((state_matrix!=2), 0, state_matrix)
+        state_matrix3 = np.where((state_matrix!=3), 0, state_matrix)
 
-       state_matrices = [state_matrix1, state_matrix2, state_matrix3]
+        state_matrices = [state_matrix1, state_matrix2, state_matrix3]
 
-       structure = np.ones((3, 3), dtype=np.int)  # this defines the connection filter
+        structure = np.ones((3, 3), dtype=np.int)  # this defines the connection filter
 
 
-       for j in range(len(state_matrices)):
-           labeled, ncomponents = label(np.array(state_matrices[j]), structure)
-           indices = np.indices(state_matrices[j].shape).T[:,:,[1, 0]]
-           if ncomponents > 0:
-               for i in range (ncomponents):
-                   positions = indices[labeled == i+1]
-                   molecules0 = 0
-                   molecules1 = 0
-                   for k in range(len(positions)):
-                       tissue_matrix[positions[k][0], positions[k][1] ] = len(positions)
-                       cell = self.model.grid.get_cell_list_contents([(positions[k][0], positions[k][1])])[0]
-                       molecules0 += cell.molecules[0]
-                       molecules1 += cell.molecules[1]
-                   for k in range(len(positions)):
-                       molecules_per_tissue0[positions[k][0], positions[k][1] ] = molecules0
-                       molecules_per_tissue1[positions[k][0], positions[k][1] ] = molecules1
+        for j in range(len(state_matrices)):
+            labeled, ncomponents = label(np.array(state_matrices[j]), structure)
+            indices = np.indices(state_matrices[j].shape).T[:,:,[1, 0]]
+            if ncomponents > 0:
+                for i in range (ncomponents):
+                    positions = indices[labeled == i+1]
+                    molecules0 = 0
+                    molecules1 = 0
+                    for k in range(len(positions)):
+                        tissue_matrix[positions[k][0], positions[k][1] ] = len(positions)
+                        cell = self.model.grid.get_cell_list_contents([(positions[k][0], positions[k][1])])[0]
+                        molecules0 += cell.molecules[0]
+                        molecules1 += cell.molecules[1]
+                    for k in range(len(positions)):
+                        molecules_per_tissue0[positions[k][0], positions[k][1] ] = molecules0
+                        molecules_per_tissue1[positions[k][0], positions[k][1] ] = molecules1
 
        
-       return tissue_matrix, molecules_per_tissue0, molecules_per_tissue1
+        return tissue_matrix, molecules_per_tissue0, molecules_per_tissue1
     
     def get_spatial_entropy(self, Cell):
         agent_keys = list(self.agents_by_breed[Cell].keys())
@@ -374,22 +376,22 @@ class RandomActivationByBreed(RandomActivation):
                 stress+=self.agents_by_breed[Cell][agent_key].stress
         return stress
         
-    def get_GJ(self):
+    # def get_GJ(self):
         
-        GJ_matrix0 = np.zeros ((self.model.height, self.model.width))     
-        GJ_matrix1 = np.zeros ((self.model.height, self.model.width))        
-        GJ_matrix2 = np.zeros ((self.model.height, self.model.width))        
-        GJ_matrix3 = np.zeros ((self.model.height, self.model.width)) 
+    #     GJ_matrix0 = np.zeros ((self.model.height, self.model.width))     
+    #     GJ_matrix1 = np.zeros ((self.model.height, self.model.width))        
+    #     GJ_matrix2 = np.zeros ((self.model.height, self.model.width))        
+    #     GJ_matrix3 = np.zeros ((self.model.height, self.model.width)) 
  
-        for i in range(self.model.height):
-            for j in range(int(self.model.width)):
-                if len(self.model.grid.get_cell_list_contents([(j,i)]))>0: 
-                    cell = self.model.grid.get_cell_list_contents([(j,i)])[0]    
-                    GJ_matrix0[i][j] =  cell.GJ_opening_molecs[0]
-                    GJ_matrix1[i][j] =  cell.GJ_opening_molecs[1]
-                    GJ_matrix2[i][j] =  cell.GJ_opening_molecs[2]
-                    GJ_matrix3[i][j] =  cell.GJ_opening_molecs[3]
-        return GJ_matrix0, GJ_matrix1, GJ_matrix2, GJ_matrix3  
+    #     for i in range(self.model.height):
+    #         for j in range(int(self.model.width)):
+    #             if len(self.model.grid.get_cell_list_contents([(j,i)]))>0: 
+    #                 cell = self.model.grid.get_cell_list_contents([(j,i)])[0]    
+    #                 GJ_matrix0[i][j] =  cell.GJ_opening_molecs
+    #                 GJ_matrix1[i][j] =  cell.GJ_opening_molecs
+    #                 GJ_matrix2[i][j] =  cell.GJ_opening_molecs
+    #                 GJ_matrix3[i][j] =  cell.GJ_opening_molecs
+    #     return GJ_matrix0, GJ_matrix1, GJ_matrix2, GJ_matrix3  
     
     def scientific_pca(self, Cell):
         v1=0

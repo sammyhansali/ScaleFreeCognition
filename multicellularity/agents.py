@@ -63,7 +63,7 @@ class Cell(Agent):
         self.goal = goal
         self.cell_gain_from_good_state = cell_gain_from_good_state
         # Channel Openings
-        self.GJ_opening_molecs = GJ_opening_molecs # single variable for now, not sure if should be a list
+        self.GJ_opening_molecs = GJ_opening_molecs # single variable for now, not sure if should be a list. One ele for each molec type?
         self.GJ_opening_stress = GJ_opening_stress
         # Inputs
         self.energy = energy
@@ -112,7 +112,7 @@ class Cell(Agent):
         raw_output = list(self.net.Output())  
         output_tags = ["m0_to_send", "GJ_opening_molecs", "stress_to_send", "GJ_opening_stress", "anxio_to_send", "apoptosis", "cell_division"] 
         # Might want to try 4 different cell_division outputs
-        output = {k: v for k,v in zip(raw_output, output_tags)}
+        output = {k: v for k,v in zip(output_tags, raw_output)}
         
         return output
     
@@ -173,7 +173,7 @@ class Cell(Agent):
                 else:
                     cell_in_contact.molecules[i] += self.molecules[i]
                     self.molecules[i] = 0
-                cell_in_contact.update_stress()  
+                cell_in_contact.update_state()  
 
                 # stress to send
                 if self.GJ_opening_stress>0:
@@ -189,7 +189,8 @@ class Cell(Agent):
         # if self.molecules[0] < 0:
         #     self.molecules[0] = 0
 
-        self.update_state()       
+        self.update_state()   
+        self.update_stress() # added in    
 
 
         
