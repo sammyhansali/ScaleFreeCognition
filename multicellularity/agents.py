@@ -36,16 +36,16 @@ class Cell(Agent):
     molecules = None
     goal=None
     cell_gain_from_good_state = None
-    opened_GJ = None
-    opened_GJ_stress = None
     stress = None
     stresst1=None
     decision_state0 = None
     decision_state1= None
     decision_state2 = None
+    GJ_opening_molecs = None
+    GJ_opening_stress = None
 
 
-    def __init__(self, net, depth, unique_id, pos, model, moore, molecules, energy, energyt1, cell_gain_from_good_state,  goal, opened_GJ,opened_GJ_stress, stress, stresst1, decision_state0, decision_state1, decision_state2, state, statet1, state_tissue):
+    def __init__(self, net, depth, unique_id, pos, model, moore, molecules, energy, energyt1, cell_gain_from_good_state,  goal, GJ_opening_molecs, GJ_opening_stress, stress, stresst1, decision_state0, decision_state1, decision_state2, state, statet1, state_tissue):
         """
         grid: The MultiGrid object in which the agent lives.
         x: The agent's current x coordinate
@@ -58,15 +58,18 @@ class Cell(Agent):
         self.depth=depth
         self.pos = pos
         self.moore = moore
+        #
+        self.molecules = molecules # list, one for each molec type
+        self.goal = goal
+        self.cell_gain_from_good_state = cell_gain_from_good_state
+        # Channel Openings
+        self.GJ_opening_molecs = GJ_opening_molecs # single variable for now, not sure if should be a list
+        self.GJ_opening_stress = GJ_opening_stress
+        # Inputs
         self.energy = energy
         self.energyt1 = energyt1
         self.state = state 
         self.statet1 = state 
-        self.molecules = molecules
-        self.goal = goal
-        self.cell_gain_from_good_state = cell_gain_from_good_state
-        self.opened_GJ = opened_GJ
-        self.opened_GJ_stress = opened_GJ_stress
         self.stress = stress
         self.stresst1 = stresst1
         self.state_tissue = state_tissue
@@ -106,7 +109,10 @@ class Cell(Agent):
         #print(self.net_activations)
         self.net.Input(new_input)
         [self.net.Activate() for _ in range(self.depth)]
-        output = list(self.net.Output())  
+        raw_output = list(self.net.Output())  
+        output_tags = ["m0_to_send", "GJ_opening_molecs", "stress_to_send", "GJ_opening_stress", "anxio_to_send", "apoptosis", "cell_division"] 
+        # Might want to try 4 different cell_division outputs
+        output = {k: v for k,v in zip(raw_output, output_tags)}
         
         return output
     
@@ -146,102 +152,42 @@ class Cell(Agent):
             
     def send_ions_and_stress(self, output):
  
-        break_out_flag = False
         neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, False)
-        j=0
         
-
-        if self.pos == (0,0):
-            positions = [[0,2],[1,2]] # positions neighbour
-            GJ_directions = [2,3] 
-        elif self.pos == (self.model.height-1,0):
-            positions = [[0,1],[1,2]] # positions neighbour
-            GJ_directions = [3,0] 
-        elif self.pos==(0,self.model.height-1):
-            positions = [[0,1],[1,2]] # positions neighbours 
-            GJ_directions = [1,2]  # left up
-        elif self.pos == (self.model.height-1, self.model.height-1):
-            positions = [[0,1],[0,2]] # positions neighbour
-            GJ_directions = [1,0]   
-        elif self.pos[0]!=0 and self.pos[0]!=  self.model.height-1 and self.pos[1]==0: # milieu bas
-            positions = [[0,1],[1,2,4], [3,4]] # positions neighbours
-            GJ_directions = [1,2,3]     
-        elif self.pos[0]==0 and self.pos[1]!=0 and self.pos[1]!=self.model.height-1: # mileu gauche
-            positions = [[0,2],[2,3,4], [1,4]] # positions neighbours
-            GJ_directions = [0,3,2]  
-        elif self.pos[0]==self.model.height-1 and self.pos[1]!=0 and self.pos[1]!=self.model.height-1: #milieu droit
-            positions = [[0,1,2],[0,3], [2,4]] # positions neighbours
-            GJ_directions = [1,0,2]  
-        elif self.pos[0]!=0 and self.pos[0]!= self.model.height-1 and self.pos[1]==self.model.height-1: #milieu haut
-            positions = [[0,1],[0,2,3], [3,4]] # positions neighbours
-            GJ_directions = [1,0,3]
-        else:
-            positions = [[2,4,7],[5,6,7],[0,3,5],[0,1,2]] # positions neighbours haut2 droite3 bas0 gauche1  2,3,0,1
-            GJ_directions = [2,3,0,1]
-            
-        opposite_directions = {  "2": 0,"3": 1,"0": 2,"1": 3}
-
-
-        # for i in range(len(GJ_directions)):
-        #     if self.opened_GJ[GJ_directions[i]]>0:
-                
-        #         for j in (positions[i]):
-        #             if self.model.grid.is_cell_empty(neighbours[j])==False: # not dead
-        #                 cell_in_contact = self.model.grid[neighbours[j]][0]               
-                        
-        #                 for k in range(len(self.molecules)):
-        #                     # Take the min of opening of gap junction for two cells
-        #                     # make it: output[k]*min((self.opened_GJ[GJ_directions[i]]), (cell_in_contact.opened_GJ[opposite_directions[str(GJ_directions[i])]]))
-        #                    if self.molecules[k]>=output[k]*((self.opened_GJ[GJ_directions[i]]*cell_in_contact.opened_GJ[opposite_directions[str(GJ_directions[i])]])):
-        #                        cell_in_contact.molecules[k] += output[k]*((self.opened_GJ[GJ_directions[i]]*cell_in_contact.opened_GJ[opposite_directions[str(GJ_directions[i])]]))   
-        #                        self.molecules[k] -= output[k]*((self.opened_GJ[GJ_directions[i]]*cell_in_contact.opened_GJ[opposite_directions[str(GJ_directions[i])]]))
-        #                    else:
-        #                        cell_in_contact.molecules[k] += self.molecules[k]
-        #                        self.molecules[k] = 0
-        #                 cell_in_contact.update_state()
-
+        # Molecule 1 distribution
+        # for i in range(self.molecules):
+        #     key = f"m{i}_to_send"
+        i=0                 # placeholder, later will put loop like above
+        key="m0_to_send"    # placeholder, later will put loop like above      
         
-        for i in range(len(GJ_directions)):
-            if self.opened_GJ[GJ_directions[i]]>0:
-                
-                for j in (positions[i]):
-                    if self.model.grid.is_cell_empty(neighbours[j])==False: # not dead
-                        cell_in_contact = self.model.grid[neighbours[j]][0]               
-                        
-                        for k in range(len(self.molecules)):
-                            # Take the min of opening of gap junction for two cells
-                            # make it: output[k]*min((self.opened_GJ[GJ_directions[i]]), (cell_in_contact.opened_GJ[opposite_directions[str(GJ_directions[i])]]))
-                            min_molecs = min(self.opened_GJ[GJ_directions[i]], cell_in_contact.opened_GJ[opposite_directions[str(GJ_directions[i])]])
-                            if self.molecules[k]>=output[k]*min_molecs:
-                               cell_in_contact.molecules[k] += output[k]*min_molecs   
-                               self.molecules[k] -= output[k]*min_molecs
-                            else:
-                               cell_in_contact.molecules[k] += self.molecules[k]
-                               self.molecules[k] = 0
-                        cell_in_contact.update_state()
-                                       
-        
+        # Stress + anxiolytic distribution
         for neighbour in neighbours:
             if self.model.grid.is_cell_empty(neighbour)==False: # not dead
-                 cell_in_contact = self.model.grid[neighbour][0]
+                cell_in_contact = self.model.grid[neighbour][0]
                 
-                 if self.opened_GJ_stress>0:
-                     cell_in_contact.stress+=output[len(self.molecules)]*((self.opened_GJ_stress * cell_in_contact.opened_GJ_stress))   
-                     cell_in_contact.stress-=output[2]*((self.opened_GJ_stress * cell_in_contact.opened_GJ_stress))   
-                 cell_in_contact.update_stress()
+                # m0 to send
+                GJ_open_percentage = min(self.GJ_opening_molecs, cell_in_contact.GJ_opening_molecs)
+                if self.molecules[i] >= output[key] * GJ_open_percentage:
+                    cell_in_contact.molecules[i] += output[key] * GJ_open_percentage   
+                    self.molecules[i] -= output[key] * GJ_open_percentage   
+                else:
+                    cell_in_contact.molecules[i] += self.molecules[i]
+                    self.molecules[i] = 0
+                cell_in_contact.update_stress()  
 
-        if self.opened_GJ_stress>0:
- 
-             self.stress+=output[len(self.molecules)] 
-             self.stress-=output[2] 
+                # stress to send
+                if self.GJ_opening_stress>0:
+                    cell_in_contact.stress+=output['stress_to_send']*((self.GJ_opening_stress * cell_in_contact.GJ_opening_stress))   
+                    cell_in_contact.stress-=output['anxio_to_send']*((self.GJ_opening_stress * cell_in_contact.GJ_opening_stress))   
+                cell_in_contact.update_stress()
 
-            
+        if self.GJ_opening_stress>0:
+             self.stress+=output['stress_to_send'] 
+             self.stress-=output['anxio_to_send'] 
 
-                             
-        for i in range(len(self.molecules)):
-            if self.molecules[i]<0:
-                self.molecules[i] = 0
-        
+        # for i in range(len(self.molecules)):
+        # if self.molecules[0] < 0:
+        #     self.molecules[0] = 0
 
         self.update_state()       
 
@@ -250,34 +196,37 @@ class Cell(Agent):
     def communication(self, perc_blue, perc_red, perc_white, fitness_ff, tissue_matrix):
         """Find cell neighbours and pass information and/or energy. It 
            represents basic features of gap junctions."""
-
                     
         new_input = self.net_input(perc_blue, perc_red, perc_white, fitness_ff, tissue_matrix)
         output  = self.net_output(new_input)
         
-        for i in range(len(self.molecules)):
-            if output[i]<0:
-               output[i]=0 
-
-        # -----------------------------------------------------------------------------------------------------------------------------------
-        # Bug! output[-1]==output[len(output)-1]. I think it should be:
-        # self.opened_GJ = [output[-1], output[-2], output[-3], output[-4]]
-        self.opened_GJ = [output[-1], output[len(output)-1], output[len(output)-2], output[len(output)-3]]
-        self.opened_GJ_stress = output[len(output)-4]
-        for i in range (len(self.opened_GJ)):
-            if self.opened_GJ[i]>1:
-                self.opened_GJ[i] = 1
-            if self.opened_GJ[i]<0:
-                self.opened_GJ[i] = 0   
-        if self.opened_GJ_stress>1:
-            self.opened_GJ_stress = 1
-        if self.opened_GJ_stress<0:
-            self.opened_GJ_stress = 0   
-            
-
-
-        self.send_ions_and_stress(output)
+        # supports multiple molecules sent out in future
+        # for i in range(self.molecules):
+        #     key = f"m{i+1}_to_send"
+        key ="m0_to_send"
+        if output[key] < 0:
+            output[key] = 0
+        if output["stress_to_send"] < 0:
+            output["stress_to_send"] = 0
+        if output["anxio_to_send"] < 0:
+            output["anxio_to_send"] = 0
         
+        # molecules1 GJ opening correction
+        self.GJ_opening_molecs = output['GJ_opening_molecs']
+        if self.GJ_opening_molecs < 0:
+            self.GJ_opening_molecs = 0
+        elif self.GJ_opening_molecs > 1:
+            self.GJ_opening_molecs = 1
+
+        # stress GJ opening correction
+        self.GJ_opening_stress = output['GJ_opening_stress']
+        if self.GJ_opening_stress < 0:
+            self.GJ_opening_stress = 0
+        elif self.GJ_opening_stress > 1:
+            self.GJ_opening_stress = 1           
+
+        # send ions and stress
+        self.send_ions_and_stress(output)
         return output
         
                 

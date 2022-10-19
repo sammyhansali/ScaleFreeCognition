@@ -8,13 +8,16 @@ class experiment:
     nb_gens=2
     depth=4
     max_fitness= 97
-    energy = 70 #default was 70
+    energy = 70             # default was 70
     step_count = 100
-    fitness_function = "" # see model class for the definitions of the variable
-    nb_gap_junctions = 4
+    fitness_function = ""   # see model class for the definitions of the variable
+    nb_gap_junctions = 1
     nb_stress_GJ = 1
-    nb_output_molecules = 1 # default is 1, 2 works good too but need undifferentiated state
+    nb_output_molecules = 1 
     nb_output_stress = 1
+    nb_output_anxio = 1
+    apoptosis_on = 1        # Set to 0 if off
+    cell_division_on = 1    # Set to 0 if off
 
     # Interface
     interface =  False
@@ -86,10 +89,9 @@ class experiment:
     rng.TimeSeed()
 
     nb_inputs = 10 # nb molecules + energy + stress + state + bias + state_neigbours
-    nb_outputs =  nb_gap_junctions + nb_output_molecules + nb_output_stress + nb_stress_GJ+1#   molecules to send + stress to send + opened gap junction including stress GJ   + decision state change
-    
-    
-    
+    # The "1" represents the one GJ_opening_molecs variable that will exist. As of now, there won't be one of those variables for each molecule.
+    nb_outputs =  nb_output_molecules + 1 + nb_output_stress + 1 + nb_output_anxio + apoptosis_on + cell_division_on
+    # output_tags = ["m0_to_send", "GJ_opening_molecs", "stress_to_send", "stress_GJ_opening", "anxio_to_send", "apoptosis", "cell_division"]
 
     def __init__(self, goal):
         self.goal = goal
