@@ -81,6 +81,8 @@ step_count: %s" % (exp.nb_gens, exp.depth, exp.height, exp.width,
     seed = int(time.time()) #1660341957#
     np.save("../SCS_Results/" + file + "/seed", seed)
     exp.params.Save("../SCS_Results/" + file + "/multiNEAT_params.txt")
+    # np.savetxt("../SCS_Results/" + file + "/seed", exp.start)
+    # exp.start
     
     genome = NEAT.Genome(0,
                     exp.substrate.GetMinCPPNInputs(),
@@ -241,14 +243,13 @@ def eval_individual(genome):
     # start_mat = g_exp.start_mat
     )
    
-
     model.verbose = False
     fitness_individual=0
-    fitness_test = model.run_model(fitness_evaluation=True)
+    fitness_test = model.run_model(fitness_evaluation=True, model_type=g_exp.model_type)
     if fitness_test>95:
         for i in range(10):
             fitness_individual += fitness_test
-            fitness_test = model.run_model(fitness_evaluation=True)
+            fitness_test = model.run_model(fitness_evaluation=True, model_type=g_exp.model_type)
             #net.Flush()
         fitness_individual = fitness_individual/10
 

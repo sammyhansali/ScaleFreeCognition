@@ -119,18 +119,16 @@ class Multicellularity_model(Model):
 
               
 
-        
-    def step(self, fitness_evaluation=True):
+    # French flag step
+    def step_ff(self, fitness_evaluation=True):
         
         reward_mat, stress_mat=self.schedule.reward_by_patches()
         perc_blue, perc_red, perc_white = self.schedule.percentages_french_flag()    
         fitness_ff=self.schedule.french_flag()
         tissue_matrix, state_matrix, stress_matrix, energy_matrix, molecules_matrix = self.schedule.adaptive_tissue()
 
-        
         self.schedule.step(Cell, reward_mat, stress_mat, perc_blue, perc_red, perc_white, fitness_ff, tissue_matrix )
         self.schedule.update_state_tissue_costStateChange() #        self.schedule.update_state_tissue_costStateChange()
-
         
         if fitness_evaluation== False:
             mol=0
@@ -141,30 +139,28 @@ class Multicellularity_model(Model):
                        cell = self.grid.get_cell_list_contents([(j,i)])[0]  
                        mol+=cell.molecules[0]        
             
-
         # collect data
         self.datacollector.collect(self)
         
         if fitness_evaluation==True:
             self.traj.append(self.schedule.get_pca_goal(Cell))
             self.traj1.append(self.schedule.scientific_pca(Cell))
-            
-            
-
-                
-    def run_model(self, fitness_evaluation):
-
-
         
-        for i in range(self.step_count):
-            
-            self.step(fitness_evaluation)
+    # Simple Cross step
+    
+    # Model runner
+    def run_model(self, fitness_evaluation, model_type):
+        if model_type=='french_flag':
+            for i in range(self.step_count):
+                self.step_ff(fitness_evaluation)
+        elif model_type=='simple_cross':
+            for i in range(self.step_count):
+                self.step_sc(fitness_evaluation)
 
         if fitness_evaluation==True:
     
             self.fitness_ff=0
             general_energy=0
-            bonus=0
             for i in range(self.height):
                  for j in range(int(self.width)):
                      if len(self.grid.get_cell_list_contents([(j,i)]))>0:
@@ -172,22 +168,17 @@ class Multicellularity_model(Model):
                          if cell.state_tissue == cell.goal:
                              self.fitness_ff+=1
                          general_energy+=cell.energy
-                         if cell.energy>self.energy:
-                             bonus+=1
                              
             self.fitness_ff = self.fitness_ff/(self.height*self.width)*100
             general_energy   = general_energy/ (self.height*self.width*10)        
             
-
             remaining_cells = self.schedule.get_breed_count(Cell)
             if remaining_cells == 0:
                 remaining_cells=1
-
     
             self.fitness = self.fitness_ff 
        
-
-        return self.fitness                
+        return self.fitness             
         
                 
 
