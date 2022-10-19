@@ -111,6 +111,7 @@ class Cell(Agent):
         [self.net.Activate() for _ in range(self.depth)]
         raw_output = list(self.net.Output())  
         output_tags = ["m0_to_send", "GJ_opening_molecs", "stress_to_send", "GJ_opening_stress", "anxio_to_send", "apoptosis", "cell_division"] 
+        # print(raw_output)
         # Might want to try 4 different cell_division outputs
         output = {k: v for k,v in zip(output_tags, raw_output)}
         
@@ -226,6 +227,18 @@ class Cell(Agent):
         elif self.GJ_opening_stress > 1:
             self.GJ_opening_stress = 1           
 
+        if output["apoptosis"] < 0:
+            output["apoptosis"] = 0
+        elif output["apoptosis"] > 1:
+            output["apoptosis"] = 1   
+        output["apoptosis"] = round(output["apoptosis"]) # Want binary
+
+        if output["cell_division"] < 0:
+            output["cell_division"] = 0
+        elif output["cell_division"] > 1:
+            output["cell_division"] = 1
+        output["cell_division"] = round(output["cell_division"]) # Want binary
+
         # send ions and stress
         self.send_ions_and_stress(output)
         return output
@@ -245,7 +258,37 @@ class Cell(Agent):
 
         return geometrical_frustration / (len(neighbours))
                      
+    def apoptosis(self, probability):
+        if (probability == 1):
+            self.die()
 
+    def cell_division(self, probability):
+        # if there is space to divide, use probability to decide whether to or not
+        dead=[]
+        neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, False)
+        for neighbour in neighbours:
+            if self.model.grid.is_cell_empty(neighbour)==True:
+                dead.append(neighbour)
+        if len(dead) > 0:
+            winner = random.choice(dead)
+            if probability == 1:
+                # DIVIDE
+                x = winner[0]
+                y = winner[1]
+                # Updating initial cell
+                self.molecules[0] /= 2
+                self.energy /= 2
+                self.stress /= 2
+                self.update_state()
+                self.update_stress()
+                # Creating new cell with half
+                #self, net, depth, unique_id, pos, model, moore, molecules, energy, energyt1, cell_gain_from_good_state,  goal, GJ_opening_molecs, GJ_opening_stress, stress, stresst1, decision_state0, decision_state1, decision_state2, state, statet1, state_tissue
+                cell = Cell(self.net, self.depth, self.model.next_id(), (x,y), self.model,  True, 
+                                self.molecules, self.energy, self.energyt1, self.cell_gain_from_good_state,  self.model.goal[y][x], 
+                                self.GJ_opening_molecs, self.GJ_opening_stress, self.stress, self.stresst1, self.decision_state0, self.decision_state1, 
+                                self.decision_state2, self.state, self.statet1, self.state_tissue)
+                self.birth(cell, x, y)
+            
                     
     def step(self, reward_mat, stress_mat, perc_blue, perc_red, perc_white, fitness_ff, tissue_matrix):
         """
@@ -256,24 +299,28 @@ class Cell(Agent):
         self.stresst1 = self.stress
         output = self.communication(perc_blue, perc_red, perc_white, fitness_ff, tissue_matrix)
 
-
         reward = reward_mat[self.pos]
         stress = stress_mat[self.pos]
-
         self.energy += reward - 0.8
-
             
         if self.stress > 100:
             self.stress = 100
         if self.stress < 0:
             self.stress=0
             
-
+        self.cell_division(output["cell_division"])
         
-        # Death
         if self.energy <= 0:
-            self.model.grid._remove_agent(self.pos, self)
-            self.model.schedule.remove(self)
+            self.die()
+        else:
+            self.apoptosis(output["apoptosis"])
             
-            
+    def die(self):
+        self.model.grid._remove_agent(self.pos, self)
+        self.model.schedule.remove(self)
+
+    def birth(self, cell, x, y): 
+        self.model.grid.place_agent(cell, (x, y))
+        self.model.schedule.add(cell)
+
         
