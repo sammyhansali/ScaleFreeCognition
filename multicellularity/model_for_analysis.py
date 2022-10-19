@@ -51,7 +51,8 @@ class Multicellularity_model(Model):
         energy_matrix  = [],
         digit_energy_matrix=[],
         molecules_matrix  = [],
-        fitness_evaluation=False
+        fitness_evaluation=False,
+        nb_output_molecules = None
     ):
         """
         Create a new multicellularity model with the given parameters.
@@ -87,6 +88,7 @@ class Multicellularity_model(Model):
         self.energy_matrix = energy_matrix
         self.digit_energy_matrix = digit_energy_matrix
         self.molecules_matrix = molecules_matrix
+        # self.nb_output_molecules = nb_output_molecules
         self.datacollector = DataCollector(
             {
 

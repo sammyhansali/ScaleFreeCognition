@@ -107,7 +107,7 @@ class RandomActivationByBreed(RandomActivation):
         open_cells = 0
         agent_keys = list(self.agents_by_breed[Cell].keys())
         for agent_key in agent_keys:
-            if self.agents_by_breed[Cell][agent_key].opened_GJ == 1:
+            if self.agents_by_breed[Cell][agent_key].GJ_opening_molecs == 1:
                 open_cells+=1
         return open_cells       
     
@@ -159,7 +159,7 @@ class RandomActivationByBreed(RandomActivation):
            for j in range(int(self.model.width)):
               if len(self.model.grid.get_cell_list_contents([(j,i)]))>0:
                   cell = self.model.grid.get_cell_list_contents([(j,i)])[0]
-                  if sum(cell.opened_GJ)>0:
+                  if sum(cell.GJ_opening_molecs)>0:
                       openedGJ_matrix[j,i]=1    
                   state_matrix[j,i] = cell.state_tissue
                   stress_matrix[j,i] = cell.stress
@@ -201,7 +201,7 @@ class RandomActivationByBreed(RandomActivation):
            for j in range(int(self.model.width)):
               if len(self.model.grid.get_cell_list_contents([(j,i)]))>0:
                   cell = self.model.grid.get_cell_list_contents([(j,i)])[0]
-                  if sum(cell.opened_GJ)>0:
+                  if sum(cell.GJ_opening_molecs)>0:
                       openedGJ_matrix[j,i]=1    
                       state_matrix[j,i] = cell.state
 
@@ -263,7 +263,7 @@ class RandomActivationByBreed(RandomActivation):
 
         return goal
         
-    def get_dead_cells_and_regenerate(self, Cell, net, depth, unique_id, model, energy, energyt1 , cell_gain_from_good_state ,  molecules, goal, opened_GJ, opened_GJ_stress, stress, decision_state0, decision_state1, decision_state2, state, statet1, state_tissue):
+    def get_dead_cells_and_regenerate(self, Cell, net, depth, unique_id, model, energy, energyt1 , cell_gain_from_good_state ,  molecules, goal, GJ_opening_molecs, GJ_opening_stress, stress, decision_state0, decision_state1, decision_state2, state, statet1, state_tissue):
                             
                             
         for i in range(self.model.height):
@@ -277,7 +277,7 @@ class RandomActivationByBreed(RandomActivation):
 
                             cell = Cell(net, depth, unique_id, (j,i), model,  True, 
                               molecules, energy, energyt1, cell_gain_from_good_state,  goal[i][j], 
-                              opened_GJ,opened_GJ_stress, stress, decision_state0, decision_state1, 
+                              GJ_opening_molecs,GJ_opening_stress, stress, decision_state0, decision_state1, 
                               decision_state2, state, statet1, state_tissue)
                             model.grid.place_agent(cell, (j, i))
                             model.schedule.add(cell)                            
@@ -385,10 +385,10 @@ class RandomActivationByBreed(RandomActivation):
             for j in range(int(self.model.width)):
                 if len(self.model.grid.get_cell_list_contents([(j,i)]))>0: 
                     cell = self.model.grid.get_cell_list_contents([(j,i)])[0]    
-                    GJ_matrix0[i][j] =  cell.opened_GJ[0]
-                    GJ_matrix1[i][j] =  cell.opened_GJ[1]
-                    GJ_matrix2[i][j] =  cell.opened_GJ[2]
-                    GJ_matrix3[i][j] =  cell.opened_GJ[3]
+                    GJ_matrix0[i][j] =  cell.GJ_opening_molecs[0]
+                    GJ_matrix1[i][j] =  cell.GJ_opening_molecs[1]
+                    GJ_matrix2[i][j] =  cell.GJ_opening_molecs[2]
+                    GJ_matrix3[i][j] =  cell.GJ_opening_molecs[3]
         return GJ_matrix0, GJ_matrix1, GJ_matrix2, GJ_matrix3  
     
     def scientific_pca(self, Cell):
@@ -707,8 +707,8 @@ class RandomActivationByBreed(RandomActivation):
                          molecules[0] = 7
                      cell = Cell(self.model.net, self.model.depth, self.model.next_id(), (j, i), self.model,  True, 
                                  energy = self.model.energy, energyt1 =  self.model.energy, cell_gain_from_good_state = 0,  
-                                 molecules = molecules, goal = self.model.goal[i][j], opened_GJ = [0,0,0,0], 
-                                 opened_GJ_stress=0, stress = 0, stresst1=0, decision_state0=0, decision_state1=0,decision_state2=0, 
+                                 molecules = molecules, goal = self.model.goal[i][j], GJ_opening_molecs=0, 
+                                 GJ_opening_stress=0, stress = 0, stresst1=0, decision_state0=0, decision_state1=0,decision_state2=0, 
                                  state=state_cell, statet1=state_cell, state_tissue = state_tissue)
                      self.model.grid.place_agent(cell, (j, i))
                      self.model.schedule.add(cell)
@@ -716,22 +716,23 @@ class RandomActivationByBreed(RandomActivation):
          else:
              for i in range(self.model.height):
                  for j in range(self.model.width):
-                     state_cell = 1
-                     state_tissue = 1
-                     molecules =  [random.random()] #np.array([3.,3.]) #
-                     if state_cell == 1:
-                         molecules[0] = 11
-                     elif state_cell == 2:
-                         molecules[0] = 3
-                     elif state_cell == 3:
-                         molecules[0] = 7
-                     cell = Cell(self.model.net, self.model.depth, self.model.next_id(), (j, i), self.model,  True, 
+                    state_cell = 1
+                    state_tissue = 1
+                    molecules =  [random.random()] #np.array([3.,3.]) #
+                    # molecules = [0]*self.model.nb_output_molecules #I need to make this an attribute of the model!
+                    if state_cell == 1:
+                        molecules[0] = 11
+                    elif state_cell == 2:
+                        molecules[0] = 3
+                    elif state_cell == 3:
+                        molecules[0] = 7
+                    cell = Cell(self.model.net, self.model.depth, self.model.next_id(), (j, i), self.model,  True, 
                                  energy = self.model.energy, energyt1 =  self.model.energy, cell_gain_from_good_state = 0,  
-                                 molecules = molecules, goal = self.model.goal[i][j], opened_GJ = [0,0,0,0], 
-                                 opened_GJ_stress=0, stress = 0, stresst1=0, decision_state0=0, decision_state1=0,decision_state2=0, 
+                                 molecules = molecules, goal = self.model.goal[i][j], GJ_opening_molecs=0, 
+                                 GJ_opening_stress=0, stress = 0, stresst1=0, decision_state0=0, decision_state1=0,decision_state2=0, 
                                  state=state_cell, statet1=state_cell, state_tissue = state_tissue)
-                     self.model.grid.place_agent(cell, (j, i))
-                     self.model.schedule.add(cell)
+                    self.model.grid.place_agent(cell, (j, i))
+                    self.model.schedule.add(cell)
                      
                      
     

@@ -236,7 +236,10 @@ def eval_individual(genome):
     step_count = g_exp.step_count,
     nb_gap_junctions = g_exp.nb_gap_junctions,
     fitness= g_exp.fitness_function,
-    goal = g_exp.goal)
+    goal = g_exp.goal, 
+    # nb_output_molecules = g_exp.nb_output_molecules
+    # start_mat = g_exp.start_mat
+    )
    
 
     model.verbose = False
