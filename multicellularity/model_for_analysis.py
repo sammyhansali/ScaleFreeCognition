@@ -120,7 +120,7 @@ class Multicellularity_model(Model):
               
 
     # French flag step
-    def step_ff(self, fitness_evaluation=True):
+    def step(self, fitness_evaluation=True):
         
         reward_mat, stress_mat=self.schedule.reward_by_patches()
         perc_blue, perc_red, perc_white = self.schedule.percentages_french_flag()    
@@ -149,13 +149,14 @@ class Multicellularity_model(Model):
     # Simple Cross step
     
     # Model runner
-    def run_model(self, fitness_evaluation, model_type):
-        if model_type=='french_flag':
-            for i in range(self.step_count):
-                self.step_ff(fitness_evaluation)
-        elif model_type=='simple_cross':
-            for i in range(self.step_count):
-                self.step_sc(fitness_evaluation)
+    def run_model(self, fitness_evaluation):
+        # if model_type=='french_flag':
+        for i in range(self.step_count):
+            self.step(fitness_evaluation)
+            # self.step_ff(fitness_evaluation)
+        # elif model_type=='simple_cross':
+        #     for i in range(self.step_count):
+        #         self.step_sc(fitness_evaluation)
 
         if fitness_evaluation==True:
     
