@@ -245,11 +245,11 @@ def eval_individual(genome):
    
     model.verbose = False
     fitness_individual=0
-    fitness_test = model.run_model(fitness_evaluation=True, model_type=g_exp.model_type)
+    fitness_test = model.run_model(fitness_evaluation=True)
     if fitness_test>95:
         for i in range(10):
             fitness_individual += fitness_test
-            fitness_test = model.run_model(fitness_evaluation=True, model_type=g_exp.model_type)
+            fitness_test = model.run_model(fitness_evaluation=True)
             #net.Flush()
         fitness_individual = fitness_individual/10
 
