@@ -93,7 +93,8 @@ class experiment:
     nb_outputs =  nb_output_molecules + 1 + nb_output_stress + 1 + nb_output_anxio + apoptosis_on + cell_division_on
     # output_tags = ["m0_to_send", "GJ_opening_molecs", "stress_to_send", "stress_GJ_opening", "anxio_to_send", "apoptosis", "cell_division"]
 
-    def __init__(self, goal):
+    def __init__(self, start, goal):
+        self.start = start
         self.goal = goal
         # self.model_type = model_type
         self.height=len(goal)
