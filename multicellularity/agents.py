@@ -271,6 +271,7 @@ class Cell(Agent):
                 dead.append(neighbour)
         if len(dead) > 0:
             winner = random.choice(dead)
+            # if probability == 1 and self.molecules[0] > 1:
             if probability == 1:
                 # DIVIDE
                 x = winner[0]
