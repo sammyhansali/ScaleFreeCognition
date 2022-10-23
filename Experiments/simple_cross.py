@@ -3,7 +3,18 @@ sys.path.insert(0, '/home/shansali/Desktop/ScalingCognitionSim')
 from experiment import experiment
 from run import run_experiment
 
-# Simple Cross
+
+start = [[ 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+#start = None
+
 goal = [[ 0, 0, 0, 0, 1, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 1, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 1, 0, 0, 0, 0],
@@ -14,5 +25,6 @@ goal = [[ 0, 0, 0, 0, 1, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 1, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 1, 0, 0, 0, 0]]
 
-exp = experiment(goal)
+exp = experiment(start, goal)
+exp.nb_gens=1
 run_experiment(exp)
