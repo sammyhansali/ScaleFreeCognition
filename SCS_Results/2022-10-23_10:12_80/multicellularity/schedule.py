@@ -662,25 +662,23 @@ class RandomActivationByBreed(RandomActivation):
     def generate_cells(self, Cell, start):
         # Use start mat to generate starting cells
         for i in range(self.model.height):
-            for j in range(self.model.width):
-                state_cell = start[i][j]
-                state_tissue = start[i][j]
-                molecules =  [random.random()] #np.array([3.,3.]) #
-                if state_cell == 0:
-                    continue
-                if state_cell== 1:
-                    molecules[0] =  11
-                elif state_cell== 2:
-                    molecules[0] = 3
-                elif state_cell== 3:
-                    molecules[0] = 7
-                cell = Cell(self.model.net, self.model.depth, self.model.next_id(), (j, i), self.model,  True, 
-                            energy = self.model.energy, energyt1 =  self.model.energy, cell_gain_from_good_state = 0,  
-                            molecules = molecules, goal = self.model.goal[i][j], GJ_opening_molecs=0, 
-                            GJ_opening_stress=0, stress = 0, stresst1=0, decision_state0=0, decision_state1=0,decision_state2=0, 
-                            state=state_cell, statet1=state_cell, state_tissue = state_tissue)
-                self.model.grid.place_agent(cell, (j, i))
-                self.model.schedule.add(cell)
+                 for j in range(self.model.width):
+                     state_cell = start[i][j]
+                     state_tissue = start[i][j]
+                     molecules =  [random.random()] #np.array([3.,3.]) #
+                     if start[i][j] == 1:
+                         molecules[0] =  11
+                     elif start[i][j] == 2:
+                         molecules[0] = 3
+                     elif start[i][j] == 3:
+                         molecules[0] = 7
+                     cell = Cell(self.model.net, self.model.depth, self.model.next_id(), (j, i), self.model,  True, 
+                                 energy = self.model.energy, energyt1 =  self.model.energy, cell_gain_from_good_state = 0,  
+                                 molecules = molecules, goal = self.model.goal[i][j], GJ_opening_molecs=0, 
+                                 GJ_opening_stress=0, stress = 0, stresst1=0, decision_state0=0, decision_state1=0,decision_state2=0, 
+                                 state=state_cell, statet1=state_cell, state_tissue = state_tissue)
+                     self.model.grid.place_agent(cell, (j, i))
+                     self.model.schedule.add(cell)
     # def generate_cells(self, Cell, randomization=True):
         
     #     # goal = [[ 3, 3, 3, 2, 2, 2, 1, 1, 1],
