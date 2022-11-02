@@ -1,5 +1,6 @@
+# Run like this: python Experiments/this_file.py
 import sys
-sys.path.insert(0, '/home/shansali/Desktop/ScaleFreeCognition')
+sys.path.append('.')
 from experiment import experiment
 from run import run_experiment
 
