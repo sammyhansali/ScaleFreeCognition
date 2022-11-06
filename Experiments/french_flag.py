@@ -26,5 +26,6 @@ goal = [[ 1, 1, 1, 3, 3, 3, 2, 2, 2],
         [ 1, 1, 1, 3, 3, 3, 2, 2, 2]]
 
 exp = experiment(start, goal)
-exp.nb_gens=1
+exp.nb_gens=5
+# exp.inputs=[]
 run_experiment(exp)
