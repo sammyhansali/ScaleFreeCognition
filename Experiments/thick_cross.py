@@ -26,5 +26,5 @@ goal = [[ 0, 0, 0, 1, 1, 1, 0, 0, 0],
         [ 0, 0, 0, 1, 1, 1, 0, 0, 0]]
 
 exp = experiment(start, goal)
-exp.nb_gens=1
+exp.nb_gens=250
 run_experiment(exp)

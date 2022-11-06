@@ -10,7 +10,7 @@ class experiment:
     max_fitness= 97
     energy = 70             # default was 70
     step_count = 100
-    fitness_function = ""   # see model class for the definitions of the variable
+    # fitness = 0   # see model class for the definitions of the variable
     nb_gap_junctions = 1
     nb_stress_GJ = 1
     nb_output_molecules = 1 
@@ -99,7 +99,7 @@ class experiment:
         # self.model_type = model_type
         self.height=len(goal)
         self.width=len(goal)
-        self.initial_cells=self.height*self.width
+        # self.initial_cells=self.height*self.width
 
         #  Substrate for MultiNEAT
         self.input_coordinates = [(-1. +(2.*i/(self.nb_inputs - 1)), -1.) for i in range(0, self.nb_inputs)]
