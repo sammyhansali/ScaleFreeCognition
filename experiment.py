@@ -10,8 +10,8 @@ class experiment:
     max_fitness= 97
     energy = 70             # default was 70
     step_count = 100
-    # fitness = 0   # see model class for the definitions of the variable
-    nb_gap_junctions = 1
+    # fitness = 0           # see model class for the definitions of the variable
+    nb_gap_junctions = 1    # one unique GJ_opening for both molecs and stress
     nb_stress_GJ = 1
     nb_output_molecules = 1 
     nb_output_stress = 1
