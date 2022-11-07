@@ -18,6 +18,22 @@ class experiment:
     nb_output_anxio = 1
     apoptosis_on = 1        # Set to 0 if off
     cell_division_on = 1    # Set to 0 if off
+    ANN_inputs = [  "molecules", 
+                    "energy", 
+                    "energyt1", 
+                    "stress", 
+                    "stresst1", 
+                    "state", 
+                    "statet1", 
+                    "local_geometrical_frustration",
+                    "bias",
+                    ]
+    ANN_outputs = [ "m0_to_send", 
+                    "GJ_opening_molecs", 
+                    "stress_to_send", 
+                    "GJ_opening_stress", 
+                    "anxio_to_send", 
+                    ] 
 
     # Interface
     interface =  False
@@ -88,12 +104,15 @@ class experiment:
     rng = NEAT.RNG()
     rng.TimeSeed()
 
-    nb_inputs = 10 # nb molecules + energy + stress + state + bias + state_neigbours
+    nb_ANN_inputs = 0 # nb molecules + energy + stress + state + bias + state_neigbours
+    nb_ANN_outputs = 0
+    # nb_outputs =  nb_output_molecules + 1 + nb_output_stress + 1 + nb_output_anxio + apoptosis_on + cell_division_on
     # The "1" represents the one GJ_opening_molecs variable that will exist. As of now, there won't be one of those variables for each molecule.
-    nb_outputs =  nb_output_molecules + 1 + nb_output_stress + 1 + nb_output_anxio + apoptosis_on + cell_division_on
-    # output_tags = ["m0_to_send", "GJ_opening_molecs", "stress_to_send", "stress_GJ_opening", "anxio_to_send", "apoptosis", "cell_division"]
 
     def __init__(self, start, goal):
+        self.nb_ANN_inputs = len(self.ANN_inputs)-1
+        self.nb_ANN_outputs = len(self.ANN_outputs)
+
         self.start = start
         self.goal = goal
         # self.model_type = model_type
@@ -102,8 +121,8 @@ class experiment:
         # self.initial_cells=self.height*self.width
 
         #  Substrate for MultiNEAT
-        self.input_coordinates = [(-1. +(2.*i/(self.nb_inputs - 1)), -1.) for i in range(0, self.nb_inputs)]
-        self.output_coordinates = [(-1. +(2.*i/(self.nb_outputs - 1)),1.) for i in range(0, self.nb_outputs)]
+        self.input_coordinates = [(-1. +(2.*i/(self.nb_ANN_inputs - 1)), -1.) for i in range(0, self.nb_ANN_inputs)]
+        self.output_coordinates = [(-1. +(2.*i/(self.nb_ANN_outputs - 1)),1.) for i in range(0, self.nb_ANN_outputs)]
         self.substrate = NEAT.Substrate(self.input_coordinates, [],  self.output_coordinates)
         self.substrate.m_allow_input_hidden_links = True
         self.substrate.m_allow_hidden_output_links = True
