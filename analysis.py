@@ -305,14 +305,26 @@ if __name__ == '__main__':
     goal = np.loadtxt("goal_matrix.txt").astype(int).tolist()
     # Params for MESA model and the evolving neural network
     model_params = {}
+    # from ../../Experiments.french_flag import exp
+    # from ScaleFreeCognition.Experiments.french_flag import exp
+    # exp = pickle.loads(exp)
+    # how to load the object in???
+    f = open("exp.pickle", 'rb')
+    exp = pickle.load(f)
+    f.close()
+    model_params["ANN_inputs"] = exp.ANN_inputs
+    model_params["ANN_outputs"] = exp.ANN_outputs
+    # May remove general params soon...
     f = open("general_params.txt")
     for lines in f:
         items = lines.split(': ', 1)
         model_params[items[0]] = eval(items[1])
+    f.close()
     model_params["net"] = net
     model_params["depth"] -= 1
     model_params["start"] = start
     model_params["goal"] = goal
+
     height=model_params["height"]
     width=model_params["width"]
     # Get chart and canvas elements
@@ -320,11 +332,14 @@ if __name__ == '__main__':
 
     # Test the winner network on the server
     import socketserver
-    with socketserver.TCPServer(("localhost", 0), None) as s:
-        free_port = s.server_address[1]
+    # with socketserver.TCPServer(("localhost", 55669), None) as s: #Getting "Adress already in use" error
+    with socketserver.TCPServer(("localhost", 0), None) as s: #Getting "Adress already in use" error
+    # with socketserver.TCPServer(("localhost:39761", 0), None) as s:
+    # with socketserver.TCPServer(("localhost:55669", 0), None) as s:
+        free_port = s.server_address[1] # Its grabbing the first free port it finds.
     server = ModularServer(
         Multicellularity_model, elements, "Multi-cellularity", model_params
         )
     server.port = free_port
 
-    # server.launch()
+    server.launch()
