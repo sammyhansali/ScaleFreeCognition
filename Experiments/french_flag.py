@@ -26,11 +26,11 @@ goal = [[ 1, 1, 1, 3, 3, 3, 2, 2, 2],
         [ 1, 1, 1, 3, 3, 3, 2, 2, 2]]
 
 exp = experiment(start, goal)
-exp.nb_gens=250
+exp.nb_gens=10
 exp.ANN_inputs.extend([ "collective_size", 
                         "french_flag",
                         ])
-# exp.ANN_outputs.extend(["apoptosis", 
-#                         "cell_division",
-#                         ])
+exp.ANN_outputs.extend(["apoptosis", 
+                        "cell_division",
+                        ])
 run_experiment(exp)
