@@ -18,22 +18,24 @@ class experiment:
     nb_output_anxio = 1
     apoptosis_on = 1        # Set to 0 if off
     cell_division_on = 1    # Set to 0 if off
-    ANN_inputs = [  "molecules", 
-                    "energy", 
-                    "energyt1", 
-                    "stress", 
-                    "stresst1", 
-                    "state", 
-                    "statet1", 
-                    "local_geometrical_frustration",
-                    "bias",
-                    ]
-    ANN_outputs = [ "m0_to_send", 
-                    "GJ_opening_molecs", 
-                    "stress_to_send", 
-                    "GJ_opening_stress", 
-                    "anxio_to_send", 
-                    ] 
+    # ANN_inputs = [  "molecules", 
+    #                 "energy", 
+    #                 "energyt1", 
+    #                 "stress", 
+    #                 "stresst1", 
+    #                 "state", 
+    #                 "statet1", 
+    #                 "local_geometrical_frustration",
+    #                 "bias",
+    #                 ]
+    # ANN_outputs = [ "m0_to_send", 
+    #                 "GJ_opening_molecs", 
+    #                 "stress_to_send", 
+    #                 "GJ_opening_stress", 
+    #                 "anxio_to_send", 
+    #                 ] 
+    ANN_inputs = None
+    ANN_outputs = None
 
     # Interface
     interface =  False
@@ -109,7 +111,14 @@ class experiment:
     # nb_outputs =  nb_output_molecules + 1 + nb_output_stress + 1 + nb_output_anxio + apoptosis_on + cell_division_on
     # The "1" represents the one GJ_opening_molecs variable that will exist. As of now, there won't be one of those variables for each molecule.
 
-    def __init__(self, start, goal):
+    def __init__(   self, 
+                    start, 
+                    goal, 
+                    ANN_inputs,
+                    ANN_outputs,
+                ):
+        self.ANN_inputs = ANN_inputs
+        self.ANN_outputs = ANN_outputs
         self.nb_ANN_inputs = len(self.ANN_inputs)-1
         self.nb_ANN_outputs = len(self.ANN_outputs)
 
