@@ -46,6 +46,6 @@ ANN_outputs=    [       "m0_to_send",
                         "cell_division",
                 ] 
 exp = experiment(start, goal, ANN_inputs, ANN_outputs)
-exp.nb_gens=1 #should probably add this from command line
+exp.nb_gens=2 #should probably add this from command line
                         
 run_experiment(exp)
