@@ -43,10 +43,10 @@ ANN_outputs=    [       "m0_to_send",
                         "stress_to_send", 
                         "GJ_opening_stress", 
                         "anxio_to_send", 
-                        "apoptosis", 
-                        "cell_division",
+                        # "apoptosis", 
+                        # "cell_division",
                 ] 
 exp = experiment(start, goal, ANN_inputs, ANN_outputs)
-exp.nb_gens=1
+exp.nb_gens=250
                         
 run_experiment(exp)
