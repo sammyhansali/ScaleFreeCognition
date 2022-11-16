@@ -47,6 +47,6 @@ ANN_outputs=    [       "m0_to_send",
                         # "cell_division",
                 ] 
 exp = experiment(start, goal, ANN_inputs, ANN_outputs)
-exp.nb_gens=250
+exp.nb_gens=sys.int(sys.argv[1])
                         
 run_experiment(exp)

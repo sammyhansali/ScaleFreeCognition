@@ -14,6 +14,7 @@ start = [[ 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
 goal = [[ 0, 0, 0, 1, 1, 1, 0, 0, 0],
         [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
         [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
@@ -23,16 +24,6 @@ goal = [[ 0, 0, 0, 1, 1, 1, 0, 0, 0],
         [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
         [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
         [ 0, 0, 0, 1, 1, 1, 0, 0, 0]]
-# 11/13/22 - This works perfectly even with schedule.reward_by_patches() not updated
-# goal = [[ 0, 0, 0, 1, 1, 1, 0, 0, 0],
-#         [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
-#         [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
-#         [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
-#         [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
-#         [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
-#         [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
-#         [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
-#         [ 0, 0, 0, 1, 1, 1, 0, 0, 0]]
  
 ANN_inputs=     [       "molecules", 
                         "energy", 
@@ -55,6 +46,6 @@ ANN_outputs=    [       "m0_to_send",
                         "cell_division",
                 ] 
 exp = experiment(start, goal, ANN_inputs, ANN_outputs)
-exp.nb_gens=2 #should probably add this from command line
+exp.nb_gens=int(sys.argv[1])
                         
 run_experiment(exp)
