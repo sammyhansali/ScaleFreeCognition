@@ -91,7 +91,7 @@ class Multicellularity_model(Model):
                 "Global stress": lambda m: m.schedule.get_global_stress(Cell),
                 "Multicellularity": lambda m: m.schedule.get_open_cells(Cell),
                 #"Entropy": lambda m: m.schedule.get_spatial_entropy(Cell),
-                "Geometrical frustration": lambda m: m.schedule.geometrical_frustration(Cell),
+                "Geometrical frustration": lambda m: m.schedule.general_geometrical_frustration(Cell),
                 "Internal stress": lambda m:m.schedule.get_internal_stress(Cell),
 
 
@@ -114,53 +114,15 @@ class Multicellularity_model(Model):
 
 
 
-              
-
-    # French flag step
-    def step(self, fitness_evaluation=True):
-        
-        # New
-        # global_state = self.schedule.get_global_state()
-        reward_mat, stress_mat=self.schedule.reward_by_patches()
-        fitness_score=self.schedule.fitness()
-        tissue_matrix, state_matrix, stress_matrix, energy_matrix, molecules_matrix = self.schedule.adaptive_tissue()
-
-        # self.schedule.step(Cell, reward_mat, stress_mat, perc_blue, perc_red, perc_white, fitness_score, tissue_matrix )
-        self.schedule.step(Cell, reward_mat, stress_mat, fitness_score, tissue_matrix )
-        self.schedule.update_state_tissue_costStateChange()
-        
-        # collect data
-        self.datacollector.collect(self)
-        
-
-
     # Model runner
     def run_model(self, fitness_evaluation):
         for i in range(self.step_count):
-            self.step(fitness_evaluation)
+            self.schedule.step(Cell)
+            self.datacollector.collect(self)
 
         if fitness_evaluation==True:
-    
-            # self.fitness_score=0
-            # # general_energy=0
-            # # Not using schedule.fitness() because want to measure g_e as well. 
-            # for i in range(self.height):
-            #      for j in range(int(self.width)):
-            #          if len(self.grid.get_cell_list_contents([(j,i)]))>0:
-            #              cell = self.grid.get_cell_list_contents([(j,i)])[0]
-            #              if cell.state_tissue == cell.goal:
-            #                  self.fitness_score+=1
-            #             #  general_energy+=cell.energy
-            # # print(self.fitness_score)
-                             
-            # self.fitness_score = self.fitness_score/(self.nb_goal_cells)*100
-            # # general_energy   = general_energy/ (self.nb_goal_cells*10)
             self.fitness_score = self.schedule.fitness()  
 
-            # remaining_cells = self.schedule.get_breed_count(Cell)
-            # if remaining_cells == 0:
-            #     remaining_cells=1
-    
         return self.fitness_score         
         
                 
