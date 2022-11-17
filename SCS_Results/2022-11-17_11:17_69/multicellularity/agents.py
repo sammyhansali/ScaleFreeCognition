@@ -397,6 +397,11 @@ class Cell(Agent):
         # self.energy += reward - 0.8
         self.energy -= 0.8
             
+        # if self.stress > 100:
+        #     self.stress = 100
+        # if self.stress < 0:
+        #     self.stress=0
+            
         if self.energy <= 0:
             self.die()
             return
