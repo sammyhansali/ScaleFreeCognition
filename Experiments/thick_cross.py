@@ -35,6 +35,8 @@ ANN_inputs=     [       "molecules",
                         "local_geometrical_frustration",
                         # "collective_size", 
                         # "french_flag",
+                        "pos_x",
+                        "pos_y",
                         "bias",
                 ] 
 ANN_outputs=    [       "m0_to_send", 
