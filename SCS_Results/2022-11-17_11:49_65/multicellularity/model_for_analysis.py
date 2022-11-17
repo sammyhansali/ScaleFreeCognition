@@ -112,9 +112,8 @@ class Multicellularity_model(Model):
             self.datacollector.collect(self)
 
     
-    # Don't delete, or for some reason the mesa visualization will not work properly...
     def step(self):
-            # fitness_score = self.schedule.fitness()
+            fitness_score = self.schedule.fitness()
             self.schedule.step(Cell)
             self.datacollector.collect(self)
 
@@ -123,6 +122,9 @@ class Multicellularity_model(Model):
     def run_model(self, fitness_evaluation):
         for i in range(self.step_count):
             self.step()
+            # self.schedule.step(Cell)
+            # fitness_score=self.schedule.fitness()
+            # self.datacollector.collect(self)
 
         if fitness_evaluation==True:
             self.fitness_score = self.schedule.fitness()  
