@@ -8,7 +8,7 @@ class experiment:
     nb_gens=2
     depth=4
     max_fitness= 97
-    energy = 70             # default was 70
+    energy = 500            # default was 70
     step_count = 100
     # fitness = 0           # see model class for the definitions of the variable
     nb_gap_junctions = 1    # one unique GJ_opening for both molecs and stress
