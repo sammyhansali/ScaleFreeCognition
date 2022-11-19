@@ -103,7 +103,7 @@ class Cell(Agent):
             new_input.append(self.local_geometrical_frustration()) 
         if "local_state" in self.model.ANN_inputs:
             new_input.append(self.local_state()) 
-        # N = 2
+        # N = 2 (come back later. Have to make sure it is bio relevant)
 
         # # Optional
         # if "collective_size" in self.model.ANN_inputs:
