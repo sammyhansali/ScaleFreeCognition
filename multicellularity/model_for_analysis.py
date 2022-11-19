@@ -121,6 +121,11 @@ class Multicellularity_model(Model):
 
     # Model runner
     def run_model(self, fitness_evaluation):
+        # If you want to make infinite and finite energy reservoirs, they have to be right here.
+        # Infinite E reservoir is implicit, so I will only define finite here.
+        # finite_reservoir = 500
+
+        # Steps
         for i in range(self.step_count):
             self.step()
 
