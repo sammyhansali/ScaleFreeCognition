@@ -38,6 +38,7 @@ ANN_inputs=     [       "molecules",
                         # "french_flag",
                         "pos_x",
                         "pos_y",
+                        "finite_reservoir",
                         # "fitness_score", #redundant since they are being selected for fitness...
                         "bias",
                 ] 
