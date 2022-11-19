@@ -103,7 +103,7 @@ class Cell(Agent):
             new_input.append(self.local_geometrical_frustration()) 
         if "local_state" in self.model.ANN_inputs:
             new_input.append(self.local_state()) 
-        # N = 2
+        # N = 2 (come back later. Have to make sure it is bio relevant)
 
         # # Optional
         # if "collective_size" in self.model.ANN_inputs:
@@ -118,6 +118,8 @@ class Cell(Agent):
         if "pos_y" in self.model.ANN_inputs:
             new_input.append(self.pos[1])
             # new_input.append(self.pos[1]/8)
+        if "fitness_score" in self.model.ANN_inputs:
+            new_input.append(self.model.schedule.fitness()/100)
 
         # Bias
         if "bias" in self.model.ANN_inputs:
@@ -258,7 +260,6 @@ class Cell(Agent):
                 output["cell_division"] = 0
             elif output["cell_division"] > 1:
                 output["cell_division"] = 1
-            output["cell_division"] = round(output["cell_division"]) # Want binary
 
         # send ions and stress
         self.send_ions_and_stress(output)
@@ -322,38 +323,63 @@ class Cell(Agent):
         if (probability == 1):
             self.die()
 
-    def cell_division(self, probability):
-        # if there is space to divide, use probability to decide whether to or not
-        dead=[]
+    # def cell_division(self, probability):
+    #     # if there is space to divide, use probability to decide whether to or not
+    #     dead=[]
+    #     neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, False)
+    #     for neighbour in neighbours:
+    #         if self.model.grid.is_cell_empty(neighbour)==True:
+    #             dead.append(neighbour)
+    #     if len(dead) > 0:
+    #         winner = random.choice(dead)
+    #         # if probability == 1 and self.molecules[0] > 1:
+    #         # print(probability) #testing line
+    #         if probability == 1:
+    #             # DIVIDE
+    #             x = winner[0]
+    #             y = winner[1]
+    #             # Updating initial cell
+    #             # self.molecules[0] /= 2
+    #             self.energy /= 2
+    #             self.stress /= 2
+    #             # self.update_state()
+    #             self.update_stress()
+    #             # Creating new cell with half
+    #             cell = Cell(self.net, self.depth, self.model.next_id(), (x,y), self.model,  True, 
+    #                             self.molecules, self.energy, 0, self.cell_gain_from_good_state,  self.model.goal[y][x], 
+    #                             self.GJ_opening_molecs, self.GJ_opening_stress, self.stress, 0, self.decision_state0, self.decision_state1, 
+    #                             self.decision_state2, self.state, 0, self.state_tissue)
+    #             self.birth(cell, x, y)
+    def cell_division(self, output_prob):
         neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, False)
-        for neighbour in neighbours:
-            if self.model.grid.is_cell_empty(neighbour)==True:
-                dead.append(neighbour)
-        if len(dead) > 0:
-            winner = random.choice(dead)
-            # if probability == 1 and self.molecules[0] > 1:
-            # print(probability) #testing line
-            if probability == 1:
-                # DIVIDE
-                x = winner[0]
-                y = winner[1]
-                # Updating initial cell
-                # self.molecules[0] /= 2
-                # self.energy /= 2
-                self.stress /= 2
-                # self.update_state()
-                self.update_stress()
-                # Creating new cell with half
-                cell = Cell(self.net, self.depth, self.model.next_id(), (x,y), self.model,  True, 
-                                self.molecules, 70, 0, self.cell_gain_from_good_state,  self.model.goal[y][x], 
-                                self.GJ_opening_molecs, self.GJ_opening_stress, self.stress, 0, self.decision_state0, self.decision_state1, 
-                                self.decision_state2, self.state, 0, self.state_tissue)
-                self.birth(cell, x, y)
-            
-                    
-    # def step(self, reward_mat, stress_mat, perc_blue, perc_red, perc_white, fitness_score, tissue_matrix):
-    # def step(self, reward_mat, stress_mat, fitness_score, tissue_matrix):
-    # def step(self, reward_mat, stress_mat, fitness_score):
+        n = len(neighbours)
+        # Get discrete numbers 0, 1, 2,..., n
+        index = round( output_prob * n ) 
+
+        # Don't divide if index == n
+        if index == n:
+            return
+        # If desired position is empty, divide. Else can't divide.
+        if self.model.grid.is_cell_empty(neighbours[index])==True:
+            self.divide(neighbours[index])
+
+    def divide(self, pos):
+        x = pos[0]
+        y = pos[1]
+
+        # Updating initial cell
+        # self.molecules[0] /= 2
+        # self.update_state()
+        self.energy /= 2
+        self.stress /= 2
+        self.update_stress()
+        cell = Cell(self.net, self.depth, self.model.next_id(), (x,y), self.model,  True, 
+                        self.molecules, self.energy, 0, self.cell_gain_from_good_state,  self.model.goal[y][x], 
+                        self.GJ_opening_molecs, self.GJ_opening_stress, self.stress, 0, self.decision_state0, self.decision_state1, 
+                        self.decision_state2, self.state, 0, self.state_tissue)
+        self.birth(cell, x, y)
+        
+
     def step(self):
         """
         A model step. 
@@ -371,19 +397,13 @@ class Cell(Agent):
         # reward = reward_mat[self.pos]
         # stress = stress_mat[self.pos]
         # self.energy += reward - 0.8
-        self.energy -= 0.8
-            
-        # if self.stress > 100:
-        #     self.stress = 100
-        # if self.stress < 0:
-        #     self.stress=0
+        # self.energy -= 0.8
             
         if self.energy <= 0:
             self.die()
             return
 
         if "cell_division" in output:
-            # print(output["cell_division"])
             self.cell_division(output["cell_division"])
         
         if "apoptosis" in output:

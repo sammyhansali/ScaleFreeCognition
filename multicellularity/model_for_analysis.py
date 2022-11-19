@@ -111,14 +111,23 @@ class Multicellularity_model(Model):
         if fitness_evaluation==False:
             self.datacollector.collect(self)
 
-
+    
+    # Don't delete, or for some reason the mesa visualization will not work properly...
+    def step(self):
+            # fitness_score = self.schedule.fitness()
+            self.schedule.step(Cell)
+            self.datacollector.collect(self)
 
 
     # Model runner
     def run_model(self, fitness_evaluation):
+        # If you want to make infinite and finite energy reservoirs, they have to be right here.
+        # Infinite E reservoir is implicit, so I will only define finite here.
+        # finite_reservoir = 500
+
+        # Steps
         for i in range(self.step_count):
-            self.schedule.step(Cell)
-            self.datacollector.collect(self)
+            self.step()
 
         if fitness_evaluation==True:
             self.fitness_score = self.schedule.fitness()  
