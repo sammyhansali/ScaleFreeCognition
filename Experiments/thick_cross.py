@@ -39,7 +39,7 @@ ANN_inputs=     [       "molecules",
                         "pos_x",
                         "pos_y",
                         "finite_reservoir",
-                        # "fitness_score", #redundant since they are being selected for fitness...
+                        "fitness_score", #each cell should know how far from goal they are.
                         "bias",
                 ] 
 ANN_outputs=    [       "m0_to_send", 
@@ -47,7 +47,7 @@ ANN_outputs=    [       "m0_to_send",
                         "stress_to_send", 
                         "GJ_opening_stress", 
                         "anxio_to_send", 
-                        # "apoptosis", # prob doesn't need this function, since will die from energy loss if it is in the wrong spot...
+                        "apoptosis", # prob doesn't need this function, since will die from energy loss if it is in the wrong spot...
                         "cell_division",
                 ] 
 exp = experiment(start, goal, ANN_inputs, ANN_outputs)
