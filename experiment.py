@@ -8,7 +8,7 @@ class experiment:
     nb_gens=2
     depth=4
     max_fitness= 97
-    energy = 500            # default was 70
+    energy = 50            # default was 70
     step_count = 100
     # fitness = 0           # see model class for the definitions of the variable
     nb_gap_junctions = 1    # one unique GJ_opening for both molecs and stress
@@ -18,22 +18,6 @@ class experiment:
     nb_output_anxio = 1
     apoptosis_on = 1        # Set to 0 if off
     cell_division_on = 1    # Set to 0 if off
-    # ANN_inputs = [  "molecules", 
-    #                 "energy", 
-    #                 "energyt1", 
-    #                 "stress", 
-    #                 "stresst1", 
-    #                 "state", 
-    #                 "statet1", 
-    #                 "local_geometrical_frustration",
-    #                 "bias",
-    #                 ]
-    # ANN_outputs = [ "m0_to_send", 
-    #                 "GJ_opening_molecs", 
-    #                 "stress_to_send", 
-    #                 "GJ_opening_stress", 
-    #                 "anxio_to_send", 
-    #                 ] 
     ANN_inputs = None
     ANN_outputs = None
 
@@ -42,6 +26,7 @@ class experiment:
 
     # Parameters for es-hyperneat
     params = NEAT.Parameters()
+    # params.PopulationSize = 700
     params.PopulationSize = 350
     params.DynamicCompatibility = True
     params.CompatTreshold = 3.0
