@@ -30,6 +30,7 @@ ANN_inputs=     [       "molecules",
                         "energyt1", 
                         "stress", 
                         "stresst1", 
+                        "state_goal"
                         "state",
                         "statet1",
                         # "local_geometrical_frustration",
@@ -49,6 +50,8 @@ ANN_outputs=    [       "m0_to_send",
                         "anxio_to_send", 
                         "apoptosis", # prob doesn't need this function, since will die from energy loss if it is in the wrong spot...
                         "cell_division",
+                        "reward",
+                        "use_finite_reservoir",
                 ] 
 exp = experiment(start, goal, ANN_inputs, ANN_outputs)
 exp.nb_gens=int(sys.argv[1])

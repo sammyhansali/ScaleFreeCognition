@@ -29,25 +29,27 @@ class Cell(Agent):
     grid = None
     x = None
     y = None
-    energy = None
-    energyt1=None
-    state=None
-    statet1=None
-    collective_size=None
+    # energy = None
+    # energyt1=None
+    # state=None
+    # statet1=None
     moore = True   
     molecules = None
     goal=None
-    cell_gain_from_good_state = None
-    stress = None
-    stresst1=None
-    decision_state0 = None
-    decision_state1= None
-    decision_state2 = None
+    # stress = None
+    # stresst1=None
     GJ_opening_molecs = None
     GJ_opening_stress = None
+    self.energy = []
+    self.state = []
+    self.stress = []
+    # How about an energy list? energy[0] is cells energy at t=x. energy[1] is energy at t=x-1. Etc...
+    # Similar idea with stress and state and molecules
+    # And of course with tissue state
 
 
-    def __init__(self, net, depth, unique_id, pos, model, moore, molecules, energy, energyt1, cell_gain_from_good_state,  goal, GJ_opening_molecs, GJ_opening_stress, stress, stresst1, decision_state0, decision_state1, decision_state2, state, statet1, state_tissue):
+    # def __init__(self, net, depth, unique_id, pos, model, moore, molecules, energy, energyt1,  goal, GJ_opening_molecs, GJ_opening_stress, stress, stresst1, state, statet1):
+    def __init__(self, net, depth, unique_id, pos, model, moore, molecules, goal, GJ_opening_molecs, GJ_opening_stress, energy, stress, state):
         """
         grid: The MultiGrid object in which the agent lives.
         x: The agent's current x coordinate
@@ -62,21 +64,19 @@ class Cell(Agent):
         self.moore = moore
         self.molecules = molecules # list, one for each molec type
         self.goal = goal
-        self.cell_gain_from_good_state = cell_gain_from_good_state
         # Channel Openings
         self.GJ_opening_molecs = GJ_opening_molecs # single variable for now, not sure if should be a list. One ele for each molec type?
         self.GJ_opening_stress = GJ_opening_stress
         # Inputs
+        # self.energy = energy
+        # self.energyt1 = energyt1
+        # self.state = state 
+        # self.statet1 = state 
+        # self.stress = stress
+        # self.stresst1 = stresst1
         self.energy = energy
-        self.energyt1 = energyt1
-        self.state = state 
-        self.statet1 = state 
+        self.state = state
         self.stress = stress
-        self.stresst1 = stresst1
-        self.state_tissue = state_tissue
-        self.decision_state0 = decision_state0
-        self.decision_state1 = decision_state1
-        self.decision_state2 = decision_state2
         
     def net_inputs(self):
         inputs = []
@@ -86,17 +86,25 @@ class Cell(Agent):
             inputs.append(list(self.molecules))
             inputs = sum(inputs, [])
         if "energy" in self.model.ANN_inputs:
-            inputs.append(self.energy)
-        if "energyt1" in self.model.ANN_inputs:
-            inputs.append(self.energyt1)
+            inputs.append(list(self.molecules))
+            inputs = sum(inputs, [])
         if "stress" in self.model.ANN_inputs:
-            inputs.append(self.stress)
-        if "stresst1" in self.model.ANN_inputs:
-            inputs.append(self.stresst1)
-        if "state" in self.model.ANN_inputs:
-            inputs.append(self.state)
-        if "statet1" in self.model.ANN_inputs:
-            inputs.append(self.statet1) 
+        # if "energy" in self.model.ANN_inputs:
+        #     inputs.append(self.energy)
+        # if "energyt1" in self.model.ANN_inputs:
+        #     inputs.append(self.energyt1)
+        # if "stress" in self.model.ANN_inputs:
+        #     inputs.append(self.stress)
+        # if "stresst1" in self.model.ANN_inputs:
+        #     inputs.append(self.stresst1)
+        # if "state_goal" in self.model.ANN_inputs:
+        #     inputs.append(self.goal)
+        # if "state" in self.model.ANN_inputs:
+        #     inputs.append(self.state)
+        # if "statet1" in self.model.ANN_inputs:
+        #     inputs.append(self.statet1) 
+        if "finite_reservoir" in self.model.ANN_inputs:
+            inputs.append(self.model.depleted_reservoir/self.model.full_reservoir) 
         # N = 1
         if "local_geometrical_frustration" in self.model.ANN_inputs:
             inputs.append(self.local_geometrical_frustration()) 
@@ -239,6 +247,22 @@ class Cell(Agent):
                 outputs["cell_division"] = 0
             elif outputs["cell_division"] > 1:
                 outputs["cell_division"] = 1
+
+        if "use_finite_reservoir" in outputs:
+            if outputs["use_finite_reservoir"] < 0:
+                outputs["use_finite_reservoir"] = 0
+            elif outputs["use_finite_reservoir"] > 1:
+                outputs["use_finite_reservoir"] = 1   
+            outputs["use_finite_reservoir"] = round(outputs["use_finite_reservoir"]) # Want binary
+        
+        if "reward" in outputs:
+            if outputs["reward"] < -1:
+                # print("went super neg")
+                outputs["reward"] = -1
+            elif outputs["reward"] > 1:
+                # print("went super pos")
+                outputs["reward"] = 1  
+
         return outputs
                 
     def local_geometrical_frustration (self):
@@ -274,23 +298,25 @@ class Cell(Agent):
         if (probability == 1):
             self.die()
 
-    def cell_division(self, output_prob):
+    # def cell_division(self, cd_prob):
+    def cell_division(self, outputs):
+        cd_prob = outputs["cell_division"]
         neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, False)
         n = len(neighbours)
         # Get discrete numbers 0, 1, 2,..., n
-        index = round( output_prob * n ) 
+        index = round( cd_prob * n ) 
 
         # Don't divide if index == n
         if index != n:
             # If desired position is empty, divide. Else can't divide.
             if self.model.grid.is_cell_empty(neighbours[index])==True:
-                self.model.depleted_reservoir -= 1
-                self.divide(neighbours[index])
-                # return depleted_reservoir-1
+                subtract=False
+                if outputs["use_finite_reservoir"]==1:
+                    subtract=True
+                self.divide(neighbours[index], subtract)
                 
-        # return depleted_reservoir
 
-    def divide(self, pos):
+    def divide(self, pos, subtract):
         x = pos[0]
         y = pos[1]
 
@@ -298,11 +324,30 @@ class Cell(Agent):
         # self.energy /= 2
         self.stress /= 2
         self.update_stress()
-        cell = Cell(self.net, self.depth, self.model.next_id(), (x,y), self.model,  True, 
-                        self.molecules, 50, 0, self.cell_gain_from_good_state,  self.model.goal[y][x], 
-                        self.GJ_opening_molecs, self.GJ_opening_stress, self.stress, 0, self.decision_state0, self.decision_state1, 
-                        self.decision_state2, self.state, 0, self.state_tissue)
-        self.birth(cell, x, y)
+        cell = Cell(    net = self.net, 
+                        depth = self.depth, 
+                        unique_id = self.model.next_id(), 
+                        pos = (x,y), 
+                        model = self.model,  
+                        moore = True, 
+                        molecules = self.molecules, 
+                        goal = self.model.goal[y][x], 
+                        GJ_opening_molecs = self.GJ_opening_molecs, 
+                        GJ_opening_stress = self.GJ_opening_stress, 
+                        # energy = self.model.energy, 
+                        # energyt1 = self.model.energy,  
+                        energy = []
+                        energy.append(self.model.energy)
+                        # stress = self.stress, 
+                        # stresst1 = 0, 
+                        stress = [], 
+                        stress.append(self.stress)
+                        # state = self.state, 
+                        # statet1 = 0
+                        state = []
+                        state.append(self.state)
+                    )
+        self.birth(cell, x, y, subtract)
         
 
     def step(self):
@@ -312,36 +357,41 @@ class Cell(Agent):
         
         self.energyt1 = self.energy
         self.stresst1 = self.stress
-        # Added in
         self.statet1 = self.state
                 
         inputs = self.net_inputs()
-        # Give appreciation to how much finite E is left!
-        if "finite_reservoir" in self.model.ANN_inputs:
-            inputs.append(self.model.depleted_reservoir/self.model.full_reservoir) 
         outputs = self.prune_outputs(self.net_outputs(inputs))
         self.send_ions_and_stress(outputs)
 
-        # Try this out next, cells only survive 25 steps (unless they do apop early)
-        self.energy -= 1
+        # Try this out next, cells only survive 100 steps (unless they do apop early)
+        # if "reward" in outputs:
+        #     self.energy += outputs["reward"] - 1.0
+        # else:
+        #     self.energy -= 0.5
 
         if self.energy <= 0:
             self.die()
             return
         
-        if "cell_division" in outputs:
-            self.cell_division(outputs["cell_division"])
-        
         if "apoptosis" in outputs:
             self.apoptosis(outputs["apoptosis"])
+            
+        if "cell_division" in outputs:
+            # self.cell_division(outputs["cell_division"])
+            self.cell_division(outputs)
+        
+        
         
 
     def die(self):
-        self.model.depleted_reservoir+=1    # Testing if increasing reservoir after death makes sense
+        # self.model.depleted_reservoir += 1    # Testing if increasing reservoir after death makes sense
         self.model.grid._remove_agent(self.pos, self)
         self.model.schedule.remove(self)
 
-    def birth(self, cell, x, y): 
+    def birth(self, cell, x, y, subtract): 
+        # if subtract:
+            # self.model.depleted_reservoir -= 1
+        self.model.depleted_reservoir -= 1
         self.model.grid.place_agent(cell, (x, y))
         self.model.schedule.add(cell)
 
