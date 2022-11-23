@@ -206,6 +206,7 @@ class RandomActivationByBreed(RandomActivation):
         # Use start mat to generate starting cells
         for i in range(self.model.height):
             for j in range(self.model.width):
+                history_length = 10
                 state_cell = start[i][j]
                 molecules =  [random.random()] #np.array([3.,3.]) #
                 if state_cell == 0:
@@ -228,16 +229,15 @@ class RandomActivationByBreed(RandomActivation):
                                 GJ_opening_stress=0, 
                                 # energy = self.model.energy, 
                                 # energyt1 =  self.model.energy,  
-                                energy = []
-                                energy.append(self.model.energy)
+                                energy = [0]*history_length
+                                energy[0] = self.model.energy
                                 # stress = 0, 
                                 # stresst1 = 0, 
-                                stress = [], 
-                                stress.append(0)
+                                stress = [0]*history_length, 
                                 # state = state_cell, 
                                 # statet1 = 0
-                                state = []
-                                state.append(state_cell)
+                                state = [0]*history_length
+                                state[0] = state_cell
                             )
                 self.model.grid.place_agent(cell, (j, i))
                 self.model.schedule.add(cell)
