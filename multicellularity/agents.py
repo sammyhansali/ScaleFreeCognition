@@ -83,12 +83,14 @@ class Cell(Agent):
         
         # Determining what you want as inputs
         if "molecules" in self.model.ANN_inputs:
-            inputs.append(list(self.molecules))
-            inputs = sum(inputs, [])
+            inputs.extend(list(self.molecules))
+            # inputs = sum(inputs, [])
         if "energy" in self.model.ANN_inputs:
-            inputs.append(list(self.molecules))
-            inputs = sum(inputs, [])
+            inputs.extend(self.energy)
         if "stress" in self.model.ANN_inputs:
+            inputs.extend(self.stress)
+        if "state" in self.model.ANN_inputs:
+            inputs.extend(self.state)
         # if "energy" in self.model.ANN_inputs:
         #     inputs.append(self.energy)
         # if "energyt1" in self.model.ANN_inputs:
