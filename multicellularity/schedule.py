@@ -118,7 +118,7 @@ class RandomActivationByBreed(RandomActivation):
         stress = 0
         agent_keys = list(self.agents_by_breed[Cell].keys())
         for agent_key in agent_keys:
-            if self.agents_by_breed[Cell][agent_key].state != self.agents_by_breed[Cell][agent_key].goal:
+            if self.agents_by_breed[Cell][agent_key].state[0] != self.agents_by_breed[Cell][agent_key].goal:
                 stress+=1
         return stress
 
@@ -128,8 +128,8 @@ class RandomActivationByBreed(RandomActivation):
         for i in range(self.model.height):
             for j in range(self.model.width):
                 if len(self.model.grid.get_cell_list_contents([(j,i)]))>0:
-                    cell= self.model.grid.get_cell_list_contents([(j,i)])[0]                        
-                    stress+=cell.stress
+                    cell= self.model.grid.get_cell_list_contents([(j,i)])[0] 
+                    stress+=cell.stress[0]
         return stress
         
     def get_open_cells(self, Cell):
@@ -150,7 +150,7 @@ class RandomActivationByBreed(RandomActivation):
                 for agent_key in agent_keys:
                     if self.agents_by_breed[Cell][agent_key].pos[0] == j and self.agents_by_breed[Cell][agent_key].pos[0] == i:
                         points.append([j,i])
-                        states.append( self.agents_by_breed[Cell][agent_key].state)
+                        states.append( self.agents_by_breed[Cell][agent_key].state[0])
         points = np.array(points)
         states = np.array(states)
         e = altieri_entropy(points, states)
@@ -163,7 +163,7 @@ class RandomActivationByBreed(RandomActivation):
                 # alive cell on spot
                 if len(self.model.grid.get_cell_list_contents([(j,i)]))>0:
                     cell = self.model.grid.get_cell_list_contents([(j,i)])[0]
-                    if cell.state == cell.goal:
+                    if cell.state[0] == cell.goal:
                         self.fitness_score+=1
                 # nothing on spot
                 else:
@@ -193,7 +193,7 @@ class RandomActivationByBreed(RandomActivation):
                          if len(self.model.grid.get_cell_list_contents([neighbour]))>0:
                              nb_neighbour+=1
                              cell_neighbour= self.model.grid.get_cell_list_contents([(j,i)])[0]
-                             if cell.state == cell_neighbour.state:
+                             if cell.state[0] == cell_neighbour.state[0]:
                                  local_frustration+=1
                                  break
                  general_frustration+= local_frustration
@@ -229,21 +229,23 @@ class RandomActivationByBreed(RandomActivation):
                                 GJ_opening_stress=0, 
                                 # energy = self.model.energy, 
                                 # energyt1 =  self.model.energy,  
-                                energy = [0]*history_length
-                                energy[0] = self.model.energy
+                                energy = [0]*history_length,
+                                # energy[0] = self.model.energy
                                 # stress = 0, 
                                 # stresst1 = 0, 
                                 stress = [0]*history_length, 
                                 # state = state_cell, 
                                 # statet1 = 0
-                                state = [0]*history_length
-                                state[0] = state_cell
+                                state = [0]*history_length,
+                                # state[0] = state_cell
                             )
+                cell.energy[0] = self.model.energy
+                cell.state[0] = state_cell
                 self.model.grid.place_agent(cell, (j, i))
                 self.model.schedule.add(cell)
                      
                      
     
                      
-                     
+                
                      

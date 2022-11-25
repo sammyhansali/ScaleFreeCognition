@@ -26,13 +26,13 @@ goal = [[ 0, 0, 0, 1, 1, 1, 0, 0, 0],
         [ 0, 0, 0, 1, 1, 1, 0, 0, 0]]
  
 ANN_inputs=     [       "molecules", 
-                        "energy", 
-                        "energyt1", 
-                        "stress", 
-                        "stresst1", 
-                        "state_goal"
-                        "state",
-                        "statet1",
+                        # "energy", 
+                        # "energyt1", 
+                        # "stress", 
+                        # "stresst1", 
+                        # "state_goal"
+                        # "state",
+                        # "statet1",
                         # "local_geometrical_frustration",
                         "local_state",
                         # "collective_size", 
@@ -42,7 +42,10 @@ ANN_inputs=     [       "molecules",
                         "finite_reservoir",
                         "fitness_score", #each cell should know how far from goal they are.
                         "bias",
-                ] 
+                ]
+ANN_inputs.extend(["energy"]*10)
+ANN_inputs.extend(["stress"]*10)
+ANN_inputs.extend(["state"]*10)
 ANN_outputs=    [       "m0_to_send", 
                         "GJ_opening_molecs", 
                         "stress_to_send", 

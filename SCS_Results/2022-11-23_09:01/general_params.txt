@@ -1,0 +1,6 @@
+depth: 4  
+height: 9  
+width: 9  
+energy: 50 
+nb_gap_junctions: 1  
+step_count: 100
