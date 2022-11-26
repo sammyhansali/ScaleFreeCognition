@@ -1,9 +1,11 @@
-# Run like this: python Experiments/this_file.py
+# 1: Go to this directory -->   /cluster/tufts/levinlab/shansa01/ScaleFreeCognition
+# 2: Run like this -->          python Experiments/this_file.py
 import sys
 sys.path.append('.')
 from experiment import experiment
 from run import run_experiment
-#
+
+# Command line arguments
 nb_gens = int(sys.argv[1])
 history_length = int(sys.argv[2])
 nb_output_molecules = int(sys.argv[3])
@@ -28,9 +30,8 @@ goal = [[ 0, 0, 0, 1, 1, 1, 0, 0, 0],
         [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
         [ 0, 0, 0, 1, 1, 1, 0, 0, 0]]
  
-ANN_inputs=     [       #"molecules", 
-                        # "local_fitness",
-                        # "global_fitness", # aka fitness score
+ANN_inputs=     [       
+                        #"molecules", 
                         "pos_x",
                         "pos_y",
                         "direction",
@@ -38,14 +39,16 @@ ANN_inputs=     [       #"molecules",
                         # "finite_reservoir",
                         "bias",
                 ]
-# ANN_inputs.extend(["energy"]*2)
-# ANN_inputs.extend(["stress"]*2)
+# ANN_inputs.extend(["energy"]*2) # Not being used for anything atm
+# ANN_inputs.extend(["stress"]*2) # Not being used for anything atm
 ANN_inputs.extend(["state"]*history_length)
 ANN_inputs.extend(["local_fitness"]*history_length)
 ANN_inputs.extend(["global_fitness"]*history_length)
+# Add timeseries for directionality? (After push!)
+# ANN_inputs.extend(["direction"]*history_length)
 
 
-ANN_outputs=    [       #"m0_to_send", 
+ANN_outputs=    [    
                         # "GJ_opening_molecs", 
                         # "stress_to_send", 
                         # "GJ_opening_stress", 
