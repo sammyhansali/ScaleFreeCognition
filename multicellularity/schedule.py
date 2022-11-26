@@ -156,7 +156,24 @@ class RandomActivationByBreed(RandomActivation):
         e = altieri_entropy(points, states)
         return e.entropy
              
-    def fitness(self):
+    def local_fitness(self, cell):
+        local_state = 0
+        # Put true so score is lower if the center cell is not in correct state.
+        neighbours = self.model.grid.get_neighborhood(cell.pos, cell.moore, True)
+        for neighbour in neighbours:
+            if self.model.grid.is_cell_empty(neighbour)==False: # not dead
+                cell_in_contact = self.model.grid.get_cell_list_contents([neighbour])[0]
+                if cell_in_contact.state[0] == cell_in_contact.goal:
+                    local_state += 1
+            else:
+                # Need to get x and y coords of the dead neighbour
+                x=neighbour[0]
+                y=neighbour[1]
+                if self.model.goal[y][x] == 0:
+                    local_state += 1
+        return local_state / (len(neighbours)) * 100
+
+    def global_fitness(self):
         self.fitness_score=0
         for i in range(self.model.height):
             for j in range(int(self.model.width)):
@@ -171,7 +188,6 @@ class RandomActivationByBreed(RandomActivation):
                         self.fitness_score+=1
         
         self.fitness_score = self.fitness_score/(self.model.height*self.model.width)*100
-        # self.fitness_score = self.fitness_score/(self.model.nb_goal_cells)*100
         
         return self.fitness_score
     
@@ -202,23 +218,77 @@ class RandomActivationByBreed(RandomActivation):
         return general_frustration
 
     
+    # def generate_cells(self, Cell, start):
+    #     # Use start mat to generate starting cells
+    #     for i in range(self.model.height):
+    #         for j in range(self.model.width):
+    #             history_length = 5
+    #             state_cell = start[i][j]
+    #             molecules =  [random.random()] #np.array([3.,3.]) #
+    #             random_dir = random.choice(range(1,9))
+
+    #             if state_cell == 0:
+    #                 continue
+    #             if state_cell == 1:
+    #                 molecules[0] =  11
+    #             elif state_cell == 2:
+    #                 molecules[0] = 3
+    #             elif state_cell == 3:
+    #                 molecules[0] = 7
+
+    #             cell = Cell(    net = self.model.net, 
+    #                             depth = self.model.depth, 
+    #                             unique_id = self.model.next_id(), 
+    #                             pos = (j, i), 
+    #                             model = self.model,  
+    #                             moore = True, 
+    #                             molecules = molecules, 
+    #                             goal = self.model.goal[i][j], 
+    #                             GJ_opening_molecs=0, 
+    #                             GJ_opening_stress=0, 
+    #                             # Historical data
+    #                             energy = [0]*history_length,
+    #                             stress = [0]*history_length, 
+    #                             state = [0]*history_length,
+    #                             local_fitness = [0]*history_length,
+    #                             global_fitness = [0]*history_length,
+    #                             direction = random_dir,
+    #                         )
+    #             cell.energy[0] = self.model.energy
+    #             cell.state[0] = state_cell
+    #             self.model.grid.place_agent(cell, (j, i))
+    #             self.model.schedule.add(cell)
+                     
+    
+    # Experimental
+    def set_initial_molecules(self, molec_dict, amount):
+        for i in range(len(molec_dict)):
+            molecules[i][0] = amount
+
+
     def generate_cells(self, Cell, start):
         # Use start mat to generate starting cells
         for i in range(self.model.height):
             for j in range(self.model.width):
-                history_length = 2
+                history_length = 5
                 state_cell = start[i][j]
-                molecules =  [random.random()] #np.array([3.,3.]) #
+                # molecules =  [random.random()] #np.array([3.,3.]) #
                 random_dir = random.choice(range(1,9))
+
+                molecules = {}
+                for i in range(self.model.nb_output_molecules):
+                    molecules[i] = [0]*history_length
 
                 if state_cell == 0:
                     continue
-                if state_cell== 1:
-                    molecules[0] =  11
-                elif state_cell== 2:
-                    molecules[0] = 3
-                elif state_cell== 3:
-                    molecules[0] = 7
+                elif state_cell == 3:
+                    set_initial_molecules(molecules, 9)
+                    # So if each cell has 1 type of molec, total will be 9. If 2, then 18. If 3, then 27, etc.
+                elif state_cell == 2:
+                    set_initial_molecules(molecules, 6)
+                elif state_cell == 1:
+                    set_initial_molecules(molecules, 3)
+
                 cell = Cell(    net = self.model.net, 
                                 depth = self.model.depth, 
                                 unique_id = self.model.next_id(), 
@@ -233,14 +303,14 @@ class RandomActivationByBreed(RandomActivation):
                                 energy = [0]*history_length,
                                 stress = [0]*history_length, 
                                 state = [0]*history_length,
+                                local_fitness = [0]*history_length,
+                                global_fitness = [0]*history_length,
                                 direction = random_dir,
                             )
                 cell.energy[0] = self.model.energy
                 cell.state[0] = state_cell
                 self.model.grid.place_agent(cell, (j, i))
                 self.model.schedule.add(cell)
-                     
-                     
     
                      
                 

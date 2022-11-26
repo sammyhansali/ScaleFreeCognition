@@ -18,15 +18,6 @@ class State(IntEnum):
     NEUTRAL = 0
     POLARIZED = 1
     DEPOLARIZED = 2
-    # Directionality
-    NO=1
-    NE=2
-    EA=3
-    SE=4
-    SO=5
-    SW=6
-    WE=7
-    NW=8
 
 class Cell(Agent):
     """
@@ -48,13 +39,12 @@ class Cell(Agent):
     stress = []
     # Directionality
     direction = None
-    # How about an energy list? energy[0] is cells energy at t=x. energy[1] is energy at t=x-1. Etc...
-    # Similar idea with stress and state and molecules
-    # And of course with tissue state
+    local_fitness = None
+    global_fitness = None
 
 
-    # def __init__(self, net, depth, unique_id, pos, model, moore, molecules, energy, energyt1,  goal, GJ_opening_molecs, GJ_opening_stress, stress, stresst1, state, statet1):
-    def __init__(self, net, depth, unique_id, pos, model, moore, molecules, goal, GJ_opening_molecs, GJ_opening_stress, energy, stress, state, direction):
+
+    def __init__(self, net, depth, unique_id, pos, model, moore, molecules, goal, GJ_opening_molecs, GJ_opening_stress, energy, stress, state, direction, local_fitness, global_fitness):
         """
         grid: The MultiGrid object in which the agent lives.
         x: The agent's current x coordinate
@@ -76,6 +66,8 @@ class Cell(Agent):
         self.energy = energy
         self.state = state
         self.stress = stress
+        self.local_fitness = local_fitness
+        self.global_fitness = global_fitness
         # Directionality
         self.direction = direction
         
@@ -86,14 +78,14 @@ class Cell(Agent):
         if "molecules" in self.model.ANN_inputs:
             inputs.extend(list(self.molecules))
             # inputs = sum(inputs, [])
+        if "delta" in self.model.ANN_inputs:
+            inputs.append(self.goal-self.state[0])
         if "energy" in self.model.ANN_inputs:
             inputs.extend(self.energy)
         if "stress" in self.model.ANN_inputs:
             inputs.extend(self.stress)
         if "state" in self.model.ANN_inputs:
             inputs.extend(self.state)
-        if "delta" in self.model.ANN_inputs:
-            inputs.append(self.goal-self.state[0])
         # if "energy" in self.model.ANN_inputs:
         #     inputs.append(self.energy)
         # if "energyt1" in self.model.ANN_inputs:
@@ -114,12 +106,12 @@ class Cell(Agent):
         # # N = 1
         # if "local_geometrical_frustration" in self.model.ANN_inputs:
         #     inputs.append(self.local_geometrical_frustration()) 
-        if "local_state" in self.model.ANN_inputs:
-            # print("LS")
-            inputs.append(self.local_state()) 
-        if "fitness_score" in self.model.ANN_inputs:
-            # print("FS")
-            inputs.append(self.model.schedule.fitness()/100)
+        if "local_fitness" in self.model.ANN_inputs:
+            inputs.extend(self.update_local_fitness())
+            # inputs.append(self.model.schedule.local_fitness()/100)
+        if "global_fitness" in self.model.ANN_inputs:
+            inputs.extend(self.update_global_fitness())
+            # inputs.append(self.model.schedule.global_fitness()/100)
 
         # Raw positional data
         if "pos_x" in self.model.ANN_inputs:
@@ -151,16 +143,30 @@ class Cell(Agent):
     def update_history(self, var, update):
         return [update] + var[:-1]
 
-    def update_state(self):
-        if self.molecules[0] >=  10 :
-            self.state = self.update_history(self.state, 1)
-            # if doesn't work: self.state = [1] + self.state[:-1]
+    # def update_state(self):
+    #     if self.molecules[0] >=  10 :
+    #         self.state = self.update_history(self.state, 1)
+    #         # if doesn't work: self.state = [1] + self.state[:-1]
            
-        elif  self.molecules[0] < 10 and self.molecules[0] >= 5:
-            self.state = self.update_history(self.state, 3)
+    #     elif  self.molecules[0] < 10 and self.molecules[0] >= 5:
+    #         self.state = self.update_history(self.state, 3)
 
-        elif self.molecules[0] < 5 and self.molecules[0] >= 0:
+    #     elif self.molecules[0] < 5 and self.molecules[0] >= 0:
+    #         self.state = self.update_history(self.state, 2)
+    def update_state(self):
+        tot = 0
+        n = len(self.molecules)
+        for i in range(n):
+            tot+=self.molecules[i][0]
+        
+        if tot >=  10*n :
+            self.state = self.update_history(self.state, 3)
+           
+        elif tot >= 5*n:
             self.state = self.update_history(self.state, 2)
+
+        elif tot >= 0:
+            self.state = self.update_history(self.state, 1)
             
     def prune_stress(self, stress):
         if stress > 100:
@@ -220,26 +226,33 @@ class Cell(Agent):
         # for i in range(self.molecules):
         #     key = f"m{i+1}_to_send"
         key ="m0_to_send"
-        if outputs[key] < 0:
-            outputs[key] = 0
-        if outputs["stress_to_send"] < 0:
-            outputs["stress_to_send"] = 0
-        if outputs["anxio_to_send"] < 0:
-            outputs["anxio_to_send"] = 0
+        if "key" in outputs:
+            if outputs[key] < 0:
+                outputs[key] = 0
+        
+        if "stress_to_send" in outputs:
+            if outputs["stress_to_send"] < 0:
+                outputs["stress_to_send"] = 0
+
+        if "anxio_to_send" in outputs:
+            if outputs["anxio_to_send"] < 0:
+                outputs["anxio_to_send"] = 0
         
         # molecules1 GJ opening correction
-        self.GJ_opening_molecs = outputs['GJ_opening_molecs']
-        if self.GJ_opening_molecs < 0:
-            self.GJ_opening_molecs = 0
-        elif self.GJ_opening_molecs > 1:
-            self.GJ_opening_molecs = 1
+        if "GJ_opening_molecs" in outputs:
+            self.GJ_opening_molecs = outputs['GJ_opening_molecs']
+            if self.GJ_opening_molecs < 0:
+                self.GJ_opening_molecs = 0
+            elif self.GJ_opening_molecs > 1:
+                self.GJ_opening_molecs = 1
 
         # stress GJ opening correction
-        self.GJ_opening_stress = outputs['GJ_opening_stress']
-        if self.GJ_opening_stress < 0:
-            self.GJ_opening_stress = 0
-        elif self.GJ_opening_stress > 1:
-            self.GJ_opening_stress = 1           
+        if "GJ_opening_stress" in outputs:
+            self.GJ_opening_stress = outputs['GJ_opening_stress']
+            if self.GJ_opening_stress < 0:
+                self.GJ_opening_stress = 0
+            elif self.GJ_opening_stress > 1:
+                self.GJ_opening_stress = 1           
 
         # make apoptosis variable binary
         if "apoptosis" in outputs:
@@ -281,33 +294,43 @@ class Cell(Agent):
 
         return outputs
                 
-    def local_geometrical_frustration (self):
-        geometrical_frustration = 0
-        neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, False)
-        for neighbour in neighbours:
-            if self.model.grid.is_cell_empty(neighbour)==False: # not dead
-                 cell_in_contact = self.model.grid.get_cell_list_contents([neighbour])[0]
-                 if self.state[0] != cell_in_contact.state[0]:
-                     geometrical_frustration += 1
-        return geometrical_frustration / (len(neighbours))
+    # def local_geometrical_frustration (self):
+    #     geometrical_frustration = 0
+    #     neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, False)
+    #     for neighbour in neighbours:
+    #         if self.model.grid.is_cell_empty(neighbour)==False: # not dead
+    #              cell_in_contact = self.model.grid.get_cell_list_contents([neighbour])[0]
+    #              if self.state[0] != cell_in_contact.state[0]:
+    #                  geometrical_frustration += 1
+    #     return geometrical_frustration / (len(neighbours))
 
+    def update_local_fitness(self):
+        # new_fit = math.floor(self.model.schedule.local_fitness(self)/100)
+        new_fit = self.model.schedule.local_fitness(self)/100
+        self.local_fitness = self.update_history(self.local_fitness, new_fit)
+        return self.local_fitness
+    
+    def update_global_fitness(self):
+        new_fit = self.model.schedule.global_fitness()/100
+        self.global_fitness = self.update_history(self.global_fitness, new_fit)
+        return self.global_fitness
     # reward by concentric, or by N=1 nearest neighbours
-    def local_state(self):
-        local_state = 0
-        # Put true so score is lower if the center cell is not in correct state.
-        neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, True)
-        for neighbour in neighbours:
-            if self.model.grid.is_cell_empty(neighbour)==False: # not dead
-                cell = self.model.grid.get_cell_list_contents([neighbour])[0]
-                if cell.state[0] == cell.goal:
-                    local_state += 1
-            else:
-                # Need to get x and y coords of the dead neighbour
-                x=neighbour[0]
-                y=neighbour[1]
-                if self.model.goal[y][x] == 0:
-                    local_state += 1
-        return local_state / (len(neighbours))
+    # def local_state(self):
+    #     local_state = 0
+    #     # Put true so score is lower if the center cell is not in correct state.
+    #     neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, True)
+    #     for neighbour in neighbours:
+    #         if self.model.grid.is_cell_empty(neighbour)==False: # not dead
+    #             cell = self.model.grid.get_cell_list_contents([neighbour])[0]
+    #             if cell.state[0] == cell.goal:
+    #                 local_state += 1
+    #         else:
+    #             # Need to get x and y coords of the dead neighbour
+    #             x=neighbour[0]
+    #             y=neighbour[1]
+    #             if self.model.goal[y][x] == 0:
+    #                 local_state += 1
+    #     return local_state / (len(neighbours))
 
     def apoptosis(self, probability):
         if (probability == 1):
@@ -367,12 +390,10 @@ class Cell(Agent):
                 
 
     def divide(self, pos, subtract):
-        # x = pos[0]
-        # y = pos[1]
         x,y = pos
 
         # Updating initial cell
-        history_length = 2
+        history_length = 5
         cell = Cell(    net = self.net, 
                         depth = self.depth, 
                         unique_id = self.model.next_id(), 
@@ -388,8 +409,14 @@ class Cell(Agent):
                         stress = self.stress, # Giving same history of stress
                         state = self.state, # Giving same history of state
                         direction = self.direction,
+                        # local_fitness = self.local_fitness,
+                        # global_fitness = self.global_fitness,
+                        local_fitness = [0]*history_length,
+                        global_fitness = [0]*history_length,
                     )
         cell.energy[0] = self.model.energy
+        cell.local_fitness[0] = self.local_fitness[0]
+        cell.global_fitness[0] = self.global_fitness[0]
         self.birth(cell, x, y, subtract)
         
 
@@ -398,13 +425,9 @@ class Cell(Agent):
         A model step. 
         """
         
-        # self.energyt1 = self.energy
-        # self.stresst1 = self.stress
-        # self.statet1 = self.state
-                
         inputs = self.net_inputs()
         outputs = self.prune_outputs(self.net_outputs(inputs))
-        self.send_ions_and_stress(outputs)
+        # self.send_ions_and_stress(outputs)
 
         # Try this out next, cells only survive 100 steps (unless they do apop early)
         # if "reward" in outputs:
