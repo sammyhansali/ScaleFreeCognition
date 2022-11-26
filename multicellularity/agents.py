@@ -175,39 +175,66 @@ class Cell(Agent):
             stress=0     
         return stress
             
-    def send_ions_and_stress(self, outputs):
-        neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, False)
+    # def send_ions_and_stress(self, outputs):
+    #     neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, False)
         
-        # Molecule 1 distribution
-        # for i in range(self.molecules):
-        #     key = f"m{i}_to_send"
-        i=0                 # placeholder, later will put loop like above
-        key="m0_to_send"    # placeholder, later will put loop like above      
+    #     # Molecule 1 distribution
+    #     # for i in range(self.molecules):
+    #     #     key = f"m{i}_to_send"
+    #     i=0                 # placeholder, later will put loop like above
+    #     key="m0_to_send"    # placeholder, later will put loop like above      
+        
+    #     # Stress + anxiolytic distribution
+    #     for neighbour in neighbours:
+    #         if self.model.grid.is_cell_empty(neighbour)==False: # not dead
+    #             cell_in_contact = self.model.grid[neighbour][0]
+                
+    #             # m0 to send
+    #             GJ_open_percentage = min(self.GJ_opening_molecs, cell_in_contact.GJ_opening_molecs)
+    #             if self.molecules[i] >= outputs[key] * GJ_open_percentage:
+    #                 cell_in_contact.molecules[i] += outputs[key] * GJ_open_percentage   
+    #                 self.molecules[i] -= outputs[key] * GJ_open_percentage   
+    #             else:
+    #                 cell_in_contact.molecules[i] += self.molecules[i]
+    #                 self.molecules[i] = 0
+    #             cell_in_contact.update_state()  
+
+    #             # stress to send
+    #             if self.GJ_opening_stress>0:
+    #                 opening = self.GJ_opening_stress * cell_in_contact.GJ_opening_stress
+    #                 new_stress_amount = cell_in_contact.stress[0] + outputs['stress_to_send']*(opening) - outputs['anxio_to_send']*(opening)
+    #                 cell_in_contact.stress = self.update_history( cell_in_contact.stress, 
+    #                                 self.prune_stress(new_stress_amount)
+    #                                 )
+    #                 # cell_in_contact.stress += outputs['stress_to_send']*((self.GJ_opening_stress * cell_in_contact.GJ_opening_stress))   
+    #                 # cell_in_contact.stress -= outputs['anxio_to_send']*((self.GJ_opening_stress * cell_in_contact.GJ_opening_stress))   
+
+    #     if self.GJ_opening_stress>0:
+    #         new_stress_amount = self.stress[0] + outputs['stress_to_send'] - outputs['anxio_to_send'] 
+    #         self.stress = self.update_history( self.stress, 
+    #                         self.prune_stress(new_stress_amount)
+    #                         )
+
+    #     self.update_state()   
+
+    # Experimental
+    def send_ions_and_stress(self, outputs):
+        
+        neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, False)
         
         # Stress + anxiolytic distribution
         for neighbour in neighbours:
             if self.model.grid.is_cell_empty(neighbour)==False: # not dead
+
                 cell_in_contact = self.model.grid[neighbour][0]
-                
-                # m0 to send
-                GJ_open_percentage = min(self.GJ_opening_molecs, cell_in_contact.GJ_opening_molecs)
-                if self.molecules[i] >= outputs[key] * GJ_open_percentage:
-                    cell_in_contact.molecules[i] += outputs[key] * GJ_open_percentage   
-                    self.molecules[i] -= outputs[key] * GJ_open_percentage   
-                else:
-                    cell_in_contact.molecules[i] += self.molecules[i]
-                    self.molecules[i] = 0
+
+                # Send ions and update states
+                self.send_ions(cell_in_contact)
                 cell_in_contact.update_state()  
+                self.update_state()
 
                 # stress to send
-                if self.GJ_opening_stress>0:
-                    opening = self.GJ_opening_stress * cell_in_contact.GJ_opening_stress
-                    new_stress_amount = cell_in_contact.stress[0] + outputs['stress_to_send']*(opening) - outputs['anxio_to_send']*(opening)
-                    cell_in_contact.stress = self.update_history( cell_in_contact.stress, 
-                                    self.prune_stress(new_stress_amount)
-                                    )
-                    # cell_in_contact.stress += outputs['stress_to_send']*((self.GJ_opening_stress * cell_in_contact.GJ_opening_stress))   
-                    # cell_in_contact.stress -= outputs['anxio_to_send']*((self.GJ_opening_stress * cell_in_contact.GJ_opening_stress))   
+                self.send_stress(cell_in_contact)
 
         if self.GJ_opening_stress>0:
             new_stress_amount = self.stress[0] + outputs['stress_to_send'] - outputs['anxio_to_send'] 
@@ -215,20 +242,41 @@ class Cell(Agent):
                             self.prune_stress(new_stress_amount)
                             )
 
-        self.update_state()   
+
+    def send_ions(self, cell_in_contact):
+        # Distribute molecules
+        GJ_open_percentage = min(self.GJ_opening_molecs, cell_in_contact.GJ_opening_molecs) # For now, assuming only 1 gap junction for all molecs. Not 1 each.
+        for i in range(self.model.nb_output_molecules):
+            key = f"molecule_{i}_to_send"
+            if self.molecules[i][0] >= outputs[key] * GJ_open_percentage:
+                to_send = outputs[key] * GJ_open_percentage
+                new_cic_molecs = cell_in_contact.molecules[i][0] + send
+                new_self_molecs = self.molecules[i][0] - send
+            else:
+                new_cic_molecs = cell_in_contact.molecules[i][0] + self.molecules[i][0]
+                new_self_molecs = 0
+            # Updating history
+            cell_in_contact.molecules[i] = self.update_history(cell_in_contact.molecules[i], new_cic_molecs)
+            self.molecules[i] = self.update_history(self.molecules[i], new_self_molecs)
 
 
-        
+    def send_stress(self, cell_in_contact):
+        opening = self.GJ_opening_stress * cell_in_contact.GJ_opening_stress
+        new_stress_amount = cell_in_contact.stress[0] + outputs['stress_to_send']*(opening) - outputs['anxio_to_send']*(opening)
+        cell_in_contact.stress = self.update_history(   cell_in_contact.stress, 
+                                                        self.prune_stress(new_stress_amount)
+                                                        )
+
+
     def prune_outputs(self, outputs):
         """Make sure outputs are in correct form for use with agent actions"""
                     
-        # supports multiple molecules sent out in future
-        # for i in range(self.molecules):
-        #     key = f"m{i+1}_to_send"
-        key ="m0_to_send"
-        if "key" in outputs:
-            if outputs[key] < 0:
-                outputs[key] = 0
+        # Multi molecule support
+        for i in range(self.molecules):
+            key = f"molecules_{i}_to_send"
+            if key in outputs:
+                if outputs[key] < 0:
+                    outputs[key] = 0
         
         if "stress_to_send" in outputs:
             if outputs["stress_to_send"] < 0:
@@ -270,20 +318,20 @@ class Cell(Agent):
                 outputs["cell_division"] = 1
             outputs["cell_division"] = round(outputs["cell_division"]) # Want binary
 
-        if "use_finite_reservoir" in outputs:
-            if outputs["use_finite_reservoir"] < 0:
-                outputs["use_finite_reservoir"] = 0
-            elif outputs["use_finite_reservoir"] > 1:
-                outputs["use_finite_reservoir"] = 1   
-            outputs["use_finite_reservoir"] = round(outputs["use_finite_reservoir"]) # Want binary
+        # if "use_finite_reservoir" in outputs:
+        #     if outputs["use_finite_reservoir"] < 0:
+        #         outputs["use_finite_reservoir"] = 0
+        #     elif outputs["use_finite_reservoir"] > 1:
+        #         outputs["use_finite_reservoir"] = 1   
+        #     outputs["use_finite_reservoir"] = round(outputs["use_finite_reservoir"]) # Want binary
         
-        if "reward" in outputs:
-            if outputs["reward"] < -1:
-                # print("went super neg")
-                outputs["reward"] = -1
-            elif outputs["reward"] > 1:
-                # print("went super pos")
-                outputs["reward"] = 1  
+        # if "reward" in outputs:
+        #     if outputs["reward"] < -1:
+        #         # print("went super neg")
+        #         outputs["reward"] = -1
+        #     elif outputs["reward"] > 1:
+        #         # print("went super pos")
+        #         outputs["reward"] = 1  
         
         if "direction" in outputs:
             if outputs["direction"] < 0:
@@ -393,7 +441,6 @@ class Cell(Agent):
         x,y = pos
 
         # Updating initial cell
-        history_length = 5
         cell = Cell(    net = self.net, 
                         depth = self.depth, 
                         unique_id = self.model.next_id(), 
@@ -405,19 +452,18 @@ class Cell(Agent):
                         GJ_opening_molecs = self.GJ_opening_molecs, 
                         GJ_opening_stress = self.GJ_opening_stress, 
                         # Historical data
-                        energy = [0]*history_length,
+                        energy = [0]*self.model.history_length,
                         stress = self.stress, # Giving same history of stress
                         state = self.state, # Giving same history of state
                         direction = self.direction,
                         # local_fitness = self.local_fitness,
                         # global_fitness = self.global_fitness,
-                        local_fitness = [0]*history_length,
-                        global_fitness = [0]*history_length,
+                        local_fitness = [0]*self.model.history_length,
+                        global_fitness = self.global_fitness,
                     )
         cell.energy[0] = self.model.energy
-        cell.local_fitness[0] = self.local_fitness[0]
-        cell.global_fitness[0] = self.global_fitness[0]
         self.birth(cell, x, y, subtract)
+        cell.local_fitness[0] = self.schedule.local_fitness(self)
         
 
     def step(self):
