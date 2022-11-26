@@ -7,7 +7,7 @@ class experiment:
     # MESA params
     nb_gens=2
     depth=4
-    max_fitness= 97
+    max_fitness= 100
     energy = 50            # default was 70
     step_count = 100
     # fitness = 0           # see model class for the definitions of the variable
