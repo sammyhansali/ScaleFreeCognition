@@ -18,6 +18,7 @@ class experiment:
     nb_output_anxio = 1
     apoptosis_on = 1        # Set to 0 if off
     cell_division_on = 1    # Set to 0 if off
+    history_length = 5
     ANN_inputs = None
     ANN_outputs = None
 

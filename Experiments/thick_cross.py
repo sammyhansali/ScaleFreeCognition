@@ -4,6 +4,9 @@ sys.path.append('.')
 from experiment import experiment
 from run import run_experiment
 #
+nb_gens = int(sys.argv[1])
+history_length = int(sys.argv[2])
+nb_output_molecules = int(sys.argv[3])
 
 start = [[ 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -37,9 +40,11 @@ ANN_inputs=     [       #"molecules",
                 ]
 # ANN_inputs.extend(["energy"]*2)
 # ANN_inputs.extend(["stress"]*2)
-ANN_inputs.extend(["state"]*5)
-ANN_inputs.extend(["local_fitness"]*5)
-ANN_inputs.extend(["global_fitness"]*5)
+ANN_inputs.extend(["state"]*history_length)
+ANN_inputs.extend(["local_fitness"]*history_length)
+ANN_inputs.extend(["global_fitness"]*history_length)
+
+
 ANN_outputs=    [       #"m0_to_send", 
                         # "GJ_opening_molecs", 
                         # "stress_to_send", 
@@ -51,12 +56,12 @@ ANN_outputs=    [       #"m0_to_send",
                         # "use_finite_reservoir",
                         "direction",
                 ] 
-# Maybe make a molecules dictionary?
-# Keys: 1,2,3, etc
-# Values: timeseries lists of histories of molecules
-# Get states by summing 0th index of each value[]
+for i in range(nb_output_molecules):
+        ANN_outputs.append(f"molecule_{i}_to_send")
 
 exp = experiment(start, goal, ANN_inputs, ANN_outputs)
-exp.nb_gens=int(sys.argv[1])
+exp.nb_gens = nb_gens
+exp.history_length = history_length
+exp.nb_output_molecules = nb_output_molecules
                         
 run_experiment(exp)
