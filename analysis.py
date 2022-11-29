@@ -334,7 +334,7 @@ if __name__ == '__main__':
     net = NEAT.NeuralNetwork()
     net.Load("winner_net.txt")
     net.Flush()
-    print("\nSubstrate nodes: %d, connections: %d" % (len(net.neurons), len(net.connections)))
+    # print("\nSubstrate nodes: %d, connections: %d" % (len(net.neurons), len(net.connections)))
 
     # Loading data
     sys.setrecursionlimit(100000)
