@@ -14,37 +14,36 @@ start = [[ 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [ 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [ 0, 0, 0, 0, 3, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-goal = [[ 0, 0, 0, 1, 1, 1, 0, 0, 0],
-        [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
-        [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
-        [ 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [ 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [ 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
-        [ 0, 0, 0, 1, 1, 1, 0, 0, 0],
-        [ 0, 0, 0, 1, 1, 1, 0, 0, 0]]
+goal = [[ 0, 0, 0, 3, 3, 3, 0, 0, 0],
+        [ 0, 0, 0, 3, 3, 3, 0, 0, 0],
+        [ 0, 0, 0, 3, 3, 3, 0, 0, 0],
+        [ 3, 3, 3, 3, 3, 3, 3, 3, 3],
+        [ 3, 3, 3, 3, 3, 3, 3, 3, 3],
+        [ 3, 3, 3, 3, 3, 3, 3, 3, 3],
+        [ 0, 0, 0, 3, 3, 3, 0, 0, 0],
+        [ 0, 0, 0, 3, 3, 3, 0, 0, 0],
+        [ 0, 0, 0, 3, 3, 3, 0, 0, 0]]
  
 ANN_inputs=     [       
                         #"molecules", 
                         "pos_x",
                         "pos_y",
                         "direction",
-                        "delta",
+                        "goal",
                         # "finite_reservoir",
                         "bias",
                 ]
 # ANN_inputs.extend(["energy"]*2) # Not being used for anything atm
 # ANN_inputs.extend(["stress"]*2) # Not being used for anything atm
 ANN_inputs.extend(["state"]*history_length)
-ANN_inputs.extend(["local_fitness"]*history_length)
+# ANN_inputs.extend(["local_fitness"]*history_length)
 ANN_inputs.extend(["global_fitness"]*history_length)
-# Add timeseries for directionality? (After push!)
 # ANN_inputs.extend(["direction"]*history_length)
 
 
