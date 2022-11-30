@@ -13,7 +13,6 @@ class experiment:
     # fitness = 0           # see model class for the definitions of the variable
     nb_gap_junctions = 1    # one unique GJ_opening for both molecs and stress
     nb_stress_GJ = 1
-    nb_output_molecules = 1 
     nb_output_stress = 1
     nb_output_anxio = 1
     apoptosis_on = 1        # Set to 0 if off
@@ -92,10 +91,8 @@ class experiment:
     rng = NEAT.RNG()
     rng.TimeSeed()
 
-    nb_ANN_inputs = 0 # nb molecules + energy + stress + state + bias + state_neigbours
+    nb_ANN_inputs = 0 
     nb_ANN_outputs = 0
-    # nb_outputs =  nb_output_molecules + 1 + nb_output_stress + 1 + nb_output_anxio + apoptosis_on + cell_division_on
-    # The "1" represents the one GJ_opening_molecs variable that will exist. As of now, there won't be one of those variables for each molecule.
 
     def __init__(   self, 
                     start, 
