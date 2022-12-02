@@ -20,6 +20,7 @@ class experiment:
     history_length = 5
     ANN_inputs = None
     ANN_outputs = None
+    e_penalty = None
 
     # Interface
     interface =  False

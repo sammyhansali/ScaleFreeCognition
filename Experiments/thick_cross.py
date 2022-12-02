@@ -7,8 +7,9 @@ from run import run_experiment
 
 # Command line arguments
 nb_gens = int(sys.argv[1])
-history_length = int(sys.argv[2])
+history_length = int(sys.argv[2])           # Keep it at 1 for minimalism
 nb_output_molecules = int(sys.argv[3])
+e_penalty = float(sys.argv[4])
 
 start = [[ 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -37,19 +38,19 @@ ANN_inputs=     [
                         # "finite_reservoir",
                         "bias",
                 ]
-ANN_inputs.extend(["molecules"]*history_length*nb_output_molecules) 
+# ANN_inputs.extend(["molecules"]*history_length*nb_output_molecules) 
 ANN_inputs.extend(["energy"]*history_length)
-ANN_inputs.extend(["stress"]*history_length)
+# ANN_inputs.extend(["stress"]*history_length)
 ANN_inputs.extend(["state"]*history_length)
 ANN_inputs.extend(["global_fitness"]*history_length)
 ANN_inputs.extend(["direction"]*history_length)
 
 
 ANN_outputs=    [    
-                        "GJ_opening_molecs", 
-                        "stress_to_send", 
-                        "GJ_opening_stress", 
-                        "anxio_to_send", 
+                        # "GJ_opening_molecs", 
+                        # "stress_to_send", 
+                        # "GJ_opening_stress", 
+                        # "anxio_to_send", 
                         "apoptosis", 
                         "cell_division",
                         # "reward",
@@ -62,5 +63,6 @@ for i in range(nb_output_molecules):
 exp = experiment(start, goal, ANN_inputs, ANN_outputs)
 exp.nb_gens = nb_gens
 exp.history_length = history_length
+exp.e_penalty = e_penalty
                         
 run_experiment(exp)

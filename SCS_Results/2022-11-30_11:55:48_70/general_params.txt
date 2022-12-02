@@ -1,0 +1,8 @@
+depth: 4  
+height: 9  
+width: 9  
+energy: 50 
+nb_gap_junctions: 1  
+history_length: 10  
+e_penalty: 0.95  
+step_count: 100
