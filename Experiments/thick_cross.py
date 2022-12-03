@@ -6,10 +6,10 @@ from experiment import experiment
 from run import run_experiment
 
 # Command line arguments
-nb_gens = int(sys.argv[1])
-history_length = int(sys.argv[2])           # Keep it at 1 for minimalism
-nb_output_molecules = int(sys.argv[3])
-e_penalty = float(sys.argv[4])
+nb_gens = int(sys.argv[1])              # 250
+history_length = int(sys.argv[2])       # 2
+nb_output_molecules = int(sys.argv[3])  # 0
+e_penalty = float(sys.argv[4])          # 0.9
 
 start = [[ 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
