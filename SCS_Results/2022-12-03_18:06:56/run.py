@@ -73,15 +73,12 @@ step_count: %s" % (exp.depth, exp.height, exp.width,
     # Saving files and folders
     shutil.copyfile("analysis.py",  "SCS_Results/" + file + "/" + "analysis.py")
     shutil.copyfile("run.py",  "SCS_Results/" + file + "/" + "run.py")
-    shutil.copyfile("experiment.py",  "SCS_Results/" + file + "/" + "experiment.py")
     shutil.copytree('./multicellularity', "SCS_Results/" + file + "/" + "multicellularity")
-    shutil.copytree('./Experiments', "SCS_Results/" + file + "/" + "Experiments")
 
     # Save random seed and exp.params
     seed = int(time.time()) #1660341957#
     np.save("SCS_Results/" + file + "/seed", seed)
     exp.params.Save("SCS_Results/" + file + "/multiNEAT_params.txt")
-
     # Matrices
     np.savetxt("SCS_Results/" + file + "/start_matrix.txt", exp.start)
     np.savetxt("SCS_Results/" + file + "/goal_matrix.txt", exp.goal)
@@ -289,7 +286,8 @@ def eval_individual(genome):
             fitness_test = model.run_model(fitness_evaluation=True)
             #net.Flush()
         fitness_individual = fitness_individual/10
-        # net.Save("SCS_Results/" + file + "/winner_net_"+ str(fitness_individual)+".txt")
+
+        net.Save("SCS_Results/" + file + "/winner_net_"+ str(fitness_individual)+".txt")
     else: 
         fitness_individual = fitness_test
         
