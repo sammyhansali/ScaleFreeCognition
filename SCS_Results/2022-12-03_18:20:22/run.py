@@ -73,7 +73,6 @@ step_count: %s" % (exp.depth, exp.height, exp.width,
     # Saving files and folders
     shutil.copyfile("analysis.py",  "SCS_Results/" + file + "/" + "analysis.py")
     shutil.copyfile("run.py",  "SCS_Results/" + file + "/" + "run.py")
-    shutil.copyfile("experiment.py",  "SCS_Results/" + file + "/" + "experiment.py")
     shutil.copytree('./multicellularity', "SCS_Results/" + file + "/" + "multicellularity")
     shutil.copytree('./Experiments', "SCS_Results/" + file + "/" + "Experiments")
 
