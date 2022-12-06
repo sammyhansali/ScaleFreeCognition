@@ -42,10 +42,11 @@ class Cell(Agent):
     global_fitness = None
     molecules = None
     energy_temp = None
+    cell_type = None
 
 
 
-    def __init__(self, net, depth, unique_id, pos, model, moore, molecules, goal, GJ_opening_molecs, GJ_opening_stress, energy, stress, state, direction, local_fitness, global_fitness):
+    def __init__(self, net, depth, unique_id, pos, model, moore, molecules, goal, GJ_opening_molecs, GJ_opening_stress, energy, stress, state, direction, local_fitness, global_fitness, cell_type):
         """
         grid: The MultiGrid object in which the agent lives.
         x: The agent's current x coordinate
@@ -72,6 +73,7 @@ class Cell(Agent):
         # Directionality
         self.direction = direction
         self.energy_temp = self.energy[0]
+        self.cell_type = cell_type
         
     def net_inputs(self):
         inputs = []
@@ -366,24 +368,33 @@ class Cell(Agent):
         outputs = self.prune_outputs(self.net_outputs(inputs))
         self.energy_temp = self.energy[0]
 
-        # if self.energy_temp >= 2.5 and outputs["cell_division"] == 1:
-        if self.energy_temp >= 0 and outputs["cell_division"] == 1:
-            self.cell_division()
+        # Division
+        if "cell_division" in outputs:
+            if self.energy_temp >= 0 and outputs["cell_division"] == 1:
+                self.cell_division()
 
-        # if "apoptosis" in outputs:
-        # self.apoptosis(outputs["apoptosis"])
-        if outputs["apoptosis"] == 1 or self.energy[0] <= 0:
+        # Death
+        if "apoptosis" in outputs:
+            if outputs["apoptosis"] == 1:
+                self.die()
+                return
+        if self.energy[0] <= 0:
             self.die()
             return
 
 
         # Updating variables
-        self.update_global_fitness()
-        self.update_direction(outputs["direction"])     
-        # self.update_molecs_and_state(outputs)
-        # self.update_stress(outputs)
+        if "global_fitness" in self.model.ANN_inputs:
+            self.update_global_fitness()
+        if "direction" in self.model.ANN_inputs:
+            self.update_direction(outputs["direction"])   
+        if "molecules" in self.model.ANN_inputs:
+            self.update_molecs_and_state(outputs)
+        if "stress" in self.model.ANN_inputs:
+            self.update_stress(outputs)
         # E needs to be updated last since the above updates can sap E
-        self.energy = self.update_history(self.energy, self.energy_temp+self.global_fitness[0]-self.model.e_penalty)
+        if "energy" in self.model.ANN_inputs:
+            self.energy = self.update_history(self.energy, self.energy_temp+self.global_fitness[0]-self.model.e_penalty)
 
         
         
