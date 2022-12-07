@@ -47,7 +47,7 @@ class Cell(Agent):
 
 
 
-    def __init__(self, net, depth, unique_id, pos, model, moore, molecules, goal, GJ_opening_ions, GJ_opening_stress, energy, stress, direction, local_fitness, global_fitness, cell_type, potential):
+    def __init__(self, net, depth, unique_id, pos, model, moore, molecules, goal, GJ_opening_ions, GJ_opening_stress, energy, stress, state, direction, local_fitness, global_fitness, cell_type, potential):
         """
         grid: The MultiGrid object in which the agent lives.
         x: The agent's current x coordinate
@@ -67,6 +67,7 @@ class Cell(Agent):
         self.GJ_opening_stress = GJ_opening_stress
         # Inputs
         self.energy = energy
+        self.state = state
         self.stress = stress
         self.local_fitness = local_fitness
         self.global_fitness = global_fitness
