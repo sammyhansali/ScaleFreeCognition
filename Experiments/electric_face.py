@@ -9,7 +9,8 @@ from run import run_experiment
 nb_gens = int(sys.argv[1])              # 250
 history_length = int(sys.argv[2])       # 2
 nb_output_molecules = int(sys.argv[3])  # 0 to start
-e_penalty = float(sys.argv[4])          # 0.7. 0.95 got me 100 and 99
+e_penalty = float(sys.argv[4])          # 0.95
+# Epsilon of 15 (see agents.py)
 
 ## Deranged Face
 start =    [[ 3, 3, 1, 1, 1, 1, 1, 1, 1],
@@ -62,16 +63,12 @@ ANN_inputs=     [
 ANN_inputs.extend(["potential"]*history_length) 
 ANN_inputs.extend(["cell_type"]*history_length)
 ANN_inputs.extend(["energy"]*history_length)
-# ANN_inputs.extend(["stress"]*history_length)
 # ANN_inputs.extend(["molecules"]*history_length*nb_output_molecules) 
 ANN_inputs.extend(["global_fitness"]*history_length)
 
 ANN_outputs=    [    
                         "GJ_opening_ions", 
                         "charge_to_send",
-                        # "GJ_opening_stress", 
-                        # "stress_to_send", 
-                        # "anxio_to_send", 
                         "cell_type",
                         # "GJ_opening_molecs",
                 ] 
