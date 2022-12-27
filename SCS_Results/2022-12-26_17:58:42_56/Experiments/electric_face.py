@@ -9,7 +9,7 @@ from run import run_experiment
 nb_gens = int(sys.argv[1])              # 250
 history_length = 2
 nb_output_molecules = 0
-e_penalty = 0.75                        # I need to update the fitness function I think, or this ain't gonna work.
+e_penalty = 0.75
 
 ## Deranged Face
 start =    [[ 3, 3, 1, 1, 1, 1, 1, 1, 1],

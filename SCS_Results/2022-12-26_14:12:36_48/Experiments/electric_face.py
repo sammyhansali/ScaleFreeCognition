@@ -9,7 +9,7 @@ from run import run_experiment
 nb_gens = int(sys.argv[1])              # 250
 history_length = 2
 nb_output_molecules = 0
-e_penalty = 0.75                        # I need to update the fitness function I think, or this ain't gonna work.
+e_penalty = 0.65
 
 ## Deranged Face
 start =    [[ 3, 3, 1, 1, 1, 1, 1, 1, 1],
@@ -64,6 +64,18 @@ ANN_inputs=     [
                         "direction",
                 ]
 nb_ANN_inputs = ( (len(ANN_inputs)-1) + nb_output_molecules ) * history_length
+
+# ANN_inputs.extend(["tissue_goal_cell_type"]*history_length) # "tissue_goal_cell_type" is the new name for "goal_cell_type"
+# ANN_inputs.extend(["pos_x"]*history_length) 
+# ANN_inputs.extend(["pos_y"]*history_length) 
+# ANN_inputs.extend(["potential"]*history_length) 
+# ANN_inputs.extend(["cell_type"]*history_length)
+# ANN_inputs.extend(["energy"]*history_length)
+# ANN_inputs.extend(["global_fitness"]*history_length)
+# ANN_inputs.extend(["direction"]*history_length)
+# if nb_output_molecules > 0:
+#         ANN_inputs.extend(["molecules"]*history_length*nb_output_molecules) 
+
 
 ANN_outputs=    [    
                         "direction",
