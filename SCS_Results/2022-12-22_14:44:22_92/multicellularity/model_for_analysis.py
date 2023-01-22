@@ -50,6 +50,7 @@ class Multicellularity_model(Model):
         e_penalty = None,
         bioelectric_stimulus = None,
         start_dissimilarity = None,
+        molecules_exchanged = None,
     ):
         """
         Create a new multicellularity model with the given parameters.
@@ -81,25 +82,39 @@ class Multicellularity_model(Model):
         self.e_penalty = e_penalty
         self.bioelectric_stimulus = bioelectric_stimulus
         
-        self.datacollector = DataCollector(
-            {
 
-                # "Cells": lambda m: m.schedule.get_breed_count(Cell),
-                "Global stress": lambda m: m.schedule.get_global_stress(Cell),
-                "Multicellularity": lambda m: m.schedule.get_open_cells(Cell),
-                #"Entropy": lambda m: m.schedule.get_spatial_entropy(Cell),
-                "Geometrical frustration": lambda m: m.schedule.general_geometrical_frustration(Cell),
-                "Internal stress": lambda m:m.schedule.get_internal_stress(Cell),
-
-
-            }
-        )
         # Calculate number of cells in goal matrix
         mat = np.array(self.goal)
         self.nb_goal_cells = len(mat[mat.nonzero()])
         self.ANN_inputs = ANN_inputs
         self.ANN_outputs = ANN_outputs
         self.nb_output_molecules = nb_output_molecules
+
+        # Data collection for charts in analysis
+        datacollector_dict = {}
+            # {
+            #     # "Cells": lambda m: m.schedule.get_breed_count(Cell),
+            #     # "Global stress": lambda m: m.schedule.get_global_stress(Cell),
+            #     # "Multicellularity": lambda m: m.schedule.get_open_cells(Cell),
+            #     #"Entropy": lambda m: m.schedule.get_spatial_entropy(Cell),
+            #     # "Geometrical frustration": lambda m: m.schedule.general_geometrical_frustration(Cell),
+            #     # "Internal stress": lambda m:m.schedule.get_internal_stress(Cell),
+            #     # "Total molecules exchanged": lambda m:m.schedule.get_total_nb_molecules_exchanged(Cell),
+            # }
+        # for i in range(nb_output_molecules):
+        #     datacollector_dict[f"Molecule {i} exchanged"] = lambda m:m.schedule.get_nb_molecules_exchanged(Cell, i)
+        datacollector_dict["Molecule 0 exchanged"] = lambda m:m.schedule.get_nb_molecules_exchanged_0(Cell)
+        datacollector_dict["Molecule 1 exchanged"] = lambda m:m.schedule.get_nb_molecules_exchanged_1(Cell)
+        datacollector_dict["Molecule 2 exchanged"] = lambda m:m.schedule.get_nb_molecules_exchanged_2(Cell)
+        # datacollector_dict["Molecule 3 exchanged"] = lambda m:m.schedule.get_nb_molecules_exchanged_3(Cell)
+        datacollector_dict["Total molecules exchanged"] = lambda m:m.schedule.get_nb_molecules_exchanged_tot(Cell)
+
+
+        # if self.nb_output_molecules > 1:
+        #     datacollector_dict["Total molecules exchanged"] = lambda m:m.schedule.get_nb_molecules_exchanged(Cell, "total")
+
+
+        self.datacollector = DataCollector(datacollector_dict)
 
         # Create cells on the whole grid
         self.schedule.generate_cells(Cell)
@@ -111,6 +126,15 @@ class Multicellularity_model(Model):
         # Starting dissimilarity
         self.start_dissimilarity = self.schedule.dissimilarity()
 
+
+    # def get_nb_molecules_exchanged(self, Cell, i):
+    #     # if i == 0:
+    #     self.molecules_exchanged = self.schedule.nb_molecules_exchanged(Cell)  # Do calculations before getting 0th molec
+    #     if i == "total":
+    #         return sum(self.molecules_exchanged)
+    #     # Otherwise, i is an integer that picks which molecule you want
+    #     # print(i)
+    #     return self.molecules_exchanged[i]
     
     # Don't delete, or you won't be able to "step" in the visualization in mesa....
     def step(self):

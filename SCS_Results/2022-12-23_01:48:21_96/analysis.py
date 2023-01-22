@@ -199,7 +199,7 @@ def GJ_generator(GJ):
     portrayal["Filled"] = "true"
     portrayal["Layer"] = 0
     portrayal["r"] = 1
-    portrayal["text"] = str(round(GJ, 1))
+    portrayal["text"] = str(round(GJ, 2))
     portrayal["text_color"] = ["black"]
 
 
@@ -253,6 +253,34 @@ def GJ_molecules_3(agent):
     GJ = agent.GJ_molecules[3]
     return GJ_generator(GJ)
 
+def GJ_molecules_4(agent):
+    if agent is None:
+        return
+    if type(agent) is not Cell:
+        return {}
+
+    GJ = agent.GJ_molecules[4]
+    return GJ_generator(GJ)
+
+def molecules_generator_tot(molecules, n):
+    portrayal = {}
+
+    portrayal["Shape"] = "circle"
+    portrayal["Filled"] = "true"
+    portrayal["text"] = str(int(molecules))
+    portrayal["text_color"] = ["black"]
+    portrayal["Layer"] = 0
+    portrayal["r"] = 1
+
+    if molecules >=  10*n :
+        portrayal["Color"] = ["#014fff"]
+    elif molecules >= 5*n:
+        portrayal["Color"] = ["#00b5ff"]
+    else:
+        portrayal["Color"] = ["#bff8fd"]
+    
+    return portrayal
+
 def molecules_generator(molecules):
     portrayal = {}
 
@@ -282,7 +310,7 @@ def molecules(agent):
     n = len(agent.molecules)
     for i in range(n):
         molecules+=agent.molecules[i][0]
-    return molecules_generator(molecules)
+    return molecules_generator_tot(molecules, n)
 
 
 def molecules_0(agent):
@@ -320,6 +348,15 @@ def molecules_3(agent):
         return {}
 
     molecules = agent.molecules[3][0]
+    return molecules_generator(molecules)
+
+def molecules_4(agent):
+    if agent is None:
+        return
+    if type(agent) is not Cell:
+        return {}
+
+    molecules = agent.molecules[4][0]
     return molecules_generator(molecules)
 
 
@@ -485,24 +522,52 @@ def energy_delta(agent):
 
 def get_elements(height, width, nb_output_molecules):
     return_list =   [
-                        CanvasGrid(cell_types, height, width, 200, 200),
-                        CanvasGrid(potential, height, width, 200, 200),
+                        CanvasGrid(cell_types, height, width, 150, 150),
+                        CanvasGrid(potential, height, width, 150, 150),
                     ]
 
-    molec_list = [molecules_0, molecules_1, molecules_2, molecules_3]
-    GJ_molec_list = [GJ_molecules_0, GJ_molecules_1, GJ_molecules_2, GJ_molecules_3]
+    molec_list = [molecules_0, molecules_1, molecules_2, molecules_3, molecules_4]
+    GJ_molec_list = [GJ_molecules_0, GJ_molecules_1, GJ_molecules_2, GJ_molecules_3, GJ_molecules_4]
     for i in range(nb_output_molecules):
         return_list.append(
-                CanvasGrid(molec_list[i], height, width, 200, 200)
+                CanvasGrid(molec_list[i], height, width, 150, 150)
             )
         return_list.append(
-                CanvasGrid(GJ_molec_list[i], height, width, 200, 200)
+                CanvasGrid(GJ_molec_list[i], height, width, 150, 150)
             )
-    others = [molecules, energy, energy_delta]
+    others =    [
+                    molecules, 
+                    # energy, 
+                    # energy_delta
+                ]
     for i in others:
-        return_list.append(CanvasGrid(i, height, width, 200, 200))
+        return_list.append(CanvasGrid(i, height, width, 150, 150))
 
+    # Making charts for molecule exchange activity
+    colors = [ "#1a9be1", "#77cb0e", "#69683a", "#0b615a", "#193d8f", "#0d8b59", "#6b8c6a", "#5a5caa", "#b4989f", "#c32f1e"]
+    for i in range(nb_output_molecules):
+        return_list.append(
+            ChartModule(
+                [{"Label": f"Molecule {i} exchanged", "Color": colors[i]}],
+                canvas_height=160, 
+                canvas_width=400,
+            )
+        )
+    if nb_output_molecules > 1:
+        return_list.append(
+            ChartModule(
+                [{"Label": "Total molecules exchanged", "Color": "#AA0000"}],
+                canvas_height=160, 
+                canvas_width=400,
+            )
+        )
+
+    # total_nb_molecules_exchanged = ChartModule(
+    #     [{"Label": "Total molecules exchanged", "Color": "#AA0000"}]
+    # )
+    # return_list.append(total_nb_molecules_exchanged)
     return return_list
+
     # chart_element = ChartModule(
     #     [{"Label": "Cells", "Color": "#AA0000"}], [{"Label": "Global stress", "Color": "##84e184"}]
     # )

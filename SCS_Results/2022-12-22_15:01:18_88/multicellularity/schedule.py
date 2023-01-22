@@ -20,6 +20,7 @@ class RandomActivationByBreed(RandomActivation):
     def __init__(self, model):
         super().__init__(model)
         self.agents_by_breed = defaultdict(dict)
+        # self.molecules_exchanged = [0]
 
     def add(self, agent):
         """
@@ -114,6 +115,148 @@ class RandomActivationByBreed(RandomActivation):
         cell_types = np.array(cell_types)
         e = altieri_entropy(points, cell_types)
         return e.entropy
+
+    # def get_nb_molecules_exchanged(self, Cell, i):
+    #     # subtract molecules[i][j] and molecules[i][j-1] for each agent
+    #     n = self.model.nb_output_molecules
+    #     # Assume n > 0
+    #     # if n = 1, return exchanged for molec_0 only
+    #     # if n = 2, return exchanged for molec_0, molec_1
+    #     # Etc
+    #     # return [n,n]
+    #     # exchanged = [0]*n
+    #     # agent_keys = list(self.agents_by_breed[Cell].keys())
+    #     # # print(agent_keys)
+    #     # for agent_key in agent_keys:
+    #     #     for i in range(n):
+    #     #         curr= self.agents_by_breed[Cell][agent_key].molecules[i][0]
+    #     #         prev= self.agents_by_breed[Cell][agent_key].molecules[i][1]
+    #     #         # return [curr, prev]
+    #     #         exchanged[i] += abs(curr - prev)
+
+    #     # return [x/2 for x in exchanged]
+    #     # self.molecules_exchanged = [x/2 for x in exchanged]
+
+    #     exchanged = 0
+    #     agent_keys = list(self.agents_by_breed[Cell].keys())
+    #     if i == "total":
+    #         for agent_key in agent_keys:
+    #             curr=0
+    #             prev=0
+    #             for x in range(n):
+    #                 curr += self.agents_by_breed[Cell][agent_key].molecules[x][0]
+    #                 prev += self.agents_by_breed[Cell][agent_key].molecules[x][1]
+    #                 # return [curr, prev]
+    #             exchanged += abs(curr - prev)
+    #     else:
+    #         for agent_key in agent_keys:
+    #             curr = self.agents_by_breed[Cell][agent_key].molecules[i][0]
+    #             prev = self.agents_by_breed[Cell][agent_key].molecules[i][1]
+    #             # return [curr, prev]
+    #             exchanged += abs(curr - prev)
+
+    #     return exchanged/2
+
+    ## Testing - I could make a counter. Each time the function gets called it returns something different based on count.
+    def get_nb_molecules_exchanged_0(self, Cell):
+        # subtract molecules[i][j] and molecules[i][j-1] for each agent
+        n = self.model.nb_output_molecules
+        exchanged = 0
+        agent_keys = list(self.agents_by_breed[Cell].keys())
+
+        for agent_key in agent_keys:
+            curr = self.agents_by_breed[Cell][agent_key].molecules[0][0]
+            prev = self.agents_by_breed[Cell][agent_key].molecules[0][1]
+            # return [curr, prev]
+            exchanged += abs(curr - prev)
+        
+        return exchanged/2
+
+    def get_nb_molecules_exchanged_1(self, Cell):
+        # subtract molecules[i][j] and molecules[i][j-1] for each agent
+        n = self.model.nb_output_molecules
+        exchanged = 0
+        agent_keys = list(self.agents_by_breed[Cell].keys())
+
+        for agent_key in agent_keys:
+            curr = self.agents_by_breed[Cell][agent_key].molecules[1][0]
+            prev = self.agents_by_breed[Cell][agent_key].molecules[1][1]
+            # return [curr, prev]
+            exchanged += abs(curr - prev)
+        
+        return exchanged/2
+
+    def get_nb_molecules_exchanged_2(self, Cell):
+        # subtract molecules[i][j] and molecules[i][j-1] for each agent
+        n = self.model.nb_output_molecules
+        exchanged = 0
+        agent_keys = list(self.agents_by_breed[Cell].keys())
+
+        for agent_key in agent_keys:
+            curr = self.agents_by_breed[Cell][agent_key].molecules[2][0]
+            prev = self.agents_by_breed[Cell][agent_key].molecules[2][1]
+            # return [curr, prev]
+            exchanged += abs(curr - prev)
+        
+        return exchanged/2
+
+    def get_nb_molecules_exchanged_3(self, Cell):
+        # subtract molecules[i][j] and molecules[i][j-1] for each agent
+        n = self.model.nb_output_molecules
+        exchanged = 0
+        agent_keys = list(self.agents_by_breed[Cell].keys())
+
+        for agent_key in agent_keys:
+            curr = self.agents_by_breed[Cell][agent_key].molecules[3][0]
+            prev = self.agents_by_breed[Cell][agent_key].molecules[3][1]
+            # return [curr, prev]
+            exchanged += abs(curr - prev)
+        
+        return exchanged/2
+
+    def get_nb_molecules_exchanged_4(self, Cell):
+        # subtract molecules[i][j] and molecules[i][j-1] for each agent
+        n = self.model.nb_output_molecules
+        exchanged = 0
+        agent_keys = list(self.agents_by_breed[Cell].keys())
+
+        for agent_key in agent_keys:
+            curr = self.agents_by_breed[Cell][agent_key].molecules[4][0]
+            prev = self.agents_by_breed[Cell][agent_key].molecules[4][1]
+            # return [curr, prev]
+            exchanged += abs(curr - prev)
+        
+        return exchanged/2
+
+    def get_nb_molecules_exchanged_5(self, Cell):
+        # subtract molecules[i][j] and molecules[i][j-1] for each agent
+        n = self.model.nb_output_molecules
+        exchanged = 0
+        agent_keys = list(self.agents_by_breed[Cell].keys())
+
+        for agent_key in agent_keys:
+            curr = self.agents_by_breed[Cell][agent_key].molecules[5][0]
+            prev = self.agents_by_breed[Cell][agent_key].molecules[5][1]
+            # return [curr, prev]
+            exchanged += abs(curr - prev)
+        
+        return exchanged/2
+
+    def get_nb_molecules_exchanged_tot(self, Cell):
+        # subtract molecules[i][j] and molecules[i][j-1] for each agent
+        n = self.model.nb_output_molecules
+        exchanged = 0
+        agent_keys = list(self.agents_by_breed[Cell].keys())
+
+        for agent_key in agent_keys:
+            curr=0
+            prev=0
+            for x in range(n):
+                curr += self.agents_by_breed[Cell][agent_key].molecules[x][0]
+                prev += self.agents_by_breed[Cell][agent_key].molecules[x][1]
+            exchanged += abs(curr - prev)
+        
+        return exchanged/2
              
     def global_fitness(self):
         curr_dissimilarity = self.dissimilarity()
@@ -212,6 +355,7 @@ class RandomActivationByBreed(RandomActivation):
                 for n in range(self.model.nb_output_molecules):
                     molecules[n] = [0]*self.model.history_length
                     molecules[n][0] = 5     # Arbitrary amount of signaling molecules to begin with
+                    molecules[n][1] = 5     # So datacollector doesn't mess up the t=0 molecule exchange activity
                     GJ_molecules[n] = 0
 
 

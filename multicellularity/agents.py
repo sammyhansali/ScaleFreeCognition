@@ -5,7 +5,7 @@ import numpy as np
 import sys
 import multicellularity.schedule
 import math
-
+from itertools import chain
 
 sys.setrecursionlimit(10000)
 
@@ -45,6 +45,7 @@ class Cell(Agent):
     energy_temp = None
     cell_type = None
     potential = None
+    bias = None
 
 
 
@@ -79,46 +80,59 @@ class Cell(Agent):
         self.potential = potential
         
     def net_inputs(self):
-        inputs = []
+        inputs = [self.__getattribute__(inp_name) for inp_name in set(self.model.ANN_inputs) if self.__getattribute__(inp_name) is not None]
+        # Flatten the list of lists
+        flattened_inputs = []
+        for item in inputs:
+            if isinstance(item, dict):
+                for key, value in item.items():
+                    flattened_inputs.extend(value)
+            elif isinstance(item, (list,tuple)):
+                flattened_inputs.extend(item)
+            else:
+                flattened_inputs.append(item)
+
+        # Bias of 0.5
+        flattened_inputs.append(0.5)
+        return flattened_inputs
+        # inputs=[]
+        # # Determining what you want as inputs
+        # if "molecules" in self.model.ANN_inputs:
+        #     for x in range(len(self.molecules)):
+        #         inputs.extend(self.molecules[x])
+        # if "goal_cell_type" in self.model.ANN_inputs:
+        #     inputs.append(self.goal_cell_type)
+        # if "bioelectric_stimulus" in self.model.ANN_inputs:
+        #     inputs.append(self.bioelectric_stimulus)
+        # if "energy" in self.model.ANN_inputs:
+        #     inputs.extend(self.energy)
+        # if "stress" in self.model.ANN_inputs:
+        #     inputs.extend(self.stress)
+        # if "cell_type" in self.model.ANN_inputs:
+        #     inputs.extend(self.cell_type)
+        # if "potential" in self.model.ANN_inputs:
+        #     inputs.extend(self.potential)
+
+        # # Fitness histories        
+        # if "global_fitness" in self.model.ANN_inputs:
+        #     inputs.extend(self.global_fitness)
+
+        # # Directional history
+        # if "direction" in self.model.ANN_inputs:
+        #     inputs.extend(self.direction)
+
+        # # Raw positional data
+        # if "pos_x" in self.model.ANN_inputs:
+        #     inputs.append(self.pos[0])
+        # if "pos_y" in self.model.ANN_inputs:
+        #     inputs.append(self.pos[1])
+
+        # # Bias
+        # inputs.append(0.5)
+
+        # # print(inputs)
         
-        # Determining what you want as inputs
-        if "molecules" in self.model.ANN_inputs:
-            for x in range(len(self.molecules)):
-                inputs.extend(self.molecules[x])
-        if "goal_cell_type" in self.model.ANN_inputs:
-            inputs.append(self.goal_cell_type)
-        if "bioelectric_stimulus" in self.model.ANN_inputs:
-            inputs.append(self.bioelectric_stimulus)
-        if "energy" in self.model.ANN_inputs:
-            inputs.extend(self.energy)
-        if "stress" in self.model.ANN_inputs:
-            inputs.extend(self.stress)
-        if "state" in self.model.ANN_inputs:
-            inputs.extend(self.state)
-        if "cell_type" in self.model.ANN_inputs:
-            inputs.extend(self.cell_type)
-        if "potential" in self.model.ANN_inputs:
-            inputs.extend(self.potential)
-
-        # Fitness histories        
-        if "global_fitness" in self.model.ANN_inputs:
-            inputs.extend(self.global_fitness)
-
-        # Directional history
-        if "direction" in self.model.ANN_inputs:
-            inputs.extend(self.direction)
-
-        # Raw positional data
-        if "pos_x" in self.model.ANN_inputs:
-            inputs.append(self.pos[0])
-        if "pos_y" in self.model.ANN_inputs:
-            inputs.append(self.pos[1])
-
-        # Bias
-        if "bias" in self.model.ANN_inputs:
-            inputs.append(0.5)
-        
-        return(inputs)
+        # return inputs
     
 
     def net_outputs(self,new_input):
@@ -154,15 +168,17 @@ class Cell(Agent):
 
 
     def update_cell_type(self):
-        tot = 0
+        # Get the total number of molecules
         n = len(self.molecules)
-        for i in range(n):
-            tot+=self.molecules[i][0]
+        tot = sum(self.molecules[i][0] for i in range(n))
         
-        if tot >=  10*n :
+        if tot >=  18*n :
+            self.cell_type = self.update_history(self.cell_type, 4)
+
+        if tot >=  12*n :
             self.cell_type = self.update_history(self.cell_type, 3)
            
-        elif tot >= 5*n:
+        elif tot >= 6*n:
             self.cell_type = self.update_history(self.cell_type, 2)
 
         elif tot >= 0:
@@ -177,35 +193,35 @@ class Cell(Agent):
 
     # Membrane potential
     # Made this function. This obviously utilizes GJ open percentage.
-    def update_potential(self, charge_to_send):
-        neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, False)
-        new_self_potential = self.potential[0]
+    # def update_potential(self, charge_to_send):
+    #     neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, False)
+    #     new_self_potential = self.potential[0]
 
-        for neighbour in neighbours:
+    #     for neighbour in neighbours:
 
-            if self.neighbour_is_alive(neighbour):
-                cic = self.model.grid[neighbour][0] # Cell In Contact
-                GJ_ions = min(self.GJ_opening_ions, cic.GJ_opening_ions)
+    #         if self.neighbour_is_alive(neighbour):
+    #             cic = self.model.grid[neighbour][0] # Cell In Contact
+    #             GJ_ions = min(self.GJ_opening_ions, cic.GJ_opening_ions)
 
-                new_cic_potential = 0
-                if new_self_potential >= charge_to_send * GJ_ions:
-                    to_send = charge_to_send * GJ_ions
-                    # Cells cannot have less than -100 charge
-                    if cic.potential[0] + to_send > -100: 
-                        new_cic_potential = cic.potential[0] + to_send
-                        new_self_potential -= to_send
-                        # Updating history
-                        cic.potential = cic.update_history(cic.potential, new_cic_potential)
-                else:
-                    # Cells cannot have less than -100 charge
-                    if cic.potential[0] + new_self_potential > -100:
-                        new_cic_potential = cic.potential[0] + new_self_potential
-                        new_self_potential = 0
-                        # Update and end early
-                        cic.potential = cic.update_history(cic.potential, new_cic_potential)
-                        break
-        # Updating self history
-        self.potential = self.update_history(self.potential, new_self_potential)
+    #             new_cic_potential = 0
+    #             if new_self_potential >= charge_to_send * GJ_ions:
+    #                 to_send = charge_to_send * GJ_ions
+    #                 # Cells cannot have less than -100 charge
+    #                 if cic.potential[0] + to_send > -100: 
+    #                     new_cic_potential = cic.potential[0] + to_send
+    #                     new_self_potential -= to_send
+    #                     # Updating history
+    #                     cic.potential = cic.update_history(cic.potential, new_cic_potential)
+    #             else:
+    #                 # Cells cannot have less than -100 charge
+    #                 if cic.potential[0] + new_self_potential > -100:
+    #                     new_cic_potential = cic.potential[0] + new_self_potential
+    #                     new_self_potential = 0
+    #                     # Update and end early
+    #                     cic.potential = cic.update_history(cic.potential, new_cic_potential)
+    #                     break
+    #     # Updating self history
+    #     self.potential = self.update_history(self.potential, new_self_potential)
 
     # def update_molecs_and_state(self, outputs):
     # Changed this so it no longer updates state this that has no meaning anymore.
@@ -214,10 +230,9 @@ class Cell(Agent):
     # Now it also makes more sense when you increase amount of molecs...youre increasing numbers of signals available.
     def update_molecs(self, outputs):
 
-        neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, False)
         new_self_molecs=[self.molecules[x][0] for x in range(self.model.nb_output_molecules)]
 
-        for neighbour in neighbours:
+        for neighbour in random.shuffle(self.model.grid.get_neighborhood(self.pos, self.moore, False)):
 
             if self.neighbour_is_alive(neighbour):
                 cic = self.model.grid[neighbour][0] # Cell In Contact
@@ -233,10 +248,11 @@ class Cell(Agent):
             new_cic_molecs = 0
 
             key = f"molecule_{i}_to_send"
-            if new_self_molecs[i] >= outputs[key]*GJ_molecules:
-                to_send = outputs[key]*GJ_molecules
-                new_cic_molecs = cic.molecules[i][0] + to_send
-                new_self_molecs[i] -= to_send
+            value = outputs[key]*GJ_molecules
+
+            if new_self_molecs[i] >= value:
+                new_cic_molecs = cic.molecules[i][0] + value
+                new_self_molecs[i] -= value
             else:
                 new_cic_molecs = cic.molecules[i][0] + new_self_molecs[i]
                 new_self_molecs[i] = 0
@@ -246,108 +262,73 @@ class Cell(Agent):
         return new_self_molecs
 
 
-    def update_stress(self, stress_to_send, anxio_to_send):
-        # Distribute stress and anxiolytics
-        neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, False)
-        delta = stress_to_send - anxio_to_send
-        # Update neighbors
-        for neighbour in neighbours:
-            if self.neighbour_is_alive(neighbour):
+    # def update_stress(self, stress_to_send, anxio_to_send):
+    #     # Distribute stress and anxiolytics
+    #     neighbours = self.model.grid.get_neighborhood(self.pos, self.moore, False)
+    #     delta = stress_to_send - anxio_to_send
+    #     # Update neighbors
+    #     for neighbour in neighbours:
+    #         if self.neighbour_is_alive(neighbour):
 
-                cic = self.model.grid[neighbour][0] # Cell In Contact
-                GJ_open_percentage = self.GJ_opening_stress * cic.GJ_opening_stress # Change to min?
-                new_cic_stress = cic.stress[0] + GJ_open_percentage * delta
-                cic.stress = cic.update_history    (   cic.stress, 
-                                                        cic.prune_stress(new_cic_stress)
-                                                    )
+    #             cic = self.model.grid[neighbour][0] # Cell In Contact
+    #             GJ_open_percentage = self.GJ_opening_stress * cic.GJ_opening_stress # Change to min?
+    #             new_cic_stress = cic.stress[0] + GJ_open_percentage * delta
+    #             cic.stress = cic.update_history    (   cic.stress, 
+    #                                                     cic.prune_stress(new_cic_stress)
+    #                                                 )
         
-        # Update self
-        if self.GJ_opening_stress>0:
-            new_self_stress =   self.stress[0] + delta 
-            self.stress = self.update_history   (   self.stress, 
-                                                    self.prune_stress(new_self_stress)
-                                                )
+    #     # Update self
+    #     if self.GJ_opening_stress>0:
+    #         new_self_stress =   self.stress[0] + delta 
+    #         self.stress = self.update_history   (   self.stress, 
+    #                                                 self.prune_stress(new_self_stress)
+    #                                             )
 
 
     def prune_outputs(self, outputs):
         """Make sure outputs are in correct form for use with agent actions"""
-                    
+
         # Multi molecule support
+        molecules_range = [("molecule_{}_to_send", (0, float('inf'))), ("molecule_{}_GJ", (0, 1))]
         for i in range(self.model.nb_output_molecules):
-            key = f"molecule_{i}_to_send"
-            if key in outputs:
-                if outputs[key] < 0:
-                    outputs[key] = 0
+            for key, (low, high) in molecules_range:
+                key = key.format(i)
+                if key in outputs:
+                    if outputs[key] < low:
+                        outputs[key] = low
+                    elif outputs[key] > high:
+                        outputs[key] = high
+                    if key.endswith("_GJ"):
+                        self.GJ_molecules[i] = outputs[key]
 
-            key = f"molecule_{i}_GJ"
-            if key in outputs:
-                if outputs[key] < 0:
-                    outputs[key] = 0
-                elif outputs[key] > 1:
-                    outputs[key] = 1
-                self.GJ_molecules[i] = outputs[key]
-        
-        if "stress_to_send" in outputs:
-            if outputs["stress_to_send"] < 0:
-                outputs["stress_to_send"] = 0
+        # ranges = {
+        #     "stress_to_send": (0, float('inf')),
+        #     "anxio_to_send": (0, float('inf')),
+        #     "GJ_opening_ions": (0, 1),
+        #     "apoptosis": (0, 1),
+        #     "cell_division": (0, 1),
+        #     "direction": (0, 1),
+        #     "cell_type": (0, 1)
+        # }
 
-        if "anxio_to_send" in outputs:
-            if outputs["anxio_to_send"] < 0:
-                outputs["anxio_to_send"] = 0
-        
-        # ions GJ opening correction
-        if "GJ_opening_ions" in outputs:
-            if outputs['GJ_opening_ions'] < 0:
-                outputs['GJ_opening_ions'] = 0
-            elif outputs['GJ_opening_ions'] > 1:
-                outputs['GJ_opening_ions'] = 1
-            self.GJ_opening_ions = outputs['GJ_opening_ions']
+        # for key, (low, high) in ranges.items():
+        #     if key in outputs:
+        #         if outputs[key] < low:
+        #             outputs[key] = low
+        #         elif outputs[key] > high:
+        #             outputs[key] = high
 
-        # # molecules GJ opening correction
-        # if "GJ_opening_molecs" in outputs:
-        #     if outputs['GJ_opening_molecs'] < 0:
-        #         outputs['GJ_opening_molecs'] = 0
-        #     elif outputs['GJ_opening_molecs'] > 1:
-        #         outputs['GJ_opening_molecs'] = 1
-        #     self.GJ_opening_molecs = outputs['GJ_opening_molecs']
-
-        # stress GJ opening correction
-        if "GJ_opening_stress" in outputs:
-            if outputs['GJ_opening_stress'] < 0:
-                outputs['GJ_opening_stress'] = 0
-            elif outputs['GJ_opening_stress'] > 1:
-                outputs['GJ_opening_stress'] = 1        
-            self.GJ_opening_stress = outputs['GJ_opening_stress']
-
-        # make apoptosis variable binary
-        if "apoptosis" in outputs:
-            if outputs["apoptosis"] < 0:
-                outputs["apoptosis"] = 0
-            elif outputs["apoptosis"] > 1:
-                outputs["apoptosis"] = 1   
-            outputs["apoptosis"] = round(outputs["apoptosis"]) # Want binary
-
-        # make cell div variable binary
-        if "cell_division" in outputs:
-            if outputs["cell_division"] < 0:
-                outputs["cell_division"] = 0
-            elif outputs["cell_division"] > 1:
-                outputs["cell_division"] = 1
-            outputs["cell_division"] = round(outputs["cell_division"]) # Want binary
-
-        if "direction" in outputs:
-            if outputs["direction"] < 0:
-                outputs["direction"] = 0
-            elif outputs["direction"] > 1:
-                outputs["direction"] = 1   
-            outputs["direction"] = math.ceil(outputs["direction"]*8) # should be integers between 1 and 8
-
-        if "cell_type" in outputs:
-            if outputs["cell_type"] < 0:
-                outputs["cell_type"] = 0
-            elif outputs["cell_type"] > 1:
-                outputs["cell_type"] = 1   
-            outputs["cell_type"] = math.ceil(outputs["cell_type"]*3) # should be integers between 1 and 3
+        #         # Specifics
+        #         if key == "direction":
+        #             outputs[key] = math.ceil(outputs[key]*8) # should be integers between 1 and 8
+        #         if key == "cell_type":
+        #             outputs[key] = math.ceil(outputs[key]*3) # should be integers between 1 and 3
+        #         if key == "GJ_opening_ions":
+        #             self.GJ_opening_ions = outputs[key]
+        #         if key == "apoptosis":
+        #             outputs[key] = round(outputs[key])
+        #         if key == "cell_division":
+        #             outputs[key] = round(outputs[key])
 
         return outputs
                 
@@ -359,70 +340,70 @@ class Cell(Agent):
             self.energy_temp -= 0.5
 
     # def cell_division(self, cd_prob):
-    def cell_division(self):
-        x = self.pos[0]
-        y = self.pos[1]
-        # Check if direction is on the grid and empty 
-        # (technically could still divide if full, and would have to push the existing cell.
-        # don't think can implement this unless we use something without 2D grid limits.)
-        if self.direction[0] == 1:     # NO
-            y+=1
-        elif self.direction[0] == 2:   # NE
-            x+=1
-            y+=1
-        elif self.direction[0] == 3:   # EA
-            x+=1
-        elif self.direction[0] == 4:   # SE
-            x+=1
-            y-=1
-        elif self.direction[0] == 5:   # SO
-            y-=1
-        elif self.direction[0] == 6:   # SW
-            x-=1
-            y-=1
-        elif self.direction[0] == 7:   # WE
-            x-=1
-        elif self.direction[0] == 8:   # NW
-            x-=1
-            y+=1
+    # def cell_division(self):
+    #     x = self.pos[0]
+    #     y = self.pos[1]
+    #     # Check if direction is on the grid and empty 
+    #     # (technically could still divide if full, and would have to push the existing cell.
+    #     # don't think can implement this unless we use something without 2D grid limits.)
+    #     if self.direction[0] == 1:     # NO
+    #         y+=1
+    #     elif self.direction[0] == 2:   # NE
+    #         x+=1
+    #         y+=1
+    #     elif self.direction[0] == 3:   # EA
+    #         x+=1
+    #     elif self.direction[0] == 4:   # SE
+    #         x+=1
+    #         y-=1
+    #     elif self.direction[0] == 5:   # SO
+    #         y-=1
+    #     elif self.direction[0] == 6:   # SW
+    #         x-=1
+    #         y-=1
+    #     elif self.direction[0] == 7:   # WE
+    #         x-=1
+    #     elif self.direction[0] == 8:   # NW
+    #         x-=1
+    #         y+=1
         
-        if not self.out_of_bounds((x,y)):
-            if len(self.model.grid.get_cell_list_contents([(x,y)]))==0:
-                self.divide((x,y))
+    #     if not self.out_of_bounds((x,y)):
+    #         if len(self.model.grid.get_cell_list_contents([(x,y)]))==0:
+    #             self.divide((x,y))
 
         
-    def out_of_bounds(self, pos):
-        x,y = pos
-        return x < 0 or x >= self.model.width or y < 0 or y >= self.model.height
+    # def out_of_bounds(self, pos):
+    #     x,y = pos
+    #     return x < 0 or x >= self.model.width or y < 0 or y >= self.model.height
 
-    def divide(self, pos):
-        x,y = pos
+    # def divide(self, pos):
+    #     x,y = pos
 
-        # Updating initial cell
-        self.energy_temp -= 0
-        # 1. Should give half of its molecs to daughter?
-        # 2. Should lose 1 energy? Daughter should always have 50 energy?
-        # 3. Should give away half of stress?
-        cell = Cell(    net = self.net, 
-                        depth = self.depth, 
-                        unique_id = self.model.next_id(), 
-                        pos = (x,y), 
-                        model = self.model,  
-                        moore = True, 
-                        goal_cell_type = self.model.goal[y][x], 
-                        GJ_opening_ions = self.GJ_opening_ions, 
-                        GJ_molecules = self.GJ_molecules, 
-                        GJ_opening_stress = self.GJ_opening_stress, 
-                        # Historical data (should be same, but need to update the first indices)
-                        energy = self.energy,
-                        stress = self.stress, 
-                        global_fitness = self.global_fitness,
-                        direction = self.direction,
-                        molecules = self.molecules, 
-                    )
-        cell.energy =  self.update_history(cell.energy, self.model.energy)
-        self.birth(cell, x, y)
-        # cell.local_fitness[0] = self.model.schedule.local_fitness(self)
+    #     # Updating initial cell
+    #     self.energy_temp -= 0
+    #     # 1. Should give half of its molecs to daughter?
+    #     # 2. Should lose 1 energy? Daughter should always have 50 energy?
+    #     # 3. Should give away half of stress?
+    #     cell = Cell(    net = self.net, 
+    #                     depth = self.depth, 
+    #                     unique_id = self.model.next_id(), 
+    #                     pos = (x,y), 
+    #                     model = self.model,  
+    #                     moore = True, 
+    #                     goal_cell_type = self.model.goal[y][x], 
+    #                     GJ_opening_ions = self.GJ_opening_ions, 
+    #                     GJ_molecules = self.GJ_molecules, 
+    #                     GJ_opening_stress = self.GJ_opening_stress, 
+    #                     # Historical data (should be same, but need to update the first indices)
+    #                     energy = self.energy,
+    #                     stress = self.stress, 
+    #                     global_fitness = self.global_fitness,
+    #                     direction = self.direction,
+    #                     molecules = self.molecules, 
+    #                 )
+    #     cell.energy =  self.update_history(cell.energy, self.model.energy)
+    #     self.birth(cell, x, y)
+    #     # cell.local_fitness[0] = self.model.schedule.local_fitness(self)
 
 
     def step(self):
@@ -439,7 +420,7 @@ class Cell(Agent):
             if self.energy_temp >= 0 and outputs["cell_division"] == 1:
                 self.cell_division()
 
-        # Differentiate
+        # Differentiation
         if "cell_type" in outputs:
             self.differentiate(outputs["cell_type"])
 
@@ -454,10 +435,10 @@ class Cell(Agent):
             self.die()
             return
 
-        # Test
-        if self.molecules[0][0] > 10:
-            self.die()
-            return
+        # # Test
+        # if self.molecules[0][0] > 10:
+        #     self.die()
+        #     return
 
         # Updating variables
         if "global_fitness" in self.model.ANN_inputs:
@@ -470,19 +451,12 @@ class Cell(Agent):
             if "charge_to_send" in self.model.ANN_outputs:
                 self.update_potential(outputs["charge_to_send"])
             else:
-                self.potential = self.update_history(self.potential, self.potential[0])
+                self.potential = self.update_history(self.potential, self.model.bioelectric_stimulus[self.pos[1]][self.pos[0]])
         if "stress" in self.model.ANN_inputs:
             self.update_stress(outputs["stress_to_send"], outputs["anxio_to_send"])
         # E needs to be updated last since the above updates can sap E
         if "energy" in self.model.ANN_inputs:
             self.energy = self.update_history(self.energy, self.energy_temp+self.global_fitness[0]-self.model.e_penalty)
-
-        # if self.global_fitness[0] < 0.95:
-        #   self.energy = self.update_history(self.energy, self.energy_temp - 0.6) # So dies in less than 100 turns
-        # else:
-        #   self.energy = self.update_history(self.energy, self.energy_temp + 0.6)
-        
-        
 
     def die(self):
         self.model.grid._remove_agent(self.pos, self)
