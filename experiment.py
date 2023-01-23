@@ -23,6 +23,7 @@ class experiment:
     e_penalty = None
     random_start = False
     preset = None
+    multiple = 5
 
     # Interface
     interface =  False
