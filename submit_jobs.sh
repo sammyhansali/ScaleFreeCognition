@@ -1,4 +1,6 @@
 #!/bin/bash
+
+# Run it like this for file in Experiments/MMDDYYYY/*; do    bash submit_jobs.sh $file; done
 FILE_PATH=$1
 FILE_NAME=$(basename "$FILE_PATH" .py)
 CURRENT_DATE=$(date +"%Y/%b/%d")
