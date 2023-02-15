@@ -155,6 +155,7 @@ class Multicellularity_model(Model):
             # self.fitness_score = self.schedule.global_fitness_3()  
 
         return self.fitness_score         
+        # return self.schedule.global_fitness_3()
 
                 
 

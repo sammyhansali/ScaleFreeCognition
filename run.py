@@ -46,11 +46,13 @@ def run_experiment(exp):
     # Result file
     myDatetime = datetime.datetime.now()
     myString = myDatetime.strftime('%Y-%m-%d %H:%M:%S')
+    global file
     file = myString.replace(' ','_')
     os.makedirs("SCS_Results/" + file, exist_ok=True)
     
     # Saving files and folders
     shutil.copyfile("analysis.py",  "SCS_Results/" + file + "/" + "analysis.py")
+    shutil.copyfile("random_faces.py",  "SCS_Results/" + file + "/" + "random_faces.py")
     shutil.copyfile("run.py",  "SCS_Results/" + file + "/" + "run.py")
     shutil.copyfile("experiment.py",  "SCS_Results/" + file + "/" + "experiment.py")
     shutil.copytree('./multicellularity', "SCS_Results/" + file + "/" + "multicellularity")
@@ -105,8 +107,11 @@ def run_experiment(exp):
         # for z in range(9):
         #     fitnesses += np.array(EvaluateGenomeList_Parallel(genome_list, eval_individual, display=False, cores=cpu_number))
         # fitnesses /= 10
-        if generation == exp.nb_gens-1:
-            print(ff)
+
+        ### Printing
+        # if generation == exp.nb_gens-1:
+        #     print(ff)
+
         ## Commenting out below since using default function now.
         # if generation == exp.nb_gens-1:
         #     # print(ff)
@@ -124,34 +129,18 @@ def run_experiment(exp):
             # best_genome = gen_best_genome
             best_genome.append(gen_best_genome)
             best_fitness = gen_best_fitness
-            best_ID = gen_best_genome.GetID()
+            best_ID = gen_best_ID
 
-            solution_found = (gen_best_fitness >= exp.max_fitness) 
-            if solution_found:
-                # Take winning genome, test again to make sure it is valid.
-                print("Expected:", best_fitness)
-                fitty=0
-                for i in range(20):
-                    # th = eval_individual(best_genome)
-                    th = eval_individual(best_genome[-1])
-                    print(th)
-                    fitty+=th
-                print("Actual", str(fitty/20))
-                ### Unique code
-                print(f'Solution found at generation: {generation}, best fitness: {round(best_fitness, 1)}')
-                pop.Epoch() # For consistency
-                break
-        
         # Take winning genome, test again to make sure it is valid.
-        if generation == exp.nb_gens-1:
-            print("Expected:", best_fitness)
-            fitty=0
-            for i in range(20):
-                # th = eval_individual(best_genome)
-                th = eval_individual(best_genome[-1])
-                print(th)
-                fitty+=th
-            print("Actual", str(fitty/20))
+        # if generation == exp.nb_gens-1:
+            # print("Expected:", best_fitness)
+            # fitty=0
+            # for i in range(10):
+            #     # th = eval_individual(best_genome)
+            #     th = eval_individual(best_genome[-1])
+            #     print(th)
+            #     fitty+=th
+            # print("Actual", str(fitty/20))
         
         # Advance to the next generation
         pop.Epoch()
@@ -169,6 +158,10 @@ def run_experiment(exp):
         """
         print(textwrap.dedent(output))
 
+        solution_found = (gen_best_fitness >= exp.max_fitness) 
+        if solution_found:
+            break
+
     ## Print trial statistics
     elapsed_time = time.time() - start_time
     file_name = "_".join([file,str(int(best_fitness))]).replace(":", "\:")
@@ -183,6 +176,15 @@ def run_experiment(exp):
     """
     print(textwrap.dedent(output))
 
+    # Match expectations?
+    bst = best_genome[-1]
+    print("Expected:", best_fitness)
+    fitty=0
+    for i in range(5):
+        th = eval_individual(bst)
+        print(th)
+        fitty+=th
+    print("Actual", str(fitty/5))
 
     # Saving score
     with open("score.txt","w+") as score_file:
@@ -191,33 +193,94 @@ def run_experiment(exp):
         # score_file.write("\nSubstrate nodes: %d, connections: %d" % (len(winner_net.neurons), len(winner_net.connections)))
     os.replace("score.txt", "SCS_Results/" + file + "/" + "score.txt")
 
+    # Saving genome
+    bst.Save("best_genome.txt")
+    os.replace("best_genome.txt", "SCS_Results/" + file + "/" + "best_genome.txt")
+    # Pickling method (may not work right)
+    with open("best_genome.pickle", 'wb') as f:
+        pickle.dump(bst, f, pickle.HIGHEST_PROTOCOL)
+    os.replace("best_genome.pickle", "SCS_Results/" + file + "/" + "best_genome.pickle")
+    # os.replace(best_genome_file, "SCS_Results/" + file + "/" + "best_genome.pickle")
+
     # Visualize best network's Genome
     winner_net_CPPN = NEAT.NeuralNetwork()
-    best_genome[-1].BuildPhenotype(winner_net_CPPN)
+    bst.BuildPhenotype(winner_net_CPPN)
     # print("\nCPPN nodes: %d, connections: %d" % (len(winner_net_CPPN.neurons), len(winner_net_CPPN.connections)))
 
     # Visualize best network's Phenotype
     winner_net = NEAT.NeuralNetwork()
-    best_genome[-1].BuildESHyperNEATPhenotype(winner_net, exp.substrate, exp.params)
+    bst.BuildESHyperNEATPhenotype(winner_net, exp.substrate, exp.params)
     winner_net.Save("SCS_Results/" + file + "/winner_net.txt")
     # print("\nSubstrate nodes: %d, connections: %d" % (len(winner_net.neurons), len(winner_net.connections)))
 
-    # Visualize best network's Phenotype
-    for i in range(2, 11):
-        if len(best_genome) >= i:
-            index = i * -1
-            winner_net = NEAT.NeuralNetwork()
-            # winner_net_2 = NEAT.NeuralNetwork()
-            best_genome[index].BuildESHyperNEATPhenotype(winner_net, exp.substrate, exp.params)
-            # best_genome[-2].BuildESHyperNEATPhenotype(winner_net_2, exp.substrate, exp.params)
-            winner_net.Save(f"SCS_Results/{file}/winner_net_{i}.txt")
-            # winner_net_2.Save("SCS_Results/" + file + "/winner_net_2.txt")
+    # # Saving more nets
+    # for i in range(2, 11):
+    #     if len(best_genome) >= i:
+    #         index = i * -1
+    #         winner_net = NEAT.NeuralNetwork()
+    #         # winner_net_2 = NEAT.NeuralNetwork()
+    #         best_genome[index].BuildESHyperNEATPhenotype(winner_net, exp.substrate, exp.params)
+    #         # best_genome[-2].BuildESHyperNEATPhenotype(winner_net_2, exp.substrate, exp.params)
+    #         winner_net.Save(f"SCS_Results/{file}/winner_net_{i}.txt")
+    #         # winner_net_2.Save("SCS_Results/" + file + "/winner_net_2.txt")
     
     # Pickle the experiment (needed for analysis)
     exp_file = os.path.join(".", "exp.pickle")
     with open(exp_file, 'wb') as f:
         pickle.dump(exp, f)
     os.replace(exp_file, "SCS_Results/" + file + "/" +  "exp.pickle")
+
+
+
+#     ### Test, saving data that I used to save
+#     Result_file = "SCS_Results/" + file + "/"+ "general_params.txt"
+#     with open("general_params.txt","w+") as general_params_file:
+#         print("depth: %s  \n\
+# height: %s  \n\
+# width: %s  \n\
+# energy: %s \n\
+# nb_output_molecules: %s  \n\
+# history_length: %s  \n\
+# e_penalty: %s  \n\
+# preset: %s  \n\
+# multiple: %s  \n\
+# step_count: %s" % (exp.depth, exp.height, exp.width, 
+#         exp.energy, exp.nb_output_molecules, exp.history_length, exp.e_penalty, exp.preset, exp.multiple, exp.step_count), 
+#         file=general_params_file)
+#     os.replace("general_params.txt", Result_file)
+#     # Matrices
+#     np.savetxt("SCS_Results/" + file + "/start_matrix.txt", exp.start)
+#     np.savetxt("SCS_Results/" + file + "/goal_matrix.txt", exp.goal)
+#     if exp.bioelectric_stimulus is not None:
+#         np.savetxt("SCS_Results/" + file + "/bioelectric_stimulus_matrix.txt", exp.bioelectric_stimulus)
+#     else:
+#         np.savetxt("SCS_Results/" + file + "/bioelectric_stimulus_matrix.txt", np.zeros(1)) # Blank
+#     #save_params
+#     params_file = os.path.join(".", "params.pickle")
+#     with open(params_file, 'wb') as param_file1:
+#         pickle.dump(exp.params, param_file1)
+#     param_file1.close() 
+#     os.replace(params_file, "SCS_Results/" + file + "/" +  "params.pickle")
+#     # ANN inputs
+#     inp_file = os.path.join(".", "ANN_inputs.pickle")
+#     with open(inp_file, 'wb') as f:
+#         pickle.dump(exp.ANN_inputs, f)
+#     os.replace(inp_file, "SCS_Results/" + file + "/" +  "ANN_inputs.pickle")
+#     # ANN outputs
+#     out_file = os.path.join(".", "ANN_outputs.pickle")
+#     with open(out_file, 'wb') as f:
+#         pickle.dump(exp.ANN_outputs, f)
+#     os.replace(out_file, "SCS_Results/" + file + "/" +  "ANN_outputs.pickle")
+    
+#     #save_substrate 
+#     substrate_file = os.path.join(".", "substrate.pickle")
+#     with open(substrate_file, 'wb') as substrate_file1:
+#         pickle.dump(exp.substrate, substrate_file1)
+#     substrate_file1.close() 
+#     os.replace(substrate_file, "SCS_Results/" + file + "/" + "substrate.pickle")
+#     ###
+
+
 
     # Run analysis for visualization
     import subprocess
@@ -236,32 +299,22 @@ def eval_individual(genome):
         substrate:      The substrate to build control ANN
         params:         The ES-HyperNEAT hyper-parameters
     Returns:
-        fitness_indiidual The fitness of the individual
+        fitness_individual The fitness of the individual
     """
     
     net = NEAT.NeuralNetwork()
-    # return genome # Test
     genome.BuildESHyperNEATPhenotype(net, g_exp.substrate, g_exp.params)
-    depth = g_exp.params.MaxDepth
     net.Flush()
 
-    # print(g_exp.start)
     # random_start == true means that each generation should be trained on a different random face, to get a robust NN.
     if g_exp.random_start==True:
         g_exp.start = RandomFaces().get_random_face()
 
-    model = Multicellularity_model(
-        net = net, 
-        exp = g_exp,
-    )
-    model.verbose = False
-    fit1 = model.run_model()
-
-    bb = 0
-    for i in range(10):
-        model = Multicellularity_model(net = net, exp = g_exp)
-        model.verbose = False
-        bb += model.run_model()
+    # if fit1 > 95:
+    #     for i in range(9):
+    #         fit1 += model.run_model()
+    #         print(fit1)
+    #     fit1 /= 10
 
     # # if fit1 > 95:
     # if fit1 >= 0:
@@ -276,8 +329,24 @@ def eval_individual(genome):
     #         print("GREEATTTTTTTER", vals)
     #         print(fit1, new_fit/10)
     #     fit1 = new_fit/10
-    fit1=bb/10
-    return fit1
+    # ll = []
+    fit = 0
+    for i in range(5):
+        # model = Multicellularity_model(net = net, exp = g_exp)
+        model = Multicellularity_model(
+            net = net, 
+            exp = g_exp,
+        )
+        model.verbose = False
+        trial = model.run_model(fitness_evaluation=True)
+        fit += trial
+    fit /= 5
+
+    if fit > 95:
+        global file
+        net.Save("SCS_Results/" + file + "/winner_net_"+ str(round(fit,1))+".txt")
+    
+    return fit
 
 
 
