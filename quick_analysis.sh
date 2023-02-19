@@ -2,5 +2,7 @@ file=$(find /cluster/tufts/levinlab/shansa01/ScaleFreeCognition/SCS_Results/ -na
 echo $file
 cd $file
 
+module load anaconda/2021.11
+source activate mesamultineat
 python analysis.py
 

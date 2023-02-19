@@ -53,6 +53,7 @@ def run_experiment(exp):
     
     # Saving files and folders
     shutil.copyfile("analysis.py",  "SCS_Results/" + file + "/" + "analysis.py")
+    shutil.copyfile("run_analysis.py",  "SCS_Results/" + file + "/" + "run_analysis.py")
     shutil.copyfile("random_faces.py",  "SCS_Results/" + file + "/" + "random_faces.py")
     shutil.copyfile("run.py",  "SCS_Results/" + file + "/" + "run.py")
     shutil.copyfile("experiment.py",  "SCS_Results/" + file + "/" + "experiment.py")
@@ -214,16 +215,6 @@ def run_experiment(exp):
     winner_net.Save("SCS_Results/" + file + "/winner_net.txt")
     # print("\nSubstrate nodes: %d, connections: %d" % (len(winner_net.neurons), len(winner_net.connections)))
 
-    # # Saving more nets
-    # for i in range(2, 11):
-    #     if len(best_genome) >= i:
-    #         index = i * -1
-    #         winner_net = NEAT.NeuralNetwork()
-    #         # winner_net_2 = NEAT.NeuralNetwork()
-    #         best_genome[index].BuildESHyperNEATPhenotype(winner_net, exp.substrate, exp.params)
-    #         # best_genome[-2].BuildESHyperNEATPhenotype(winner_net_2, exp.substrate, exp.params)
-    #         winner_net.Save(f"SCS_Results/{file}/winner_net_{i}.txt")
-    #         # winner_net_2.Save("SCS_Results/" + file + "/winner_net_2.txt")
     
     # Pickle the experiment (needed for analysis)
     exp_file = os.path.join(".", "exp.pickle")
@@ -232,10 +223,9 @@ def run_experiment(exp):
     os.replace(exp_file, "SCS_Results/" + file + "/" +  "exp.pickle")
     ##### Below is experimental
     # Seeing if pickle is fucking up
-    with open("SCS_Results/" + file + "/" +  "exp.pickle", "rb") as pp:
-        test_pickled_exp = pickle.load(pp)
+    # with open("SCS_Results/" + file + "/" +  "exp.pickle", "rb") as pp:
+    #     test_pickled_exp = pickle.load(pp)
 
-    
     # print("Pickled exp equals original exp: ", test_pickled_exp==exp)
     # print("Pickled substrate equals original substrate: ", test_pickled_exp.substrate==exp.substrate)
     # print("Pickled params equals original params: ", test_pickled_exp.params==exp.params)
@@ -273,34 +263,27 @@ def run_experiment(exp):
     #     pickle.dump(selected_attrs, f)
     ##### End of experimental
 
-    # fp = "SCS_Results/" + file + "/" + "best_genome.txt"
-    # best_genome = NEAT.Genome(fp)
-    # print("Expected 1:", best_fitness)
-    # fitty=0
-    # for i in range(5):
-    #     th = eval_individual(best_genome)
-    #     print(th)
-    #     fitty+=th
-    # print("Actual", str(fitty/5))
+    ## Here the experiment is normal, not the unpickled one
+    fp = "SCS_Results/" + file + "/" + "best_genome.txt"
+    best_genome = NEAT.Genome(fp)
+    print("Expected 1:", best_fitness)
+    fitty=0
+    for i in range(5):
+        th = eval_individual(best_genome)
+        print(th)
+        fitty+=th
+    print("Actual", str(fitty/5))
 
     # ## Seeing if the unpickled exp fucks up the results
     # g_exp = test_pickled_exp
     # # g_exp = None # Line just to see if I'm actually changing the global variable
+    # # This does actually alter the global experiment file.
     # ## Test lines above
     # best_genome_2 = NEAT.Genome(fp)
     # print("Expected 2:", best_fitness)
     # fitty=0
     # for i in range(5):
     #     th = eval_individual(best_genome_2)
-    #     print(th)
-    #     fitty+=th
-    # print("Actual", str(fitty/5))
-
-    # best_genome_3 = NEAT.Genome(fp)
-    # print("Expected 3:", best_fitness)
-    # fitty=0
-    # for i in range(5):
-    #     th = eval_individual(best_genome_3)
     #     print(th)
     #     fitty+=th
     # print("Actual", str(fitty/5))
@@ -356,12 +339,35 @@ def run_experiment(exp):
 
 
     # Run analysis for visualization
-    import subprocess
-    subprocess.Popen("python analysis.py", cwd="SCS_Results/" + file + "/", shell=True) # used to be "Results/"
-    # subprocess.Popen("python3 analysis.py", cwd="SCS_Results/" + file + "/", shell=True) # used to be "Results/"
+    # import subprocess
+
+    # # Activate the Conda environment using source activate
+    # # subprocess.Popen(['source', 'activate', 'mesamultineat'], shell=True) # Doesn't work, source not allowed i guess
+    # subprocess.Popen(['conda', 'activate', 'mesamultineat'], shell=False) # Keep conda, keep false
+    # # print("Python version (run):", sys.version_info)
+
+    # print("cc")
+    # # Run the analysis script using the Python executable from the Conda environment
+    # subprocess.Popen(['python', 'analysis.py'], cwd="SCS_Results/" + file + "/", shell=True) # used to be "Results/"
+    # print("bb")
+    # # subprocess.Popen('python analysis.py', cwd="SCS_Results/" + file + "/", shell=True) # used to be "Results/"
     os.rename('SCS_Results/' + file,'SCS_Results/' + file +'_'+ str(int(best_fitness))) # used to be "Results/" for both
 
+    # # print("Pickle version (run):", pickle.format_version)
+    # import subprocess
 
+    # # Activate the conda environment and run the command
+    # # subprocess.Popen(['conda', 'run', '-n', 'mesamultineat', 'python', 'analysis.py'], cwd="SCS_Results/" + file, shell=True)
+
+    # # Activate the conda environment using the shell script
+    # # subprocess.Popen(['bash', '-c', 'source activate_conda.sh'])
+
+    # # Run the command using the activated environment
+    # subprocess.run(['python', 'analysis.py'], cwd="SCS_Results/" + file +'_'+ str(int(best_fitness)))
+    print(best_genome.GetFitness())
+    print(bst.GetFitness())
+    from analysis import sim
+    sim(exp, best_genome)
 
 def eval_individual(genome):
     
@@ -385,26 +391,6 @@ def eval_individual(genome):
     if g_exp.random_start==True:
         g_exp.start = RandomFaces().get_random_face()
 
-    # if fit1 > 95:
-    #     for i in range(9):
-    #         fit1 += model.run_model()
-    #         print(fit1)
-    #     fit1 /= 10
-
-    # # if fit1 > 95:
-    # if fit1 >= 0:
-    #     new_fit = 0
-    #     vals = []
-    #     for i in range(10):
-    #         new_fit += fit1
-    #         vals.append(fit1)
-    #         fit1 = model.run_model()
-    #         #net.Flush()
-    #     if new_fit/10 >= 90:
-    #         print("GREEATTTTTTTER", vals)
-    #         print(fit1, new_fit/10)
-    #     fit1 = new_fit/10
-    # ll = []
     fit = 0
     for i in range(5):
         # model = Multicellularity_model(net = net, exp = g_exp)
@@ -422,36 +408,3 @@ def eval_individual(genome):
         net.Save("SCS_Results/" + file + "/winner_net_"+ str(round(fit,1))+".txt")
     
     return fit
-
-
-
-# def yolo(genome_list, evaluator, cores=8, display=True, ipython_client=None):
-#     fitnesses = []
-#     curtime = time.time()
-
-#     if ipython_client is None or not ipython_installed:
-#         with ProcessPoolExecutor(max_workers=cores) as executor:
-#             for i, fitness in enumerate(executor.map(evaluator, genome_list)):
-#                 fitnesses.append((i, fitness))
-
-#                 if display:
-#                     if ipython_installed: clear_output(wait=True)
-#                     print('Individuals: (%s/%s) Fitness: %3.4f' % (i, len(genome_list), fitness))
-#     else:
-#         if type(ipython_client) == Client:
-#             lbview = ipython_client.load_balanced_view()
-#             amr = lbview.map(evaluator, genome_list, ordered=True, block=False)
-#             for i, fitness in enumerate(amr):
-#                 if display:
-#                     if ipython_installed: clear_output(wait=True)
-#                     print('Individual:', i, 'Fitness:', fitness)
-#                 fitnesses.append((i, fitness))
-#         else:
-#             raise ValueError('Please provide valid IPython.parallel Client() as ipython_client')
-
-#     elapsed = time.time() - curtime
-
-#     if display:
-#         print('seconds elapsed: %3.4f' % elapsed)
-
-#     return sorted(fitnesses, key=lambda x: x[0])
