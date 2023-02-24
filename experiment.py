@@ -25,6 +25,7 @@ class experiment:
     preset = None
     multiple = 5
     start_molecs = None
+    simulate = False
 
     # Interface
     interface =  False

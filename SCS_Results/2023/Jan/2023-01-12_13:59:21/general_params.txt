@@ -1,0 +1,9 @@
+depth: 4  
+height: 9  
+width: 9  
+energy: 50 
+nb_output_molecules: 3  
+history_length: 2  
+e_penalty: 0.95  
+preset: preset_remove_molecule  
+step_count: 100

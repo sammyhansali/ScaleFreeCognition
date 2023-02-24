@@ -1,30 +1,8 @@
 from multicellularity.model_for_analysis import Multicellularity_model
-try:
-   import cPickle as pickle
-except:
-   import pickle
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.modules import CanvasGrid, ChartModule
-from mesa.visualization.UserParam import UserSettableParameter
 from multicellularity.agents import Cell
-import multicellularity.visualize as visualize
-from run import eval_individual
 
-import os
-import sys
-import time
-import random as rnd
-import subprocess as comm
-import cv2
-import numpy as np
-import pickle as pickle
-import MultiNEAT as NEAT
-from MultiNEAT import GetGenomeList, ZipFitness
-from MultiNEAT import  EvaluateGenomeList_Parallel, EvaluateGenomeList_Serial
-from concurrent.futures import ProcessPoolExecutor, as_completed
-import sys
-
-from psutil import process_iter
 from signal import SIGKILL
 
 def cell_types(agent):
@@ -37,8 +15,6 @@ def cell_types(agent):
         portrayal["Filled"] = "true"
         portrayal["Layer"] = 0
         portrayal["r"] = 1
-        # portrayal["w"] = 1
-        # portrayal["h"] = 1
 
     if agent.cell_type[0] ==4:
         portrayal["Color"] = ["black"]
@@ -420,25 +396,6 @@ def potential(agent):
         
     return portrayal
 
-# potential
-# def potential(agent):
-#         if agent is None:
-#             return
-    
-#         portrayal = {}
-    
-#         if type(agent) is Cell:
-#             portrayal["Color"] = ["yellow"]
-#             portrayal["Shape"] = "circle"
-#             portrayal["Filled"] = "true"
-#             portrayal["text"] = str(round(agent.potential[0],1))
-#             portrayal["text_color"] = ["black"]
-#             portrayal["Layer"] = 0
-#             portrayal["r"] = 0.1
-
-        
-#         return portrayal
-
 # potential T1
 def delta_potential(agent):
         if agent is None:
@@ -535,7 +492,7 @@ def get_elements(height, width, nb_output_molecules):
 
     return return_list
 
-def test_eval_individual(genome, exp):
+def test_eval_individual(net, exp):
     
     """
     Evaluate fitness of the individual CPPN genome by creating
@@ -548,55 +505,23 @@ def test_eval_individual(genome, exp):
         fitness_individual The fitness of the individual
     """
     
-    net = NEAT.NeuralNetwork()
-    genome.BuildESHyperNEATPhenotype(net, exp.substrate, exp.params)
-    net.Flush()
-
-    # model = Multicellularity_model(
-    #     net = net, 
-    #     exp = exp,
-    # )
-    # model.verbose = False
-    # fit1 = model.run_model(fitness_evaluation=True)
-
-    bb = 0
+    fit = 0
     for i in range(5):
         model = Multicellularity_model(net = net, exp = exp)
-        # model = Multicellularity_model(
-        #     net = net, 
-        #     # exp = g_exp,
-        #     depth = g_exp.MaxDepth,
-        #     height = g_exp.height,
-        #     width = g_exp.width,
-        #     energy = g_exp.energy,
-        #     step_count = g_exp.step_count,
-        #     nb_output_molecules = g_exp.nb_output_molecules,
-        #     goal = g_exp.goal,
-        #     start = g_exp.start,
-        #     bioelectric_stimulus = g_exp.bioelectric_stimulus,
-        #     ANN_inputs = g_exp.ANN_inputs,
-        #     ANN_outputs = g_exp.ANN_outputs,
-        #     history_length = g_exp.history_length,
-        #     e_penalty = g_exp.e_penalty,
-        #     preset = g_exp.preset,
-        #     multiple = g_exp.multiple,
-        # )
         model.verbose = False
-        bbb = model.run_model(fitness_evaluation=True)
-        bb += bbb
-        print(f"Run {i}: {bbb}")
-    fit1=bb/5
-    return fit1
+        run = model.run_model(fitness_evaluation=True)
+        fit += run
+        print(f"Analysis Run {i}: {round(run,1)}")
+    fit/=5
+    return fit
 
-def sim(exp, best_genome):
-    print(f"Expected fitness (1):{test_eval_individual(best_genome, exp)}")
 
-    net = NEAT.NeuralNetwork()
-    best_genome.BuildESHyperNEATPhenotype(net, exp.substrate, exp.params)
-    net.Flush()
+def sim(exp, winner_net):
+    ### Net approach (works by default, so stick with it)
+    print(f"Expected fitness:{round(test_eval_individual(winner_net, exp),1)}")
 
     model_params = {}
-    model_params["net"] = net
+    model_params["net"] = winner_net
     model_params["exp"] = exp
 
     height = exp.height
@@ -610,122 +535,4 @@ def sim(exp, best_genome):
         free_port = s.server_address[1] 
     server = ModularServer(Multicellularity_model, elements, "Multi-cellularity", model_params)
     server.port = free_port
-    server.launch()
-
-### If run as script
-if __name__ == '__main__':
-    
-
-    ### Experiment file with all model parameters
-    with open("exp.pickle", "rb") as fp:
-        exp = pickle.load(fp)
-
-    # ### Experimental - load genome instead of ANN
-    # with open("best_genome.pickle", "rb") as bg:
-    #     best_genome = pickle.load(bg)
-    # print(f"Expected fitness (pickle):{test_eval_individual(best_genome, exp)}")
-
-    ### Load genome instead of ANN
-    best_genome = NEAT.Genome("best_genome.txt")
-    print(f"Expected fitness (1):{test_eval_individual(best_genome, exp)}")
-
-    net = NEAT.NeuralNetwork()
-    best_genome.BuildESHyperNEATPhenotype(net, exp.substrate, exp.params)
-    net.Flush()
-
-    ## Commented out below lines for test
-    # seed = int(np.load("seed.npy"))
-    # rng = NEAT.RNG()
-    # rng.Seed(seed)
-    
-    # ### Neural network of the winning genome
-    # net = NEAT.NeuralNetwork()
-    # net.Load("winner_net.txt")
-    # net.Flush()
-
-    # sys.setrecursionlimit(100000)
-
-    ### Params for MESA model and the evolving neural network
-    model_params = {}
-
-    model_params["net"] = net
-    # exp.depth-=1      # Commenting out since should be 3 for run and 3 for analysis
-    model_params["exp"] = exp
-    
-
-    ### Tested to make sure exp is pickled accurately
-    # model_params["depth"] = exp.params.MaxDepth
-    # model_params['height'] = exp.height
-    # model_params['width'] = exp.width
-    # model_params['energy'] = exp.energy
-    # model_params['step_count'] = exp.step_count
-    # model_params['nb_output_molecules'] = exp.nb_output_molecules
-    # model_params['goal'] = exp.goal
-    # model_params['start'] = exp.start
-    # model_params['bioelectric_stimulus'] = exp.bioelectric_stimulus
-    # model_params['ANN_inputs'] = exp.ANN_inputs
-    # model_params['ANN_outputs'] = exp.ANN_outputs
-    # model_params['history_length'] = exp.history_length
-    # model_params['e_penalty'] = exp.e_penalty
-    # model_params['preset'] = exp.preset
-    # model_params['multiple'] = exp.multiple
-
-    # print(f"Depth {depth}, Height {height}, width {width}, energy {energy}, step_count {step_count}, nb_output_molecules {nb_output_molecules}")
-    # print(f"goal {goal}, start {start}, bioelectric_stimulus {bioelectric_stimulus}, ANN_inputs {ANN_inputs}, ANN_outputs {ANN_outputs}, history_length {history_length}")
-    # print(f"e_penalty {e_penalty}, preset {preset}, multiple {multiple}")
-    ###
-
-    # # Matrices
-    # start = np.loadtxt("start_matrix.txt").astype(int).tolist()
-    # goal = np.loadtxt("goal_matrix.txt").astype(int).tolist()
-    # bioelectric_stimulus = np.loadtxt("bioelectric_stimulus_matrix.txt").tolist()
-    # if bioelectric_stimulus == 0:
-    #     bioelectric_stimulus = None
-
-    # # ANN inputs and outputs
-    # with open("ANN_inputs.pickle", "rb") as f:
-    #     model_params["ANN_inputs"] = pickle.load(f)
-    # with open("ANN_outputs.pickle", "rb") as f:
-    #     model_params["ANN_outputs"] = pickle.load(f)
-    # f = open("general_params.txt")
-    # for lines in f:
-    #     items = lines.split(': ', 1)
-    #     model_params[items[0]] = eval(items[1])
-    # f.close()
-    # # model_params["net"] = net
-    # model_params["depth"] -= 1
-    # model_params["start"] = start
-    # model_params["goal"] = goal
-    # model_params["bioelectric_stimulus"] = bioelectric_stimulus
-
-    # height=model_params["height"]
-    # width=model_params["width"]
-    # nb_output_molecules = model_params["nb_output_molecules"]
-
-    # with open("best_genome.pickle", "rb") as bg:
-    #     best_genome = pickle.load(bg)
-    # # print(f"Expected fitness (pickle):{test_eval_individual(best_genome, model_params)}")
-
-    # net = NEAT.NeuralNetwork()
-    # # best_genome.BuildESHyperNEATPhenotype(net, exp.substrate, exp.params)
-    # net.Load("winner_net.txt")
-    # net.Flush()
-    # model_params["net"] = net
-
-    ### Get chart and canvas elements
-    height = exp.height
-    width = exp.width
-    nb_output_molecules = exp.nb_output_molecules
-
-    elements = get_elements(height, width, nb_output_molecules)
-
-    ### Test the winner network on the server
-    import socketserver
-    with socketserver.TCPServer(("localhost", 0), None) as s: #Getting "Adress already in use" error
-        free_port = s.server_address[1] # Its grabbing the first free port it finds.
-    server = ModularServer(
-        Multicellularity_model, elements, "Multi-cellularity", model_params
-    )
-    server.port = free_port
-
     server.launch()

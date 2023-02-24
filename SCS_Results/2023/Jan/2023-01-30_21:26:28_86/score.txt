@@ -1,0 +1,3 @@
+
+Best ever fitness: 86.428571, genome ID: 73164
+Trial elapsed time: 3027.692 sec

@@ -1,0 +1,4 @@
+
+Best ever fitness: 74.054622, genome ID: 65866
+Trial elapsed time: 4695.172 sec
+Substrate nodes: 45, connections: 64

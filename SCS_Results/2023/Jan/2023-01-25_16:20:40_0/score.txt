@@ -1,0 +1,4 @@
+
+Best ever fitness: 0.000000, genome ID: 0
+Trial elapsed time: 0.689 sec
+Substrate nodes: 25, connections: 18

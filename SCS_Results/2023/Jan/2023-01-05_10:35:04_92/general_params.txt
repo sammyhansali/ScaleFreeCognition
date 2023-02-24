@@ -1,0 +1,8 @@
+depth: 4  
+height: 9  
+width: 9  
+energy: 50 
+nb_output_molecules: 6  
+history_length: 2  
+e_penalty: 0.95  
+step_count: 100

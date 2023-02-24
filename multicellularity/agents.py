@@ -1,11 +1,7 @@
 from mesa import Agent
 import random
 from enum import IntEnum
-import numpy as np
 import sys
-import multicellularity.schedule
-import math
-from itertools import chain
 
 sys.setrecursionlimit(10000)
 
@@ -82,21 +78,37 @@ class Cell(Agent):
         self.potential = potential
         
     def net_inputs(self):
-        inputs = [self.__getattribute__(inp_name) for inp_name in set(self.model.ANN_inputs) if self.__getattribute__(inp_name) is not None]
-        # Flatten the list of lists
-        flattened_inputs = []
-        for item in inputs:
-            if isinstance(item, dict):
-                for key, value in item.items():
-                    flattened_inputs.extend(value)
-            elif isinstance(item, (list,tuple)):
-                flattened_inputs.extend(item)
-            else:
-                flattened_inputs.append(item)
+        # ### Code that doesn't work, but should do the same
+        # inputs = [self.__getattribute__(inp_name) for inp_name in set(self.model.ANN_inputs) if self.__getattribute__(inp_name) is not None]
+        # # Flatten the list of lists
+        # flattened_inputs = []
+        # for item in inputs:
+        #     if isinstance(item, dict):
+        #         for key, value in item.items():
+        #             flattened_inputs.extend(value)
+        #     elif isinstance(item, (list,tuple)):
+        #         flattened_inputs.extend(item)
+        #     else:
+        #         flattened_inputs.append(item)
 
+        # # Bias of 0.5
+        # flattened_inputs.append(0.5)
+        # return flattened_inputs
+
+        ### Code that works
+        inputs = []
+        if "molecules" in self.model.ANN_inputs:
+            for x in range(len(self.molecules)):
+                inputs.extend(self.molecules[x])
+        if "energy" in self.model.ANN_inputs:
+            inputs.extend(self.energy)
+        if "cell_type" in self.model.ANN_inputs:
+            inputs.extend(self.cell_type)
+        if "potential" in self.model.ANN_inputs:
+            inputs.extend(self.potential)
         # Bias of 0.5
-        flattened_inputs.append(0.5)
-        return flattened_inputs
+        inputs.append(0.5)
+        return inputs
 
     def net_outputs(self,new_input):
         #outputs network    
