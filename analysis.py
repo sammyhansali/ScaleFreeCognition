@@ -29,7 +29,6 @@ def cell_types(agent):
     if agent.cell_type[0] ==1:
         portrayal["Color"] = ["#C4A484"]
         
-
     return portrayal
 
 
