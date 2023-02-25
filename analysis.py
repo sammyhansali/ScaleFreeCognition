@@ -494,31 +494,20 @@ def get_elements(height, width, nb_output_molecules):
 
 def test_eval_individual(net, exp):
     
-    """
-    Evaluate fitness of the individual CPPN genome by creating
-    the substrate with topology based on the CPPN output.
-    Arguments:
-        genome:         The CPPN genome
-        substrate:      The substrate to build control ANN
-        params:         The ES-HyperNEAT hyper-parameters
-    Returns:
-        fitness_individual The fitness of the individual
-    """
-    
     fit = 0
     for i in range(5):
         model = Multicellularity_model(net = net, exp = exp)
         model.verbose = False
         run = model.run_model(fitness_evaluation=True)
         fit += run
-        print(f"Analysis Run {i}: {round(run,1)}")
+        print(f"Run {i+1}: {round(run,1)}")
     fit/=5
+    print(f"Expected fitness (analysis.py): {fit}")
     return fit
 
 
 def sim(exp, winner_net):
-    ### Net approach (works by default, so stick with it)
-    print(f"Expected fitness:{round(test_eval_individual(winner_net, exp),1)}")
+    test_eval_individual(winner_net, exp)
 
     model_params = {}
     model_params["net"] = winner_net
