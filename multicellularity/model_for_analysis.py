@@ -51,6 +51,7 @@ class Multicellularity_model(Model):
         preset = None,
         multiple = None,
         exp = None,
+        ef_mode = None,
     ):
         """
         Create a new multicellularity model with the given parameters.
@@ -77,25 +78,7 @@ class Multicellularity_model(Model):
         self.e_penalty = exp.e_penalty
         self.preset = exp.preset
         self.multiple = exp.multiple
-
-        # ## Testing to see if reverting back to old way will fix it
-        # self.depth = depth
-        # self.height = height
-        # self.width = width
-        # self.energy = energy
-        # self.step_count = step_count
-        # self.nb_output_molecules = nb_output_molecules
-        # self.goal = goal
-        # self.start = start
-        # self.bioelectric_stimulus = bioelectric_stimulus
-        # self.ANN_inputs = ANN_inputs
-        # self.ANN_outputs = ANN_outputs
-        # self.history_length = history_length
-        # self.e_penalty = e_penalty
-        # self.preset = preset
-        # self.multiple = multiple
-
-
+        self.ef_mode = exp.ef_mode      # For electric face experiments!
 
         self.schedule = RandomActivationByBreed(self)
         self.grid = MultiGrid(self.height, self.width, torus=False)

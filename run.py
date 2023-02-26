@@ -17,7 +17,7 @@ import pickle
 def save_exp_files(parent_dir, exp_file_path):
     # Saving files and folders
     calling_file = os.path.basename(exp_file_path)
-    shutil.copyfile(f"{exp_file_path}",  f"{parent_dir}/{calling_file}.py")
+    shutil.copyfile(f"{exp_file_path}",  f"{parent_dir}/{calling_file}")
     shutil.copyfile("analysis.py",  f"{parent_dir}/analysis.py")
     shutil.copyfile("run_analysis.py",  f"{parent_dir}/run_analysis.py")
     shutil.copyfile("random_faces.py",  f"{parent_dir}/random_faces.py")

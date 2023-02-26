@@ -142,22 +142,43 @@ class Cell(Agent):
         multiple = self.model.multiple # 5 seems to work for 3 cell types. for 4 idk yet.
 
         # Only multiple changes, not the leading coefficients.
-        # if tot >  3*multiple*n :
-        #     self.cell_type = self.update_history(self.cell_type, 4)
-
+        new_cell_type = self.cell_type
+        if tot >  3*multiple*n :
+            new_cell_type = 4
         if tot >=  2*multiple*n :
-            self.cell_type = self.update_history(self.cell_type, 3)
-           
+            new_cell_type = 3
         elif tot >= multiple*n:
-            self.cell_type = self.update_history(self.cell_type, 2)
-
+            new_cell_type = 2
         elif tot >= 0:
-            self.cell_type = self.update_history(self.cell_type, 1)
+            new_cell_type = 1
 
-        # E penalty for cell_type change
+        # Update cell type
+        self.cell_type = self.update_history(self.cell_type, new_cell_type)
         if self.cell_type[0] != self.cell_type[1]:
+            # E penalty for cell_type change
             self.energy_temp -= 0.5
             
+    def update_cell_type_auto(self):
+        n = len(self.molecules)
+        cell_type_possibilities = []
+        for i in range(n):
+            if self.molecules[i][0] >= 5:
+                ct = i + 1  # Cell type, since molecule 0 encodes ct 1, m1 encodes ct2, etc.
+                cell_type_possibilities.append(ct)
+
+        new_cell_type = self.cell_type
+        if len(cell_type_possibilities) == 1:
+            new_cell_type = cell_type_possibilities[0]
+        elif len(cell_type_possibilities) > 1:
+            new_cell_type = 5 # undifferentiated type
+            # new_cell_type = random.choice(cell_type_possibilities)  # I could remove random choice and instead have it be an output
+
+        # Update cell type
+        self.cell_type = self.update_history(self.cell_type, new_cell_type)
+        if self.cell_type[0] != self.cell_type[1]:
+            # E penalty for cell_type change
+            self.energy_temp -= 0.5
+
     def neighbour_is_alive(self, neighbour):
         return self.model.grid.is_cell_empty(neighbour) == False
 
@@ -177,12 +198,29 @@ class Cell(Agent):
             self.molecules[i] = self.update_history(self.molecules[i], new_self_molecs[i])
 
     def update_molecs_neighbor(self, cic, new_self_molecs, outputs):
+
+        '''
+        Find lowest value of the molecules_to_send outputs...
+        Keep that molecule and send all of the others.
+        Attempt at creating a Winner Takes All dynamic
+        '''
+
+        wta_min_key = ""
+        if self.model.ef_mode == 3:
+            molecs_to_send_dict = {f"molecule_{i}_to_send": outputs[f"molecule_{i}_to_send"] for i in range(self.model.nb_output_molecules)}
+            wta_min_val = min(molecs_to_send_dict.values())
+            wta_min_key = [k for k, v in molecs_to_send_dict.items() if v == wta_min_val]
+
         for i in range(self.model.nb_output_molecules):
             GJ_molecules = min(self.GJ_molecules[i], cic.GJ_molecules[i])
             new_cic_molecs = 0
 
             key = f"molecule_{i}_to_send"
             value = outputs[key]*GJ_molecules
+            
+            # In case of Winner Takes All (self.model.ef_mode == 3)
+            if key == wta_min_key:
+                value = 0
 
             if new_self_molecs[i] >= value:
                 new_cic_molecs = cic.molecules[i][0] + value
@@ -328,9 +366,9 @@ class Cell(Agent):
             if self.energy_temp >= 0 and outputs["cell_division"] == 1:
                 self.cell_division()
 
-        # Differentiation
-        if "differentiate" in outputs:
-            self.differentiate(outputs["differentiate"])
+        # # Differentiation
+        # if "differentiate" in outputs:
+        #     self.differentiate(outputs["differentiate"])
 
         # Death
         if "apoptosis" in outputs:
@@ -344,21 +382,25 @@ class Cell(Agent):
         # # Updating variables
         self.global_fitness = self.model.global_fitness
 
-        # if "direction" in self.model.ANN_inputs:
-        #     self.update_direction(outputs["direction"])   
         if "molecules" in self.model.ANN_inputs:
-            self.update_molecs(outputs)
-            if not "differentiate" in outputs:
+            self.update_molecs(outputs) # Supports WTA
+
+            # if not "differentiate" in outputs:
+            if self.model.ef_mode == 1:
                 self.update_cell_type_with_molecs()
+            elif self.model.ef_mode == 2 or self.model.ef_mode == 3:
+                # self.update_cell_type_with_molecs()
+                self.update_cell_type_auto() # When I comment this and use the old one, it works (For modeTwo). Else doesn't.  Why?
+
+        # Differentiate at will
+        if self.model.ef_mode == 4:
+            self.differentiate(outputs["differentiate"])
 
         if "potential" in self.model.ANN_inputs:
             self.potential = self.update_history(self.potential, self.model.bioelectric_stimulus[self.pos[1]][self.pos[0]])
 
-        # if "stress" in self.model.ANN_inputs:
-        #     self.update_stress(outputs["stress_to_send"], outputs["anxio_to_send"])
         # # E needs to be updated last since the above updates can sap E
         if "energy" in self.model.ANN_inputs:
-            # self.model.update_global_fitness()
             self.energy = self.update_history(self.energy, self.energy_temp+self.model.global_fitness[0]-self.model.e_penalty)
 
     def die(self):

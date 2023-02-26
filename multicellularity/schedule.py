@@ -398,38 +398,48 @@ class RandomActivationByBreed(RandomActivation):
                 cell_type = self.model.start[y][x]
                 potential = self.model.bioelectric_stimulus[y][x] # Cell's potential won't change
 
-                # Setting up communication network
-                molecules = {}
-                GJ_molecules = {}
-                for n in range(self.model.nb_output_molecules):
-                    molecules[n] = [0]*self.model.history_length
-                    amount = start_molecs[cell_type]
-                    
-                    molecules[n][0] = amount     # Arbitrary amount of signaling molecules to begin with
-                    molecules[n][1] = amount     # Arbitrary amount of signaling molecules to begin with
-                    GJ_molecules[n] = 0
+                molecules = {n: [0] * self.model.history_length for n in range(self.model.nb_output_molecules)}
+                GJ_molecules = {n: 0 for n in range(self.model.nb_output_molecules)}
 
-                cell = Cell(    net = self.model.net, 
-                                depth = self.model.depth, 
-                                unique_id = self.model.next_id(), 
-                                pos = (x, y), 
-                                model = self.model,  
-                                moore = True, 
-                                goal_cell_type = self.model.goal[y][x], 
-                                bioelectric_stimulus = None, 
-                                GJ_opening_ions=0, 
-                                # GJ_opening_molecs=0, 
-                                GJ_opening_stress=0, 
-                                GJ_molecules = GJ_molecules,
-                                # Historical data
-                                energy = [0]*self.model.history_length,
-                                stress = [0]*self.model.history_length, 
-                                global_fitness = self.model.global_fitness,
-                                direction = [0]*self.model.history_length,
-                                cell_type = [0]*self.model.history_length,
-                                potential = [0]*self.model.history_length,
-                                molecules = molecules, 
-                            )
+                # Totaling OR agent decides when to diff
+                if self.model.ef_mode == 1 or self.model.ef_mode == 4:
+                    for n in range(self.model.nb_output_molecules):
+                        amount = start_molecs[cell_type]
+                        molecules[n][0] = amount     
+                        molecules[n][1] = amount     
+
+                # Each fate, diff molecule OR Each fate, diff molecule + WTA
+                elif self.model.ef_mode == 2 or self.model.ef_mode == 3:
+                    for n in range(self.model.nb_output_molecules):
+                        # Molec 0 corresps to cell type 1, molec 1 to cell type 2, etc. Rest of molec classes will have 2.5 each
+                        amount = start_molecs[cell_type]
+                        if n == cell_type-1:
+                            amount += 2.5
+                        molecules[n][0] = amount     
+                        molecules[n][1] = amount     
+
+                cell = Cell(    
+                    net = self.model.net, 
+                    depth = self.model.depth, 
+                    unique_id = self.model.next_id(), 
+                    pos = (x, y), 
+                    model = self.model,  
+                    moore = True, 
+                    goal_cell_type = self.model.goal[y][x], 
+                    bioelectric_stimulus = None, 
+                    GJ_opening_ions=0, 
+                    # GJ_opening_molecs=0, 
+                    GJ_opening_stress=0, 
+                    GJ_molecules = GJ_molecules,
+                    # Historical data
+                    energy = [0]*self.model.history_length,
+                    stress = [0]*self.model.history_length, 
+                    global_fitness = self.model.global_fitness,
+                    direction = [0]*self.model.history_length,
+                    cell_type = [0]*self.model.history_length,
+                    potential = [0]*self.model.history_length,
+                    molecules = molecules, 
+                )
                 cell.energy[0] = self.model.energy
                 cell.direction[0] = random.choice(range(1,9))
                 cell.cell_type[0] = cell_type

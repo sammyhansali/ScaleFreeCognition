@@ -16,9 +16,12 @@ def cell_types(agent):
         portrayal["Layer"] = 0
         portrayal["r"] = 1
 
+    # UNDIFFERENTIATED MODE - Mainly used for ef_mode = 2, when there is a tie
+    if agent.cell_type[0] ==5:  
+        portrayal["Color"] = ["grey"]
+
     if agent.cell_type[0] ==4:
         portrayal["Color"] = ["black"]
-        
         
     if agent.cell_type[0] ==3:
         portrayal["Color"] = ["blue"]

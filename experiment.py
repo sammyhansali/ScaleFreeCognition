@@ -26,13 +26,15 @@ class experiment:
     multiple = 5
     start_molecs = None
     simulate = False
+    ef_mode = 1             # "electric_face_mode" for electric face experiments circa February 2023
 
     # Interface
     interface =  False
 
     # Parameters for es-hyperneat
     params = NEAT.Parameters()
-    params.PopulationSize = 350
+    # params.PopulationSize = 350
+    params.PopulationSize = 700
     # params.PopulationSize = 10
     params.DynamicCompatibility = True
     params.CompatTreshold = 3.0
