@@ -142,7 +142,10 @@ def eval_individual(genome):
         model.verbose = False
         trial = model.run_model(fitness_evaluation=True)
         fit += trial
-    fit /= 5
+        # Test to see if reduces training time while keeping performance
+        if i==0 and fit < 95:
+            break
+    fit /= (i+1)
 
     return fit
 

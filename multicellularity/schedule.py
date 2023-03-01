@@ -286,14 +286,21 @@ class RandomActivationByBreed(RandomActivation):
         return curr_dissimilarity
 
     def organ_focused_fitness(self):
+        
+        nb_skin_goal = 68
+        nb_skin_matched = 0
+        
         nb_eye_goal = 6
         nb_eye_matched = 0
 
-        nb_nose_mouth_goal = 7
-        nb_nose_mouth_matched = 0
+        # nb_nose_mouth_goal = 7
+        # nb_nose_mouth_matched = 0
+        nb_mouth_goal = 5
+        nb_mouth_matched = 0
 
-        nb_skin_goal = 68
-        nb_skin_matched = 0
+        nb_nose_goal = 2
+        nb_nose_matched = 0
+
 
         for i in range(self.model.height):
             for j in range(int(self.model.width)):
@@ -304,25 +311,40 @@ class RandomActivationByBreed(RandomActivation):
                         if cell.cell_type[0] == 3:
                             nb_eye_matched+=1
                         elif cell.cell_type[0] == 2:
-                            nb_nose_mouth_matched+=1
+                            # nb_nose_mouth_matched+=1
+                            nb_mouth_matched+=1
                         elif cell.cell_type[0] == 1:
                             nb_skin_matched+=1
+                        # New-for 4 cell types
+                        elif cell.cell_type[0] == 4:
+                            nb_nose_matched+=1
 
-        # Calculations
-        ## Base scores
+        ### Base scores
         eye_base_score = 20*(nb_eye_matched/nb_eye_goal) # Max score of 20
-        nose_mouth_base_score = 20*(nb_nose_mouth_matched/nb_nose_mouth_goal) # Max score of 20
-        skin_base_score = 40*(nb_skin_matched/nb_skin_goal) # Max score of 20
-        fitness_score = eye_base_score + nose_mouth_base_score + skin_base_score
-        # Ideally you make more rewards with lower value (reward 10 for 1 eye, 10 for 2 eyes, etc.)
-        ## Bonuses for completing organs
-        if nb_eye_goal==nb_eye_matched:
-            fitness_score+=10
-        if nb_nose_mouth_goal==nb_nose_mouth_matched:
-            fitness_score+=10
+        # nose_mouth_base_score = 20*(nb_nose_mouth_matched/nb_nose_mouth_goal) # Max score of 20
+        mouth_base_score = 18*(nb_mouth_matched/nb_mouth_goal) # Max score of 20
+        nose_base_score = 4*(nb_nose_matched/nb_nose_goal) # Max score of 20
+        skin_base_score = 36*(nb_skin_matched/nb_skin_goal) # Max score of 20
+        # fitness_score = eye_base_score + nose_mouth_base_score + skin_base_score
+        fitness_score = eye_base_score + mouth_base_score + nose_base_score + skin_base_score
 
-        # if matches==3:
-        #     fitness_score+=100 #Making fitness of 200, huge incentive
+        ### Bonuses for completing organs
+        # Eyes
+        if nb_eye_matched==nb_eye_goal:
+            fitness_score+=10
+        elif nb_eye_matched >= nb_eye_goal/2:       # Microreward
+            fitness_score+=5
+        
+        # Mouth
+        if nb_mouth_matched==nb_mouth_goal:
+            fitness_score+=10
+        elif nb_mouth_matched >= nb_mouth_goal/2:   # Microreward
+            fitness_score+=5
+
+        # Nose
+        if nb_nose_matched==nb_nose_goal:
+            fitness_score+=2
+
         return fitness_score
 
     # def pos_occupied_at(self, x, y):

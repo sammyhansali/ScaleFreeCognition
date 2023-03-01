@@ -2,6 +2,7 @@ from mesa import Agent
 import random
 from enum import IntEnum
 import sys
+import math
 
 sys.setrecursionlimit(10000)
 
@@ -142,10 +143,10 @@ class Cell(Agent):
         multiple = self.model.multiple # 5 seems to work for 3 cell types. for 4 idk yet.
 
         # Only multiple changes, not the leading coefficients.
-        new_cell_type = self.cell_type
-        if tot >  3*multiple*n :
+        new_cell_type = 5 # Undifferentiated
+        if tot >=  3*multiple*n :
             new_cell_type = 4
-        if tot >=  2*multiple*n :
+        elif tot >=  2*multiple*n :
             new_cell_type = 3
         elif tot >= multiple*n:
             new_cell_type = 2
@@ -166,7 +167,7 @@ class Cell(Agent):
                 ct = i + 1  # Cell type, since molecule 0 encodes ct 1, m1 encodes ct2, etc.
                 cell_type_possibilities.append(ct)
 
-        new_cell_type = self.cell_type
+        new_cell_type = self.cell_type[0]
         if len(cell_type_possibilities) == 1:
             new_cell_type = cell_type_possibilities[0]
         elif len(cell_type_possibilities) > 1:

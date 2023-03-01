@@ -21,10 +21,10 @@ def cell_types(agent):
         portrayal["Color"] = ["grey"]
 
     if agent.cell_type[0] ==4:
-        portrayal["Color"] = ["black"]
+        portrayal["Color"] = ["blue"]
         
     if agent.cell_type[0] ==3:
-        portrayal["Color"] = ["blue"]
+        portrayal["Color"] = ["black"]
         
     if agent.cell_type[0] ==2:
         portrayal["Color"] = ["brown"]

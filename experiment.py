@@ -33,8 +33,8 @@ class experiment:
 
     # Parameters for es-hyperneat
     params = NEAT.Parameters()
-    # params.PopulationSize = 350
-    params.PopulationSize = 700
+    params.PopulationSize = 350
+    # params.PopulationSize = 700
     # params.PopulationSize = 10
     params.DynamicCompatibility = True
     params.CompatTreshold = 3.0
