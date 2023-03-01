@@ -133,8 +133,9 @@ def eval_individual(genome):
     if g_exp.random_start==True:
         g_exp.start = RandomFaces().get_random_face()
 
+    runs = 5
     fit = 0
-    for i in range(5):
+    for i in range(runs):
         model = Multicellularity_model(
             net = net, 
             exp = g_exp,
@@ -142,10 +143,7 @@ def eval_individual(genome):
         model.verbose = False
         trial = model.run_model(fitness_evaluation=True)
         fit += trial
-        # Test to see if reduces training time while keeping performance
-        if i==0 and fit < 95:
-            break
-    fit /= (i+1)
+    fit /= runs
 
     return fit
 
