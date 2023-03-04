@@ -5,6 +5,7 @@ FILE_PATH=$1
 FILE_NAME=$(basename "$FILE_PATH" .py)
 CURRENT_DATE=$(date +"%Y/%b/%d")
 mkdir -p /cluster/tufts/levinlab/shansa01/SFC/jobs_logs/$CURRENT_DATE
+CORES=$2
 
 sbatch << EOT
 #!/bin/sh
@@ -12,7 +13,7 @@ sbatch << EOT
 #SBATCH --time=07-00:00:00 #requested time (DD-HH:MM:SS)
 #SBATCH -p preempt
 #SBATCH -N 1
-#SBATCH -n 70
+#SBATCH -n "$CORES"
 #SBATCH --mem=32g
 #SBATCH --output="/cluster/tufts/levinlab/shansa01/SFC/jobs_logs/$CURRENT_DATE/${FILE_NAME}.out"
 #SBATCH --error="/cluster/tufts/levinlab/shansa01/SFC/jobs_logs/$CURRENT_DATE/${FILE_NAME}.err"
