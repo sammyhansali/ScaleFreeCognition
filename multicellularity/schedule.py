@@ -407,7 +407,8 @@ class RandomActivationByBreed(RandomActivation):
                     
                     molecules[n][0] = amount     # Arbitrary amount of signaling molecules to begin with
                     molecules[n][1] = amount     # Arbitrary amount of signaling molecules to begin with
-                    GJ_molecules[n] = 0
+                    GJ_molecules[n][0] = 0
+                    GJ_molecules[n][1] = 0
 
                 cell = Cell(    net = self.model.net, 
                                 depth = self.model.depth, 

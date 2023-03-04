@@ -100,6 +100,9 @@ class Cell(Agent):
         if "molecules" in self.model.ANN_inputs:
             for x in range(len(self.molecules)):
                 inputs.extend(self.molecules[x])
+        if "GJ_molecules" in self.model.ANN_inputs:
+            for x in range(len(self.GJ_molecules)):
+                inputs.extend(self.GJ_molecules[x])
         if "energy" in self.model.ANN_inputs:
             inputs.extend(self.energy)
         if "cell_type" in self.model.ANN_inputs:
@@ -161,6 +164,9 @@ class Cell(Agent):
     def neighbour_is_alive(self, neighbour):
         return self.model.grid.is_cell_empty(neighbour) == False
 
+    def update_GJ_molecs(self, outputs):
+        for i in range(self.GJ_molecules):
+            self.GJ_molecules[i] = self.update_history(self.GJ_molecules[i], outputs[f"molecule_{i}_GJ"])
 
     def update_molecs(self, outputs):
 
@@ -178,7 +184,7 @@ class Cell(Agent):
 
     def update_molecs_neighbor(self, cic, new_self_molecs, outputs):
         for i in range(self.model.nb_output_molecules):
-            GJ_molecules = min(self.GJ_molecules[i], cic.GJ_molecules[i])
+            GJ_molecules = min(self.GJ_molecules[i][0], cic.GJ_molecules[i][0])
             new_cic_molecs = 0
 
             key = f"molecule_{i}_to_send"
@@ -209,8 +215,9 @@ class Cell(Agent):
                         outputs[key] = low
                     elif outputs[key] > high:
                         outputs[key] = high
-                    if key.endswith("_GJ"):
-                        self.GJ_molecules[i] = outputs[key]
+                    # # Commenting out below GJ lines because want to update it elsewhere AND make it historical.
+                    # if key.endswith("_GJ"):
+                    #     self.GJ_molecules[i] = outputs[key]
 
         ranges = {
             # "apoptosis": (0, 1),
@@ -328,9 +335,9 @@ class Cell(Agent):
             if self.energy_temp >= 0 and outputs["cell_division"] == 1:
                 self.cell_division()
 
-        # Differentiation
-        if "differentiate" in outputs:
-            self.differentiate(outputs["differentiate"])
+        # # Differentiation
+        # if "differentiate" in outputs:
+        #     self.differentiate(outputs["differentiate"])
 
         # Death
         if "apoptosis" in outputs:
@@ -345,7 +352,9 @@ class Cell(Agent):
         self.global_fitness = self.model.global_fitness
 
         # if "direction" in self.model.ANN_inputs:
-        #     self.update_direction(outputs["direction"])   
+        #     self.update_direction(outputs["direction"]) 
+        self.update_GJ_molecs(outputs)  
+        # Updating molecules
         if "molecules" in self.model.ANN_inputs:
             self.update_molecs(outputs)
             if not "differentiate" in outputs:
