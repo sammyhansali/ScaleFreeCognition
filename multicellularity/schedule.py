@@ -403,6 +403,7 @@ class RandomActivationByBreed(RandomActivation):
                 GJ_molecules = {}
                 for n in range(self.model.nb_output_molecules):
                     molecules[n] = [0]*self.model.history_length
+                    GJ_molecules[n] = [0]*self.model.history_length
                     amount = start_molecs[cell_type]
                     
                     molecules[n][0] = amount     # Arbitrary amount of signaling molecules to begin with
@@ -421,7 +422,6 @@ class RandomActivationByBreed(RandomActivation):
                                 GJ_opening_ions=0, 
                                 # GJ_opening_molecs=0, 
                                 GJ_opening_stress=0, 
-                                GJ_molecules = GJ_molecules,
                                 # Historical data
                                 energy = [0]*self.model.history_length,
                                 stress = [0]*self.model.history_length, 
@@ -430,6 +430,7 @@ class RandomActivationByBreed(RandomActivation):
                                 cell_type = [0]*self.model.history_length,
                                 potential = [0]*self.model.history_length,
                                 molecules = molecules, 
+                                GJ_molecules = GJ_molecules,
                             )
                 cell.energy[0] = self.model.energy
                 cell.direction[0] = random.choice(range(1,9))

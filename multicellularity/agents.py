@@ -164,9 +164,9 @@ class Cell(Agent):
     def neighbour_is_alive(self, neighbour):
         return self.model.grid.is_cell_empty(neighbour) == False
 
-    def update_GJ_molecs(self, outputs):
-        for i in range(self.GJ_molecules):
-            self.GJ_molecules[i] = self.update_history(self.GJ_molecules[i], outputs[f"molecule_{i}_GJ"])
+    # def update_GJ_molecs(self, outputs):
+    #     for i in range(self.GJ_molecules):
+    #         self.GJ_molecules[i] = self.update_history(self.GJ_molecules[i], outputs[f"molecule_{i}_GJ"])
 
     def update_molecs(self, outputs):
 
@@ -215,9 +215,9 @@ class Cell(Agent):
                         outputs[key] = low
                     elif outputs[key] > high:
                         outputs[key] = high
-                    # # Commenting out below GJ lines because want to update it elsewhere AND make it historical.
-                    # if key.endswith("_GJ"):
-                    #     self.GJ_molecules[i] = outputs[key]
+                    if key.endswith("_GJ"):
+                        # self.GJ_molecules[i] = outputs[key]
+                        self.GJ_molecules[i] = self.update_history(self.GJ_molecules[i], outputs[key])
 
         ranges = {
             # "apoptosis": (0, 1),
@@ -353,7 +353,6 @@ class Cell(Agent):
 
         # if "direction" in self.model.ANN_inputs:
         #     self.update_direction(outputs["direction"]) 
-        self.update_GJ_molecs(outputs)  
         # Updating molecules
         if "molecules" in self.model.ANN_inputs:
             self.update_molecs(outputs)
