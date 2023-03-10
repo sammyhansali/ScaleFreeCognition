@@ -133,7 +133,7 @@ def eval_individual(genome):
     if g_exp.random_start==True:
         g_exp.start = RandomFaces().get_random_face()
 
-    runs = 5
+    runs = 3
     fit = 0
     for i in range(runs):
         model = Multicellularity_model(
@@ -152,13 +152,13 @@ def eval_individual(genome):
 def test_eval_individual(net, exp):
     
     fit = 0
-    for i in range(5):
+    for i in range(3):
         model = Multicellularity_model(net = net, exp = exp)
         model.verbose = False
         run = model.run_model(fitness_evaluation=True)
         fit += run
         print(f"Run {i+1}: {round(run,1)}")
-    fit/=5
+    fit/=3
     print(f"Expected fitness (run.py): {fit}")
     return fit
 
@@ -171,7 +171,6 @@ def run_experiment(exp, exp_file_path):
         exp: the experiment parameters
     """
     # Updating global experiment
-
     cpu_number = multiprocessing.cpu_count()
     print(f"CPU cores: {cpu_number}")
 
@@ -234,5 +233,7 @@ def run_experiment(exp, exp_file_path):
     # Simulate the results if option turned on
     if exp.simulate == True:
         sim(exp, winner_net)
+        
+    return best_fitness, elapsed_time, f"{file}_{formatted_fit}"
 
 
