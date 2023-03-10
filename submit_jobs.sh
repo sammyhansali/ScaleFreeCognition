@@ -2,16 +2,16 @@
 
 # Run it like this for file in Experiments/MMDDYYYY/*; do    bash submit_jobs.sh $file; done
 FILE_PATH=$1
+CORES=$2
 FILE_NAME=$(basename "$FILE_PATH" .py)
 CURRENT_DATE=$(date +"%Y/%b/%d")
 mkdir -p /cluster/tufts/levinlab/shansa01/SFC/jobs_logs/$CURRENT_DATE
-CORES=$2
 
 sbatch << EOT
 #!/bin/sh
 #SBATCH -J "$FILE_NAME"
 #SBATCH --time=07-00:00:00 #requested time (DD-HH:MM:SS)
-#SBATCH -p preempt
+#SBATCH -p gpu
 #SBATCH -N 1
 #SBATCH -n "$CORES"
 #SBATCH --mem=32g

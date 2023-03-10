@@ -135,8 +135,17 @@ class Cell(Agent):
     def update_direction(self, new_dir):
         self.direction = self.update_history(self.direction, new_dir)
 
+    def update_cell_type(self, mode):
+        # This method doesn't work for mode 6, since mode 6 requires an additional input to the function.
+        functions = [self.update_cell_type_mode_1, self.update_cell_type_mode_2, self.update_cell_type_mode_3, self.update_cell_type_mode_4, self.update_cell_type_mode_5]
+        new_cell_type = functions[mode-1]()
+        
+        self.cell_type = self.update_history(self.cell_type, new_cell_type)
+        if self.cell_type[0] != self.cell_type[1]:
+            self.energy_temp -= 0.5     # E penalty for cell_type change
 
-    def update_cell_type_with_molecs(self):
+    # def update_cell_type_with_molecs(self):
+    def update_cell_type_mode_1(self):
         # Get the total number of molecules
         n = len(self.molecules)
         tot = sum(self.molecules[i][0] for i in range(n))
@@ -152,33 +161,36 @@ class Cell(Agent):
             new_cell_type = 2
         elif tot >= 0:
             new_cell_type = 1
+        # self.update_cell_type(new_cell_type)
+        return new_cell_type
 
-        # Update cell type
-        self.cell_type = self.update_history(self.cell_type, new_cell_type)
-        if self.cell_type[0] != self.cell_type[1]:
-            # E penalty for cell_type change
-            self.energy_temp -= 0.5
+        # # Update cell type
+        # self.cell_type = self.update_history(self.cell_type, new_cell_type)
+        # if self.cell_type[0] != self.cell_type[1]:
+        #     # E penalty for cell_type change
+        #     self.energy_temp -= 0.5
             
     def update_cell_type_mode_2(self):
         n = len(self.molecules)
-        cell_type_possibilities = []
+        ct_options = []
         for i in range(n):
             if self.molecules[i][0] >= 5:
                 ct = i + 1  # Cell type, since molecule 0 encodes ct 1, m1 encodes ct2, etc.
-                cell_type_possibilities.append(ct)
+                ct_options.append(ct)
 
         new_cell_type = self.cell_type[0]
-        if len(cell_type_possibilities) == 1:
-            new_cell_type = cell_type_possibilities[0]
-        elif len(cell_type_possibilities) > 1:
+        if len(ct_options) == 1:
+            new_cell_type = ct_options[0]
+        elif len(ct_options) > 1:
             new_cell_type = 5 # undifferentiated type
-            # new_cell_type = random.choice(cell_type_possibilities)  # I could remove random choice and instead have it be an output
+        # self.update_cell_type(new_cell_type)
+        return new_cell_type
 
-        # Update cell type
-        self.cell_type = self.update_history(self.cell_type, new_cell_type)
-        if self.cell_type[0] != self.cell_type[1]:
-            # E penalty for cell_type change
-            self.energy_temp -= 0.5
+        # # Update cell type
+        # self.cell_type = self.update_history(self.cell_type, new_cell_type)
+        # if self.cell_type[0] != self.cell_type[1]:
+        #     # E penalty for cell_type change
+        #     self.energy_temp -= 0.5
 
     def update_cell_type_mode_3(self):
         max_val = -1
@@ -190,35 +202,101 @@ class Cell(Agent):
                 max_ind = i
 
         new_cell_type = max_ind + 1
+        return new_cell_type
+        # self.update_cell_type(new_cell_type)
 
-        # Update cell type
-        self.cell_type = self.update_history(self.cell_type, new_cell_type)
-        if self.cell_type[0] != self.cell_type[1]:
-            # E penalty for cell_type change
-            self.energy_temp -= 0.5
+        # # Update cell type
+        # self.cell_type = self.update_history(self.cell_type, new_cell_type)
+        # if self.cell_type[0] != self.cell_type[1]:
+        #     # E penalty for cell_type change
+        #     self.energy_temp -= 0.5
     
-    def update_cell_type_mode_4(self, differentiate_output):
+    def update_cell_type_mode_4(self):
         n = len(self.molecules)
-        cell_type_possibilities = []
+        ct_options = []
         for i in range(n):
             if self.molecules[i][0] >= 5:
                 ct = i + 1  # Cell type, since molecule 0 encodes ct 1, m1 encodes ct2, etc.
-                cell_type_possibilities.append(ct)
+                ct_options.append(ct)
 
-        new_cell_type = self.cell_type[0]
-        if len(cell_type_possibilities) == 1:
-            # ONLY differentiate if output tells you to (as well as more than 5 molecs)
-            if cell_type_possibilities[0] == differentiate_output:
-                new_cell_type = cell_type_possibilities[0]
+        new_cell_type = 5 # undifferentiated type
+        if len(ct_options) == 1:
+            new_cell_type = ct_options[0]
+        return new_cell_type
+        # self.update_cell_type(new_cell_type)
 
-        elif len(cell_type_possibilities) > 1:
-            new_cell_type = 5 # undifferentiated type
+        # # Update cell type
+        # self.cell_type = self.update_history(self.cell_type, new_cell_type)
+        # if self.cell_type[0] != self.cell_type[1]:
+        #     # E penalty for cell_type change
+        #     self.energy_temp -= 0.5
 
-        # Update cell type
+    def update_cell_type_mode_5(self):
+        max_val = -1
+        max_ind = -1
+        for i in range(len(self.molecules)):
+            val = self.molecules[i][0]
+            if val > max_val:
+                max_val = val
+                max_ind = i
+
+        new_cell_type = 5
+        if max_val >= 5:
+            new_cell_type = max_ind + 1
+        return new_cell_type
+        # self.update_cell_type(new_cell_type)
+
+        # # Update cell type
+        # self.cell_type = self.update_history(self.cell_type, new_cell_type)
+        # if self.cell_type[0] != self.cell_type[1]:
+        #     # E penalty for cell_type change
+        #     self.energy_temp -= 0.5
+
+    def update_cell_type_mode_6(self, differentiate_output):
+        n = len(self.molecules)
+        ct_options = []
+        for i in range(n):
+            if self.molecules[i][0] >= 5:
+                ct = i + 1  # Cell type, since molecule 0 encodes ct 1, m1 encodes ct2, etc.
+                ct_options.append(ct)
+
+        new_cell_type = 5 # undifferentiated type
+        if (len(ct_options) == 1) and (ct_options[0]==differentiate_output):
+            new_cell_type = ct_options[0]
+
         self.cell_type = self.update_history(self.cell_type, new_cell_type)
         if self.cell_type[0] != self.cell_type[1]:
-            # E penalty for cell_type change
-            self.energy_temp -= 0.5
+            self.energy_temp -= 0.5     # E penalty for cell_type change
+        # return new_cell_type
+        # self.update_cell_type(new_cell_type)
+        # # Update cell type
+        # self.cell_type = self.update_history(self.cell_type, new_cell_type)
+        # if self.cell_type[0] != self.cell_type[1]:
+        #     # E penalty for cell_type change
+        #     self.energy_temp -= 0.5
+
+    # def update_cell_type_mode_6(self, differentiate_output):
+    #     n = len(self.molecules)
+    #     ct_options = []
+    #     for i in range(n):
+    #         if self.molecules[i][0] >= 5:
+    #             ct = i + 1  # Cell type, since molecule 0 encodes ct 1, m1 encodes ct2, etc.
+    #             ct_options.append(ct)
+
+    #     new_cell_type = self.cell_type[0]
+    #     if len(ct_options) == 1:
+    #         # ONLY differentiate if output tells you to (as well as more than 5 molecs)
+    #         if ct_options[0] == differentiate_output:
+    #             new_cell_type = ct_options[0]
+
+    #     elif len(ct_options) > 1:
+    #         new_cell_type = 5 # undifferentiated type
+
+        # # Update cell type
+        # self.cell_type = self.update_history(self.cell_type, new_cell_type)
+        # if self.cell_type[0] != self.cell_type[1]:
+        #     # E penalty for cell_type change
+        #     self.energy_temp -= 0.5
 
     def neighbour_is_alive(self, neighbour):
         return self.model.grid.is_cell_empty(neighbour) == False
@@ -240,18 +318,6 @@ class Cell(Agent):
 
     def update_molecs_neighbor(self, cic, new_self_molecs, outputs):
 
-        # '''
-        # Find lowest value of the molecules_to_send outputs...
-        # Keep that molecule and send all of the others.
-        # Attempt at creating a Winner Takes All dynamic
-        # '''
-
-        # wta_min_key = ""
-        # if self.model.ef_mode == 3:
-        #     molecs_to_send_dict = {f"molecule_{i}_to_send": outputs[f"molecule_{i}_to_send"] for i in range(self.model.nb_output_molecules)}
-        #     wta_min_val = min(molecs_to_send_dict.values())
-        #     wta_min_key = [k for k, v in molecs_to_send_dict.items() if v == wta_min_val]
-
         for i in range(self.model.nb_output_molecules):
             GJ_molecules = min(self.GJ_molecules[i], cic.GJ_molecules[i])
             new_cic_molecs = 0
@@ -259,10 +325,6 @@ class Cell(Agent):
             key = f"molecule_{i}_to_send"
             value = outputs[key]*GJ_molecules
             
-            # # In case of Winner Takes All (self.model.ef_mode == 3)
-            # if key == wta_min_key:
-            #     value = 0
-
             if new_self_molecs[i] >= value:
                 new_cic_molecs = cic.molecules[i][0] + value
                 new_self_molecs[i] -= value
@@ -426,23 +488,25 @@ class Cell(Agent):
         if "molecules" in self.model.ANN_inputs:
             self.update_molecs(outputs) # Supports WTA
 
-            # Electric face 4 modes
-            if self.model.ef_mode == 1:
-                self.update_cell_type_with_molecs()
-            elif self.model.ef_mode == 2:
-                self.update_cell_type_mode_2() 
-            elif self.model.ef_mode == 3:
-                self.update_cell_type_mode_3()
-            elif self.model.ef_mode == 4:
-                self.update_cell_type_mode_4(outputs["differentiate"])
-                # self.differentiate(outputs["differentiate"])
+            # Electric face 6 modes
+            if self.model.ef_mode == 6:
+                self.update_cell_type_mode_6(outputs["differentiate"])
+            else:
+                self.update_cell_type(self.model.ef_mode)
+            #     self.update_cell_type_with_molecs()
+            # elif self.model.ef_mode == 2:
+            #     self.update_cell_type_mode_2() 
+            # elif self.model.ef_mode == 3:
+            #     self.update_cell_type_mode_3()
+            
 
-        if "potential" in self.model.ANN_inputs:
-            self.potential = self.update_history(self.potential, self.model.bioelectric_stimulus[self.pos[1]][self.pos[0]])
+        # if "potential" in self.model.ANN_inputs:
+        self.potential = self.update_history(self.potential, self.model.bioelectric_stimulus[self.pos[1]][self.pos[0]])
 
+        ### Moved this so that 
         # # E needs to be updated last since the above updates can sap E
-        if "energy" in self.model.ANN_inputs:
-            self.energy = self.update_history(self.energy, self.energy_temp+self.model.global_fitness[0]-self.model.e_penalty)
+        # if "energy" in self.model.ANN_inputs:
+        # self.energy = self.update_history(self.energy, self.energy_temp+self.model.global_fitness[0]-self.model.e_penalty)
 
     def die(self):
         self.model.grid._remove_agent(self.pos, self)

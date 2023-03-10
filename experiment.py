@@ -34,8 +34,6 @@ class experiment:
     # Parameters for es-hyperneat
     params = NEAT.Parameters()
     params.PopulationSize = 350
-    # params.PopulationSize = 700
-    # params.PopulationSize = 10
     params.DynamicCompatibility = True
     params.CompatTreshold = 3.0
     params.YoungAgeTreshold = 15
@@ -102,43 +100,11 @@ class experiment:
     nb_ANN_inputs = 0 
     nb_ANN_outputs = 0
 
-    bioelectric_stimulus =  [[ 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [ 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-
-    def __init__(   self, 
-                    start, 
-                    goal, 
-                    ANN_inputs,
-                    # nb_ANN_inputs,
-                    ANN_outputs,
-                    history_length,
-                    nb_gens,
-                    e_penalty,
-                    nb_output_molecules,
-                ):
+    def __init__(self, ANN_inputs, ANN_outputs):
         self.ANN_inputs = ANN_inputs
         self.ANN_outputs = ANN_outputs
-        # self.nb_ANN_inputs = len(self.ANN_inputs)*history_length
         self.nb_ANN_inputs = sum(ANN_inputs.values())
         self.nb_ANN_outputs = len(self.ANN_outputs)
-        self.history_length = history_length
-        self.nb_gens = nb_gens
-        self.e_penalty = e_penalty
-
-        self.start = start
-        self.goal = goal
-        # self.model_type = model_type
-        self.height=len(goal)
-        self.width=len(goal)
-        # self.initial_cells=self.height*self.width
-        self.nb_output_molecules = nb_output_molecules
 
         #  Substrate for MultiNEAT
         self.input_coordinates = [(-1. +(2.*i/(self.nb_ANN_inputs - 1)), -1.) for i in range(0, self.nb_ANN_inputs)]

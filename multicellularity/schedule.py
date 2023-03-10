@@ -64,6 +64,13 @@ class RandomActivationByBreed(RandomActivation):
         self.steps += 1
         self.time += 1
 
+        # Update energy of each cell
+        agent_keys = list(self._agents.keys())
+        for key in agent_keys:
+            cell = self._agents[key]
+            cell.energy = cell.update_history(cell.energy, cell.energy_temp + cell.model.global_fitness[0] - cell.model.e_penalty)
+
+
 
     def get_breed_count(self, breed_class):
         """
@@ -423,23 +430,32 @@ class RandomActivationByBreed(RandomActivation):
                 molecules = {n: [0] * self.model.history_length for n in range(self.model.nb_output_molecules)}
                 GJ_molecules = {n: 0 for n in range(self.model.nb_output_molecules)}
 
-                # Totaling OR agent decides when to diff
-                if self.model.ef_mode == 1 or self.model.ef_mode == 4:
-                    for n in range(self.model.nb_output_molecules):
-                        amount = start_molecs[cell_type]
-                        molecules[n][0] = amount     
-                        molecules[n][1] = amount     
+                # # Totaling OR agent decides when to diff
+                # if self.model.ef_mode == 1:
+                #     for n in range(self.model.nb_output_molecules):
+                #         amount = start_molecs[cell_type]
+                #         molecules[n][0] = amount     
+                #         molecules[n][1] = amount     
+                # # elif self.model.ef_mode == 2 or self.model.ef_mode == 3 or self.model.ef_mode == 4:
+                # else:
+                #     for n in range(self.model.nb_output_molecules):
+                #         # Molec 0 corresps to cell type 1, molec 1 to cell type 2, etc. Rest of molec classes will have 2.5 each
+                #         amount = start_molecs[cell_type]
+                #         if n == cell_type-1:
+                #             amount += 2.5
+                #         molecules[n][0] = amount     
+                #         molecules[n][1] = amount     
 
-                # Each fate, diff molecule OR Each fate, diff molecule + WTA
-                elif self.model.ef_mode == 2 or self.model.ef_mode == 3:
-                    for n in range(self.model.nb_output_molecules):
-                        # Molec 0 corresps to cell type 1, molec 1 to cell type 2, etc. Rest of molec classes will have 2.5 each
-                        amount = start_molecs[cell_type]
-                        if n == cell_type-1:
-                            amount += 2.5
-                        molecules[n][0] = amount     
-                        molecules[n][1] = amount     
+                ## Adding correct initial molecule amounts
+                for n in range(self.model.nb_output_molecules):
+                    # Molec 0 corresps to cell type 1, molec 1 to cell type 2, etc
+                    amount = start_molecs[cell_type]
+                    if (not self.model.ef_mode == 1) and (n == cell_type-1):
+                        amount += 2.5
+                    molecules[n][0] = amount     
+                    molecules[n][1] = amount  
 
+                ## Initializing the cell
                 cell = Cell(    
                     net = self.model.net, 
                     depth = self.model.depth, 
@@ -450,7 +466,6 @@ class RandomActivationByBreed(RandomActivation):
                     goal_cell_type = self.model.goal[y][x], 
                     bioelectric_stimulus = None, 
                     GJ_opening_ions=0, 
-                    # GJ_opening_molecs=0, 
                     GJ_opening_stress=0, 
                     GJ_molecules = GJ_molecules,
                     # Historical data
@@ -466,8 +481,8 @@ class RandomActivationByBreed(RandomActivation):
                 cell.direction[0] = random.choice(range(1,9))
                 cell.cell_type[0] = cell_type
                 cell.potential[0] = potential
-                # cell.potential[0] = resting_pot
                 
+                ## Placing agent in grid and schedule
                 self.model.grid.place_agent(cell, (x, y))
                 self.model.schedule.add(cell)
     
