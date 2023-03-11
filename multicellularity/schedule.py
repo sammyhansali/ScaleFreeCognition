@@ -452,6 +452,9 @@ class RandomActivationByBreed(RandomActivation):
                     amount = start_molecs[cell_type]
                     if (not self.model.ef_mode == 1) and (n == cell_type-1):
                         amount += 2.5
+                    if (self.mode.ef_mode==4 or self.mode.ef_mode==6) and (n == cell_type-1): 
+                        # Conditional exists JUST so my sbatch expers from 3/10 dont interfere with sbatch exper (mode 5s) from 3/9 that are still running
+                        amount = 5
                     molecules[n][0] = amount     
                     molecules[n][1] = amount  
 
