@@ -261,7 +261,8 @@ class Cell(Agent):
                 ct_options.append(ct)
 
         new_cell_type = 5 # undifferentiated type
-        if (len(ct_options) == 1) and (ct_options[0]==differentiate_output):
+        # if (len(ct_options) == 1) and (ct_options[0]==differentiate_output):
+        if (len(ct_options) == 1) and (differentiate_output==1):
             new_cell_type = ct_options[0]
 
         self.cell_type = self.update_history(self.cell_type, new_cell_type)
@@ -371,7 +372,8 @@ class Cell(Agent):
                 if key == "direction":
                     outputs[key] = math.ceil(outputs[key]*8) # should be integers between 1 and 8
                 if key == "differentiate":
-                    outputs[key] = math.ceil(outputs[key]*4) # should be integers between 1 and 4
+                    # outputs[key] = math.ceil(outputs[key]*4) # should be integers between 1 and 4
+                    outputs[key] = round(outputs[key])  # Round so it's binary, want to make mode 6 (3/10/23) easier.
                 if key == "GJ_opening_ions":
                     self.GJ_opening_ions = outputs[key]
                 if key == "apoptosis":
