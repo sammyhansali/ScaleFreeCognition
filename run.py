@@ -131,7 +131,7 @@ def eval_individual(genome):
 
     # random_start == true means that each generation should be trained on a different random face, to get a robust NN.
     if g_exp.random_start==True:
-        g_exp.start = RandomFaces().get_random_face()
+        g_exp.start = RandomFaces().get_random_face()[::-1]
 
     runs = 3
     fit = 0
