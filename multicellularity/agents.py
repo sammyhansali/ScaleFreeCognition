@@ -504,6 +504,7 @@ class Cell(Agent):
 
         # if "potential" in self.model.ANN_inputs:
         self.potential = self.update_history(self.potential, self.model.bioelectric_stimulus[self.pos[1]][self.pos[0]])
+        self.goal_cell_type = self.model.goal[self.pos[1]][self.pos[0]]
 
         ### Moved this so that 
         # # E needs to be updated last since the above updates can sap E

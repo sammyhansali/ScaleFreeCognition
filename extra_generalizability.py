@@ -7,9 +7,8 @@ from random_faces import RandomFaces
 import sys
 
 
-# Getting absolute path
-# current_dir = os.path.dirname(os.path.abspath(__file__))
-# file_name = sys.argv[1]
+### JUST HAVE TO BE ABLE TO EXTRA GENERALIZE ONCE - SINCE THERE IS TOO MUCH ERROR/VARIANCE
+
 file_names='''
 2023/Mar/04/14:41:26_95
 2023/Mar/05/08:28:45_86
@@ -42,6 +41,7 @@ file_names='''
 2023/Mar/13/22:25:14_96
 2023/Mar/13/18:53:23_96
 '''.split()
+
 
 def getOptions():
     new_stims = [
@@ -172,33 +172,42 @@ for file_name in file_names:
             model.verbose = False
             run = model.run_model(fitness_evaluation=True)
             fit += run
-            # print(f"Run {i+1}: {round(run,1)}")
         fit/=5
-        # print(f"Expected fitness (analysis.py): {fit}")
         return fit
+    
+    def new_eval(net,exp, baseline):
+        fit200 = 0
+        wins=0
+        for i in range(5):
+            model = Multicellularity_model(net = net, exp = exp)
+            model.verbose = False
+            run = model.run_model(fitness_evaluation=True)
+            run200 = model.run_model(fitness_evaluation=True)
+            print(f"Fit at 200: {int(run200)}, Baseline: {int(baseline)}")
+            if run200 >= (baseline- 5):
+                return True, fit200
+        print("---------")
+        return False, fit200
 
     ends = getOptions()
     baseline=0
     for x in range(3):
-        baseline += test_eval_individual(net, exp)
+        b = test_eval_individual(net, exp)
+        baseline+=b
     baseline = int(baseline/3)
 
-    generalizable=0 
+    extra_generalizable = 0 
     for s in ends:
-        exp.bioelectric_stimulus = s[0][::-1]
-        exp.goal = s[1][::-1]
-        # vals = []
-        # vals.append(test_eval_individual(net, exp))
-        val=0
-        for x in range(3):
-            val += test_eval_individual(net, exp)
-        val= int(val/3)
-        # if max(vals) >= (baseline - 5):
-        if val >= (baseline - 5):
-            generalizable+=1
-        print(val, baseline, flush=True)
-        # print(max(vals), baseline)
-        # print(vals)
-    print(f"{file_name} has a generalizability score of {generalizable} out of 20!", flush=True)
-    # # Simulation
-    # sim(exp, net)
+        new_stim = s[0][::-1]
+        new_goal = s[1][::-1]
+        exp.preset =    [       
+            ("preset_bioelectric", [100, new_stim]),
+            ("preset_goal", [100, new_goal]),
+            ("preset_reset_energy", [100, exp.energy]),
+        ]
+        tot=0
+        bol, f200 = new_eval(net, exp, baseline)
+        if bol:
+            extra_generalizable+=1
+        print("~~~~~~~~~~~")
+    print(f"{file_name} has a EXTRA generalizability score of {extra_generalizable} out of 5!", flush=True)

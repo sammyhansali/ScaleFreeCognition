@@ -199,6 +199,6 @@ for file_name in file_names:
         print(val, baseline, flush=True)
         # print(max(vals), baseline)
         # print(vals)
-    print(f"{file_name} has a generalizability score of {generalizable} out of 20!", flush=True)
+    print(f"{file_name} has a generalizability score of {generalizable} out of 5!", flush=True)
     # # Simulation
     # sim(exp, net)
