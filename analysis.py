@@ -449,9 +449,23 @@ def energy_delta(agent):
             portrayal["text_color"] = ["black"]
             portrayal["Layer"] = 0
             portrayal["r"] = 0.1
-
-        
         return portrayal
+
+def goal(agent):
+    if agent is None:
+        return
+
+    portrayal = {}
+
+    if type(agent) is Cell :
+        portrayal["Color"] = ["yellow"]
+        portrayal["Shape"] = "circle"
+        portrayal["Filled"] = "true"
+        portrayal["text"] = str(agent.goal_cell_type)
+        portrayal["text_color"] = ["black"]
+        portrayal["Layer"] = 0
+        portrayal["r"] = 0.1
+    return portrayal
 
 def get_elements(height, width, nb_output_molecules):
     return_list =   [
@@ -468,7 +482,7 @@ def get_elements(height, width, nb_output_molecules):
         return_list.append(
                 CanvasGrid(GJ_molec_list[i], height, width, 200, 200)
             )
-    others = [molecules, energy, energy_delta]
+    others = [molecules, energy, energy_delta, goal]
     for i in others:
         return_list.append(CanvasGrid(i, height, width, 200, 200))
 
@@ -497,14 +511,21 @@ def get_elements(height, width, nb_output_molecules):
 def test_eval_individual(net, exp):
     
     fit = 0
+    fit2 = 0
     for i in range(5):
         model = Multicellularity_model(net = net, exp = exp)
         model.verbose = False
         run = model.run_model(fitness_evaluation=True)
         fit += run
         print(f"Run {i+1}: {round(run,1)}")
+        # Delete this codeblock when done with extra_generalizable tests
+        run2 = model.run_model(fitness_evaluation=True)
+        fit2 += run2
+        print(f"Run2 {i+1}: {round(run2,1)}")
     fit/=5
-    print(f"Expected fitness (analysis.py): {fit}")
+    fit2/=5
+    print(f"Expected fitness (100): {int(fit)}")
+    print(f"Expected fitness (200): {int(fit2)}")
     return fit
 
 
