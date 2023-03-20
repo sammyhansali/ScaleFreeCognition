@@ -27,9 +27,7 @@ cd /cluster/tufts/levinlab/shansa01/SFC/ScaleFreeCognition
 
 ## Test 1
 # No pos, No fit inputs
-for i in {1..20}
-do
-	python "$FILE_PATH"
-done
+# for i in {1..20} # Commenting this out since now getting handled in the experiment config, so I can easily calculate stats
+python "$FILE_PATH"
 
 EOT

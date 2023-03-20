@@ -230,8 +230,8 @@ def run_experiment(exp, exp_file_path):
     formatted_fit = str(int(best_fitness))
     os.rename(f"{parent_dir}", f"{parent_dir}_{formatted_fit}" ) # used to be "Results/" for both
 
-    # Simulate the results if option turned on
-    if exp.simulate == True:
+    # sbatch the results if option turned off
+    if exp.sbatch == False:
         sim(exp, winner_net)
         
     return best_fitness, elapsed_time, f"{file}_{formatted_fit}"

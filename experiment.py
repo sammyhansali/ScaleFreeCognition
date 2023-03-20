@@ -25,7 +25,7 @@ class experiment:
     preset = None
     multiple = 5
     start_molecs = None
-    simulate = False
+    sbatch = False
     ef_mode = 1             # "electric_face_mode" for electric face experiments circa February 2023
 
     # Interface
