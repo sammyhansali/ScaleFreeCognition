@@ -102,6 +102,8 @@ class Multicellularity_model(Model):
                 datacollector_dict["Molecule 3 exchanged"] = lambda m:m.schedule.get_nb_molecules_exchanged_3(Cell)
             elif i==4:
                 datacollector_dict["Molecule 4 exchanged"] = lambda m:m.schedule.get_nb_molecules_exchanged_4(Cell)
+            elif i==5:
+                datacollector_dict["Molecule 5 exchanged"] = lambda m:m.schedule.get_nb_molecules_exchanged_5(Cell)
         if self.nb_output_molecules > 1:
             datacollector_dict["Total molecules exchanged"] = lambda m:m.schedule.get_nb_molecules_exchanged_tot(Cell)
         self.datacollector = DataCollector(datacollector_dict)

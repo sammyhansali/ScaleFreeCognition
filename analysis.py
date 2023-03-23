@@ -174,9 +174,7 @@ def GJ_generator(GJ):
     portrayal["text_color"] = ["black"]
 
 
-    if GJ == 0:
-        portrayal["Color"] = ["grey"]
-    elif GJ <=0.25  and GJ >0:
+    if GJ <=0.25  and GJ >=0:
         portrayal["Color"] = ["#173806"]
     elif GJ <=0.5  and GJ >0.25:
         portrayal["Color"] = ["#2d6e0c"]
@@ -231,6 +229,15 @@ def GJ_molecules_4(agent):
         return {}
 
     GJ = agent.GJ_molecules[4]
+    return GJ_generator(GJ)
+
+def GJ_molecules_5(agent):
+    if agent is None:
+        return
+    if type(agent) is not Cell:
+        return {}
+
+    GJ = agent.GJ_molecules[5]
     return GJ_generator(GJ)
 
 def molecules_generator(molecules):
@@ -309,6 +316,15 @@ def molecules_4(agent):
         return {}
 
     molecules = agent.molecules[4][0]
+    return molecules_generator(molecules)
+
+def molecules_5(agent):
+    if agent is None:
+        return
+    if type(agent) is not Cell:
+        return {}
+
+    molecules = agent.molecules[5][0]
     return molecules_generator(molecules)
 
 
@@ -467,14 +483,30 @@ def goal(agent):
         portrayal["r"] = 0.1
     return portrayal
 
+def ct(agent):
+    if agent is None:
+        return
+
+    portrayal = {}
+
+    if type(agent) is Cell :
+        portrayal["Color"] = ["yellow"]
+        portrayal["Shape"] = "circle"
+        portrayal["Filled"] = "true"
+        portrayal["text"] = str(agent.cell_type)
+        portrayal["text_color"] = ["black"]
+        portrayal["Layer"] = 0
+        portrayal["r"] = 0.1
+    return portrayal
+
 def get_elements(height, width, nb_output_molecules):
     return_list =   [
                         CanvasGrid(cell_types, height, width, 200, 200),
                         CanvasGrid(potential, height, width, 200, 200),
                     ]
 
-    molec_list = [molecules_0, molecules_1, molecules_2, molecules_3, molecules_4]
-    GJ_molec_list = [GJ_molecules_0, GJ_molecules_1, GJ_molecules_2, GJ_molecules_3, GJ_molecules_4]
+    molec_list = [molecules_0, molecules_1, molecules_2, molecules_3, molecules_4, molecules_5]
+    GJ_molec_list = [GJ_molecules_0, GJ_molecules_1, GJ_molecules_2, GJ_molecules_3, GJ_molecules_4, GJ_molecules_5]
     for i in range(nb_output_molecules):
         return_list.append(
                 CanvasGrid(molec_list[i], height, width, 200, 200)
@@ -482,7 +514,7 @@ def get_elements(height, width, nb_output_molecules):
         return_list.append(
                 CanvasGrid(GJ_molec_list[i], height, width, 200, 200)
             )
-    others = [molecules, energy, energy_delta, goal]
+    others = [molecules, energy, energy_delta, goal, ct]
     for i in others:
         return_list.append(CanvasGrid(i, height, width, 200, 200))
 
