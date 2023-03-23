@@ -1,0 +1,46 @@
+/cluster/tufts/levinlab/shansa01/SFC/sfc_results/2023/Mar/20/19:58:46_98
+0 92
+0 92
+0 92
+2023/Mar/20/19:58:46_98 has a removal_test score of 0 out of 3!
+/cluster/tufts/levinlab/shansa01/SFC/sfc_results/2023/Mar/21/03:40:20_97
+0 88
+0 88
+0 88
+2023/Mar/21/03:40:20_97 has a removal_test score of 0 out of 3!
+/cluster/tufts/levinlab/shansa01/SFC/sfc_results/2023/Mar/20/16:10:47_97
+0 94
+0 94
+0 94
+2023/Mar/20/16:10:47_97 has a removal_test score of 0 out of 3!
+/cluster/tufts/levinlab/shansa01/SFC/sfc_results/2023/Mar/20/17:26:42_96
+0 94
+0 94
+0 94
+2023/Mar/20/17:26:42_96 has a removal_test score of 0 out of 3!
+/cluster/tufts/levinlab/shansa01/SFC/sfc_results/2023/Mar/21/07:18:43_95
+0 83
+0 83
+0 83
+2023/Mar/21/07:18:43_95 has a removal_test score of 0 out of 3!
+/cluster/tufts/levinlab/shansa01/SFC/sfc_results/2023/Mar/20/11:42:28_97
+0 93
+0 93
+0 93
+2023/Mar/20/11:42:28_97 has a removal_test score of 0 out of 3!
+/cluster/tufts/levinlab/shansa01/SFC/sfc_results/2023/Mar/20/21:57:16_96
+0 83
+0 83
+0 83
+2023/Mar/20/21:57:16_96 has a removal_test score of 0 out of 3!
+/cluster/tufts/levinlab/shansa01/SFC/sfc_results/2023/Mar/20/16:46:15_91
+0 76
+0 76
+0 76
+2023/Mar/20/16:46:15_91 has a removal_test score of 0 out of 3!
+/cluster/tufts/levinlab/shansa01/SFC/sfc_results/2023/Mar/20/14:17:42_88
+0 65
+0 65
+0 65
+2023/Mar/20/14:17:42_88 has a removal_test score of 0 out of 3!
+/cluster/tufts/levinlab/shansa01/SFC/sfc_results/2023/Mar/21/04:22:24_88
