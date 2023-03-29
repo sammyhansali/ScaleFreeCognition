@@ -128,8 +128,8 @@ class Multicellularity_model(Model):
         return [update] + var[:-1]
 
     def update_global_fitness(self):
-        # new_fit = self.schedule.global_fitness()/100
-        new_fit = self.schedule.organ_focused_fitness()/100
+        new_fit = self.schedule.french_flag_fitness()/100
+        # new_fit = self.schedule.organ_focused_fitness()/100
         self.global_fitness = self.update_history(self.global_fitness, new_fit)
 
     # Don't delete, or you won't be able to "step" in the visualization in mesa....
@@ -148,10 +148,8 @@ class Multicellularity_model(Model):
             self.step()
 
         if fitness_evaluation==True:
-            # self.fitness_score = self.schedule.global_fitness() 
-            self.fitness_score = self.schedule.organ_focused_fitness()
-        # return self.schedule.global_fitness()  
-        # return self.schedule.organ_focused_fitness()
+            self.fitness_score = self.schedule.french_flag_fitness()
+            # self.fitness_score = self.schedule.organ_focused_fitness()
         return self.fitness_score
 
                 

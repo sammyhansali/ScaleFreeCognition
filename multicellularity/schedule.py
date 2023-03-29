@@ -354,6 +354,58 @@ class RandomActivationByBreed(RandomActivation):
 
         return fitness_score
 
+    def french_flag_fitness(self):
+
+        nb_left_goal = 27
+        nb_left_matched = 0
+        
+        nb_middle_goal = 27
+        nb_middle_matched = 0
+        
+        nb_right_goal = 27
+        nb_right_matched = 0
+
+        for i in range(self.model.height):
+            for j in range(int(self.model.width)):
+
+                if len(self.model.grid.get_cell_list_contents([(j,i)]))>0:
+                    cell = self.model.grid.get_cell_list_contents([(j,i)])[0]
+                    if cell.cell_type[0] == cell.goal_cell_type:
+                        if cell.cell_type[0] == 3:
+                            nb_left_matched+=1
+                        elif cell.cell_type[0] == 1:
+                            nb_middle_matched+=1
+                        elif cell.cell_type[0] == 2:
+                            nb_right_matched+=1
+
+        ### Base scores
+        left_base_score = 20*(nb_left_matched/nb_left_goal) # Max score of 20
+        middle_base_score = 20*(nb_middle_matched/nb_middle_goal) # Max score of 20
+        right_base_score = 20*(nb_right_matched/nb_right_goal) # Max score of 20
+
+        fitness_score = left_base_score + middle_base_score + right_base_score
+
+        ### Bonuses for completing organs
+        # Left
+        if nb_left_matched==nb_left_goal:
+            fitness_score+=13
+        elif nb_left_matched >= nb_left_goal/2:       # Microreward
+            fitness_score+=5
+        
+        # Middle
+        if nb_middle_matched==nb_middle_goal:
+            fitness_score+=13
+        elif nb_middle_matched >= nb_middle_goal/2:       # Microreward
+            fitness_score+=5
+
+        # Right
+        if nb_right_matched==nb_right_goal:
+            fitness_score+=13
+        elif nb_right_matched >= nb_right_goal/2:       # Microreward
+            fitness_score+=5
+
+        return fitness_score
+
     # def pos_occupied_at(self, x, y):
     #     return len(self.model.grid.get_cell_list_contents([(x,y)]))>0
     

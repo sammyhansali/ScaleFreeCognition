@@ -191,7 +191,8 @@ class Cell(Agent):
     def update_cell_type_mode_3(self):
         max_val = -1
         max_ind = -1
-        n = 4   # Because 4 cell types encoded by first 4 molecules. Extra molecule sets don't directly affect ct.
+        # n = 4   # Because 4 cell types encoded by first 4 molecules. Extra molecule sets don't directly affect ct.
+        n=3
         for i in range(n):
             val = self.molecules[i][0]
             if val > max_val:
@@ -203,7 +204,8 @@ class Cell(Agent):
     
     # AKA Mode 2.1
     def update_cell_type_mode_4(self):
-        n = 4   # Because 4 cell types encoded by first 4 molecules. Extra molecule sets don't directly affect ct.
+        # n = 4   # Because 4 cell types encoded by first 4 molecules. Extra molecule sets don't directly affect ct.
+        n=3 #French flag
         ct_options = []
         for i in range(n):
             if self.molecules[i][0] >= 5:
@@ -219,7 +221,8 @@ class Cell(Agent):
     def update_cell_type_mode_5(self):
         max_val = -1
         max_ind = -1
-        n = 4   # Because 4 cell types encoded by first 4 molecules. Extra molecule sets don't directly affect ct.
+        # n = 4   # Because 4 cell types encoded by first 4 molecules. Extra molecule sets don't directly affect ct.
+        n=3
         for i in range(n):
             val = self.molecules[i][0]
             if val > max_val:
