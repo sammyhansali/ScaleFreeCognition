@@ -153,22 +153,23 @@ class Cell(Agent):
 
         # Only multiple changes, not the leading coefficients.
         new_cell_type = 5 # Undifferentiated
-        if tot >=  3*multiple*n :
-            new_cell_type = 4
-        elif tot >=  2*multiple*n :
+        # if tot >=  3*multiple*n :
+        #     new_cell_type = 4
+        # elif tot >=  2*multiple*n :
+        #     new_cell_type = 3
+        # elif tot >= multiple*n:
+        #     new_cell_type = 2
+        # elif tot >= 0:
+        #     new_cell_type = 1
+        # return new_cell_type
+        if tot >=  2*multiple*n :
             new_cell_type = 3
         elif tot >= multiple*n:
             new_cell_type = 2
         elif tot >= 0:
             new_cell_type = 1
-        # self.update_cell_type(new_cell_type)
         return new_cell_type
 
-        # # Update cell type
-        # self.cell_type = self.update_history(self.cell_type, new_cell_type)
-        # if self.cell_type[0] != self.cell_type[1]:
-        #     # E penalty for cell_type change
-        #     self.energy_temp -= 0.5
 
     # AKA Mode 2.0      
     def update_cell_type_mode_2(self):
