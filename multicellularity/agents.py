@@ -173,7 +173,7 @@ class Cell(Agent):
 
     # AKA Mode 2.0      
     def update_cell_type_mode_2(self):
-        n = 4   # Because 4 cell types encoded by first 4 molecules. Extra molecule sets don't directly affect ct.
+        n = 3   # Because 4 cell types encoded by first 4 molecules. Extra molecule sets don't directly affect ct.
         ct_options = []
         for i in range(n):
             if self.molecules[i][0] >= 5:
@@ -237,7 +237,7 @@ class Cell(Agent):
 
     # AKA Mode 3.1 (Mode 3 removed since no results)
     def update_cell_type_mode_6(self, differentiate_output):
-        n = 4   # Because 4 cell types encoded by first 4 molecules. Extra molecule sets don't directly affect ct.
+        n = 3   # Because 4 cell types encoded by first 4 molecules. Extra molecule sets don't directly affect ct.
         ct_options = []
         for i in range(n):
             if self.molecules[i][0] >= 5:
