@@ -379,32 +379,38 @@ class RandomActivationByBreed(RandomActivation):
                             nb_right_matched+=1
 
         ### Base scores
-        left_base_score = 25*(nb_left_matched/nb_left_goal) # Max score of 20
-        middle_base_score = 25*(nb_middle_matched/nb_middle_goal) # Max score of 20
-        right_base_score = 25*(nb_right_matched/nb_right_goal) # Max score of 20
-
+        left_base_score = 33*(nb_left_matched/nb_left_goal) # Max score of 20
+        middle_base_score = 33*(nb_middle_matched/nb_middle_goal) # Max score of 20
+        right_base_score = 33*(nb_right_matched/nb_right_goal) # Max score of 20
         fitness_score = left_base_score + middle_base_score + right_base_score
-
-        ### Bonuses for completing organs
-        # Left
-        if nb_left_matched==nb_left_goal:
-            fitness_score+=8
-        elif nb_left_matched >= nb_left_goal/2:       # Microreward
-            fitness_score+=5
-        
-        # Middle
-        if nb_middle_matched==nb_middle_goal:
-            fitness_score+=8
-        elif nb_middle_matched >= nb_middle_goal/2:       # Microreward
-            fitness_score+=5
-
-        # Right
-        if nb_right_matched==nb_right_goal:
-            fitness_score+=8
-        elif nb_right_matched >= nb_right_goal/2:       # Microreward
-            fitness_score+=5
-
         return fitness_score
+        
+        # # ### Base scores
+        # left_base_score = 25*(nb_left_matched/nb_left_goal) # Max score of 20
+        # middle_base_score = 25*(nb_middle_matched/nb_middle_goal) # Max score of 20
+        # right_base_score = 25*(nb_right_matched/nb_right_goal) # Max score of 20
+        # fitness_score = left_base_score + middle_base_score + right_base_score
+
+        # ### Bonuses for completing organs
+        # # Left
+        # if nb_left_matched==nb_left_goal:
+        #     fitness_score+=8
+        # elif nb_left_matched >= nb_left_goal/2:       # Microreward
+        #     fitness_score+=5
+        
+        # # Middle
+        # if nb_middle_matched==nb_middle_goal:
+        #     fitness_score+=8
+        # elif nb_middle_matched >= nb_middle_goal/2:       # Microreward
+        #     fitness_score+=5
+
+        # # Right
+        # if nb_right_matched==nb_right_goal:
+        #     fitness_score+=8
+        # elif nb_right_matched >= nb_right_goal/2:       # Microreward
+        #     fitness_score+=5
+
+        # return fitness_score
 
     # def pos_occupied_at(self, x, y):
     #     return len(self.model.grid.get_cell_list_contents([(x,y)]))>0
