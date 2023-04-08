@@ -354,6 +354,51 @@ class RandomActivationByBreed(RandomActivation):
 
         return fitness_score
 
+    # def stripe_fitness(self, pos):
+    #     # Blue stripe by default
+    #     x_lo=0
+    #     x_hi=2
+    #     if pos in [3,4,5]:
+    #         # White stripe
+    #         x_lo = 3
+    #         x_hi = 5
+    #     elif pos in [6,7,8]:
+    #         # Red stripe
+    #         x_lo = 6
+    #         x_hi = 8
+
+    #     nb_goal = 27
+    #     nb_matched = 0
+        
+    #     for i in range(self.model.height):
+    #         for j in range(x_lo, x_hi+1):
+
+    #             if len(self.model.grid.get_cell_list_contents([(j,i)]))>0:
+    #                 cell = self.model.grid.get_cell_list_contents([(j,i)])[0]
+    #                 if cell.cell_type[0] == cell.goal_cell_type:
+    #                     nb_matched+=1
+
+    #     ### Base scores
+    #     stripe_score = 100*(nb_matched/nb_goal)
+    #     return stripe_score
+    def stripe_fitness(self, left_base_score, middle_base_score, right_base_score):
+        left=range(0,3)
+        middle=range(3,6)
+        right=range(6,9)
+        for i in range(self.model.height):
+            for L in left:
+                if len(self.model.grid.get_cell_list_contents([(L,i)]))>0:
+                    cell = self.model.grid.get_cell_list_contents([(L,i)])[0]
+                    cell.global_fitness = cell.update_history(cell.global_fitness, left_base_score*3)
+            for M in middle:
+                if len(self.model.grid.get_cell_list_contents([(M,i)]))>0:
+                    cell = self.model.grid.get_cell_list_contents([(M,i)])[0]
+                    cell.global_fitness = cell.update_history(cell.global_fitness, middle_base_score*3)
+            for R in right:
+                if len(self.model.grid.get_cell_list_contents([(R,i)]))>0:
+                    cell = self.model.grid.get_cell_list_contents([(R,i)])[0]
+                    cell.global_fitness = cell.update_history(cell.global_fitness, right_base_score*3)
+
     def french_flag_fitness(self):
 
         nb_left_goal = 27
@@ -383,6 +428,7 @@ class RandomActivationByBreed(RandomActivation):
         middle_base_score = 33*(nb_middle_matched/nb_middle_goal) # Max score of 20
         right_base_score = 33*(nb_right_matched/nb_right_goal) # Max score of 20
         fitness_score = left_base_score + middle_base_score + right_base_score
+        self.stripe_fitness(left_base_score, middle_base_score, right_base_score)
         return fitness_score
         
         # # ### Base scores
@@ -532,7 +578,8 @@ class RandomActivationByBreed(RandomActivation):
                     # Historical data
                     energy = [0]*self.model.history_length,
                     stress = [0]*self.model.history_length, 
-                    global_fitness = self.model.global_fitness,
+                    global_fitness = [0]*self.model.history_length,
+                    # global_fitness = self.model.global_fitness,
                     direction = [0]*self.model.history_length,
                     cell_type = [0]*self.model.history_length,
                     potential = [0]*self.model.history_length,

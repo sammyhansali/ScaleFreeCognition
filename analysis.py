@@ -499,6 +499,22 @@ def ct(agent):
         portrayal["r"] = 0.1
     return portrayal
 
+def stripe_fitness(agent):
+    if agent is None:
+        return
+
+    portrayal = {}
+
+    if type(agent) is Cell :
+        portrayal["Color"] = ["yellow"]
+        portrayal["Shape"] = "circle"
+        portrayal["Filled"] = "true"
+        portrayal["text"] = str(round(agent.global_fitness[0]/100,2))
+        portrayal["text_color"] = ["black"]
+        portrayal["Layer"] = 0
+        portrayal["r"] = 0.1
+    return portrayal
+
 def get_elements(height, width, nb_output_molecules):
     return_list =   [
                         CanvasGrid(cell_types, height, width, 200, 200),
@@ -514,7 +530,7 @@ def get_elements(height, width, nb_output_molecules):
         return_list.append(
                 CanvasGrid(GJ_molec_list[i], height, width, 200, 200)
             )
-    others = [molecules, energy, energy_delta, goal, ct]
+    others = [molecules, energy, energy_delta, goal, ct, stripe_fitness]
     for i in others:
         return_list.append(CanvasGrid(i, height, width, 200, 200))
 

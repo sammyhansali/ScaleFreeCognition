@@ -107,6 +107,8 @@ class Cell(Agent):
             inputs.extend(self.cell_type)
         if "potential" in self.model.ANN_inputs:
             inputs.extend(self.potential)
+        if "stripe_fitness" in self.model.ANN_inputs:
+            inputs.extend(self.global_fitness)
         # Bias of 0.5
         inputs.append(0.5)
         return inputs
@@ -131,6 +133,8 @@ class Cell(Agent):
     def update_history(self, var, update):
         return [update] + var[:-1]
 
+    # def update_stripe_fitness(self):
+    #     self.global_fitness = self.update_history(self.global_fitness, self.model.schedule.stripe_fitness(self.pos_x))
 
     def update_direction(self, new_dir):
         self.direction = self.update_history(self.direction, new_dir)
@@ -439,7 +443,9 @@ class Cell(Agent):
             return
 
         # # Updating variables
-        self.global_fitness = self.model.global_fitness
+        # self.global_fitness = self.model.global_fitness
+        # if "stripe_fitness" in self.model.ANN_inputs:
+        #     self.update_stripe_fitness()
 
         if "molecules" in self.model.ANN_inputs:
             self.update_molecs(outputs) # Supports WTA
