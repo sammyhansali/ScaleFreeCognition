@@ -509,7 +509,7 @@ def stripe_fitness(agent):
         portrayal["Color"] = ["yellow"]
         portrayal["Shape"] = "circle"
         portrayal["Filled"] = "true"
-        portrayal["text"] = str(round(agent.global_fitness[0]/100,2))
+        portrayal["text"] = str(round(agent.local_fitness[0]/100,2))
         portrayal["text_color"] = ["black"]
         portrayal["Layer"] = 0
         portrayal["r"] = 0.1

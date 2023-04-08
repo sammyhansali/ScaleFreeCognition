@@ -37,7 +37,7 @@ class Cell(Agent):
     stress = []
     # Directionality
     direction = None
-    global_fitness = None
+    local_fitness = None
     molecules = None
     energy_temp = None
     cell_type = None
@@ -46,7 +46,7 @@ class Cell(Agent):
 
 
 
-    def __init__(self, net, depth, unique_id, pos, model, moore, molecules, goal_cell_type, global_fitness, bioelectric_stimulus, GJ_opening_ions, GJ_molecules, GJ_opening_stress, energy, stress, direction, cell_type, potential):
+    def __init__(self, net, depth, unique_id, pos, model, moore, molecules, goal_cell_type, local_fitness, bioelectric_stimulus, GJ_opening_ions, GJ_molecules, GJ_opening_stress, energy, stress, direction, cell_type, potential):
         """
         grid: The MultiGrid object in which the agent lives.
         x: The agent's current x coordinate
@@ -71,7 +71,7 @@ class Cell(Agent):
         # Inputs
         self.energy = energy
         self.stress = stress
-        self.global_fitness = global_fitness
+        self.local_fitness = local_fitness
         # Directionality
         self.direction = direction
         self.energy_temp = self.energy[0]
@@ -108,7 +108,7 @@ class Cell(Agent):
         if "potential" in self.model.ANN_inputs:
             inputs.extend(self.potential)
         if "stripe_fitness" in self.model.ANN_inputs:
-            inputs.extend(self.global_fitness)
+            inputs.extend(self.local_fitness)
         # Bias of 0.5
         inputs.append(0.5)
         return inputs
@@ -134,7 +134,7 @@ class Cell(Agent):
         return [update] + var[:-1]
 
     # def update_stripe_fitness(self):
-    #     self.global_fitness = self.update_history(self.global_fitness, self.model.schedule.stripe_fitness(self.pos_x))
+    #     self.local_fitness = self.update_history(self.local_fitness, self.model.schedule.stripe_fitness(self.pos_x))
 
     def update_direction(self, new_dir):
         self.direction = self.update_history(self.direction, new_dir)
@@ -412,7 +412,7 @@ class Cell(Agent):
     #                 )
     #     cell.energy =  self.update_history(cell.energy, self.model.energy)
     #     self.birth(cell, x, y)
-    #     # cell.local_fitness[0] = self.model.schedule.local_fitness(self)
+    #     # cell.global_fitness[0] = self.model.schedule.global_fitness(self)
 
 
     def step(self):

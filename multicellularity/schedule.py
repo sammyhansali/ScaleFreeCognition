@@ -389,15 +389,15 @@ class RandomActivationByBreed(RandomActivation):
             for L in left:
                 if len(self.model.grid.get_cell_list_contents([(L,i)]))>0:
                     cell = self.model.grid.get_cell_list_contents([(L,i)])[0]
-                    cell.global_fitness = cell.update_history(cell.global_fitness, left_base_score*3)
+                    cell.local_fitness = cell.update_history(cell.local_fitness, left_base_score*3)
             for M in middle:
                 if len(self.model.grid.get_cell_list_contents([(M,i)]))>0:
                     cell = self.model.grid.get_cell_list_contents([(M,i)])[0]
-                    cell.global_fitness = cell.update_history(cell.global_fitness, middle_base_score*3)
+                    cell.local_fitness = cell.update_history(cell.local_fitness, middle_base_score*3)
             for R in right:
                 if len(self.model.grid.get_cell_list_contents([(R,i)]))>0:
                     cell = self.model.grid.get_cell_list_contents([(R,i)])[0]
-                    cell.global_fitness = cell.update_history(cell.global_fitness, right_base_score*3)
+                    cell.local_fitness = cell.update_history(cell.local_fitness, right_base_score*3)
 
     def french_flag_fitness(self):
 
@@ -578,7 +578,7 @@ class RandomActivationByBreed(RandomActivation):
                     # Historical data
                     energy = [0]*self.model.history_length,
                     stress = [0]*self.model.history_length, 
-                    global_fitness = [0]*self.model.history_length,
+                    local_fitness = [0]*self.model.history_length,
                     # global_fitness = self.model.global_fitness,
                     direction = [0]*self.model.history_length,
                     cell_type = [0]*self.model.history_length,
