@@ -27,6 +27,7 @@ class experiment:
     start_molecs = None
     sbatch = False
     ef_mode = 1             # "electric_face_mode" for electric face experiments circa February 2023
+    special_case=""
 
     # Interface
     interface =  False

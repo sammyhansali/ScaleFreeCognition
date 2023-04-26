@@ -107,6 +107,14 @@ class Cell(Agent):
             inputs.extend(self.cell_type)
         if "potential" in self.model.ANN_inputs:
             inputs.extend(self.potential)
+        if "neighbour_potential" in self.model.ANN_inputs:
+            neighborhood = self.model.grid.get_neighborhood(self.pos, self.moore, False)
+            for neighbour in neighborhood:
+                if self.neighbour_is_alive(neighbour):
+                    cic = self.model.grid[neighbour][0] # Cell In Contact
+                    neighbour_potential = cic.potential[0]
+                    inputs.append(neighbour_potential)
+                    
         if "stripe_fitness" in self.model.ANN_inputs:
             inputs.extend(self.local_fitness)
         # Bias of 0.5
@@ -152,11 +160,14 @@ class Cell(Agent):
     def update_cell_type_mode_1(self):
         # Get the total number of molecules
         n = len(self.molecules)
+        if self.model.exp.special_case=="Apr19":
+            n=1
         tot = sum(self.molecules[i][0] for i in range(n))
         multiple = self.model.multiple # 5 seems to work for 3 cell types. for 4 idk yet.
 
         # Only multiple changes, not the leading coefficients.
         new_cell_type = 5 # Undifferentiated
+
         # if tot >=  3*multiple*n :
         #     new_cell_type = 4
         # elif tot >=  2*multiple*n :
@@ -166,6 +177,7 @@ class Cell(Agent):
         # elif tot >= 0:
         #     new_cell_type = 1
         # return new_cell_type
+
         if tot >=  2*multiple*n :
             new_cell_type = 3
         elif tot >= multiple*n:
