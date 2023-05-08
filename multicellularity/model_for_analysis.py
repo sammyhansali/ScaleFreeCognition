@@ -144,11 +144,26 @@ class Multicellularity_model(Model):
 
     # Model runner
     def run_model(self, fitness_evaluation):
-        for i in range(self.step_count):
-            self.step()
+        if self.step_count==200:
+            # First developmental period
+            for i in range(100):
+                self.step()
+            fit100=self.schedule.french_flag_fitness()
+            # Second developmental period
+            for i in range(100):
+                self.step()
+            fit200=self.schedule.french_flag_fitness()
+            # Average fit of developmental periods
+            fit = (fit100+fit200)/2
+        else:
+            # Only one developmental period
+            for i in range(self.step_count):
+                self.step()
+            fit = self.schedule.french_flag_fitness()
 
         if fitness_evaluation==True:
-            self.fitness_score = self.schedule.french_flag_fitness()
+            self.fitness_score = fit
+            # self.fitness_score = self.schedule.french_flag_fitness()
             # self.fitness_score = self.schedule.organ_focused_fitness()
         return self.fitness_score
 
