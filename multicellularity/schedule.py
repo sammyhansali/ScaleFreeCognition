@@ -522,6 +522,13 @@ class RandomActivationByBreed(RandomActivation):
                     cell = self.model.grid.get_cell_list_contents([(x,y)])[0]
                     cell.GJ_molecules[GJ_nb] = new_GJ[y][x] # Add history later
 
+    def wipe_molecule(self, molec_nb):
+        for y in range(self.model.height):
+            for x in range(int(self.model.width)):
+                # alive cell on spot
+                if len(self.model.grid.get_cell_list_contents([(x,y)]))>0:
+                    cell = self.model.grid.get_cell_list_contents([(x,y)])[0]
+                    cell.molecules[molec_nb] = cell.update_history(cell.molecules[molec_nb], 0)
 
     def generate_cells(self, Cell, start_molecs):
         # Use start mat to generate starting cells

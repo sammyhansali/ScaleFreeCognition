@@ -34,3 +34,9 @@ class UpdateModel:
 
         if model.schedule.time == time:
             model.schedule.change_gap_junctions(GJ_nb, new_GJ)
+
+    def preset_wipe_molecule(self, model, arr):
+        time, molec_nb = arr
+
+        if model.schedule.time == time:
+            model.schedule.wipe_molecule(molec_nb)
