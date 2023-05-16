@@ -416,11 +416,14 @@ class RandomActivationByBreed(RandomActivation):
                 if len(self.model.grid.get_cell_list_contents([(j,i)]))>0:
                     cell = self.model.grid.get_cell_list_contents([(j,i)])[0]
                     if cell.cell_type[0] == cell.goal_cell_type:
-                        if cell.cell_type[0] == 3:
+                        # if cell.cell_type[0] == 3:
+                        if j >= 0 and j < 3:
                             nb_left_matched+=1
-                        elif cell.cell_type[0] == 1:
+                        # elif cell.cell_type[0] == 1:
+                        elif j >= 3 and j < 6:
                             nb_middle_matched+=1
-                        elif cell.cell_type[0] == 2:
+                        # elif cell.cell_type[0] == 2:
+                        elif j >= 6 and j < 9:
                             nb_right_matched+=1
 
         ### Base scores
